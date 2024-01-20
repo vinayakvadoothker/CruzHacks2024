@@ -124,7 +124,7 @@ const OffCampusHousingFormStep22 = () => {
     };
 
     return (
-        <div className="form-container" style={{ marginTop: '55px', width: '400px' }}>
+        <div className="form-container" style={{ width: '50%', margin: '50px auto', maxHeight: '80vh', overflowY: 'auto', padding: '20px' }}>
             <h2 className="step-title">Vehicle Information</h2>
             <p className="step-description">Please Provide Information About Your Vehicles</p>
 
