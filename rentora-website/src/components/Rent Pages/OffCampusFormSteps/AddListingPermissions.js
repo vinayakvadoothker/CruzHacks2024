@@ -3,6 +3,7 @@
 
 const allowedClerkIDs = [
     "user_2Yya6QwigCOA9lBZXbVK7rBIWrV",
+    "user_2YujrfR3TG3gw3PFNsACSpUkEzQ",
 ];
 
 export { allowedClerkIDs };

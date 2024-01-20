@@ -23,8 +23,18 @@ const OffCampusHousingDashboard = () => {
     const [currentImageIndexes, setCurrentImageIndexes] = useState([]);
 
     useEffect(() => {
-        const fetchListings = async () => {
+        const fetchFormStatusAndListings = async () => {
             try {
+                // Check the offcampusformdone status
+                const formResponseDoc = await db.collection('SurveyResponses').doc(user.id).get();
+                const formResponseData = formResponseDoc.data();
+    
+                if (!formResponseData || formResponseData.offcampusformdone !== true) {
+                    navigate('/rent/off-campus/step1');
+                    return;
+                }
+    
+                // Fetch listings only if form is done
                 const querySnapshot = await db.collection('OffCampusListings').get();
                 const listings = querySnapshot.docs.map(doc => ({
                     id: doc.id,
@@ -32,13 +42,18 @@ const OffCampusHousingDashboard = () => {
                 }));
                 setListingsData(listings);
                 setCurrentImageIndexes(listings.map(() => 0));
+    
             } catch (error) {
-                console.error("Error fetching listings:", error);
+                console.error("Error fetching data:", error);
             }
         };
-
-        fetchListings();
-    }, []);
+    
+        if (user) {
+            fetchFormStatusAndListings();
+        }
+    }, [user, navigate]);
+    
+    
 
     const handleNextImage = (index) => {
         const nextImageIndex = (currentImageIndexes[index] + 1) % listingsData[index].images.length;
