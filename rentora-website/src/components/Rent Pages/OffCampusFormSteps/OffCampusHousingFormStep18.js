@@ -194,8 +194,8 @@ const OffCampusHousingFormStep18 = () => {
           className="input-field"
         >
           <option value="">Select Type</option>
-          <option value="driverLicense">Driver's License</option>
-          <option value="passport">Passport</option>
+          <option value="Driver License">Driver's License</option>
+          <option value="Passport">Passport</option>
         </select>
       </div>
 

@@ -71,7 +71,7 @@ const OffCampusHousingFormStep13 = () => {
         // Check for missing or invalid fields before updating the document
         const isInvalid = formData.rentalHistory.some(entry =>
             entry.address === '' || entry.monthlyRent === '' || entry.startDate === '' ||
-            (!entry.present && entry.endDate === '') || entry.ownerName === '' || entry.reasonForLeaving === ''
+            (!entry.present && entry.endDate === '') || entry.ownerName === '' || entry.ownerPhoneNumber === '' || entry.reasonForLeaving === ''
         );
 
         if (isInvalid) {
@@ -95,6 +95,7 @@ const OffCampusHousingFormStep13 = () => {
                     endDate: entry.present ? 'Present' : entry.endDate,
                     present: entry.present,
                     ownerName: entry.ownerName,
+                    ownerPhoneNumber: entry.ownerPhoneNumber,
                     reasonForLeaving: entry.reasonForLeaving,
                 })),
             };
@@ -128,6 +129,7 @@ const OffCampusHousingFormStep13 = () => {
                 endDate: '',
                 present: false,
                 ownerName: '',
+                ownerPhoneNumber: '',
                 reasonForLeaving: '',
             }],
         }));
@@ -145,25 +147,43 @@ const OffCampusHousingFormStep13 = () => {
     };
 
     const handleInputChange = (index, field, value) => {
-        setFormData((prevData) => {
-            const updatedRentalHistory = [...prevData.rentalHistory];
-            updatedRentalHistory[index][field] = value;
+        // Regular expression to match only digits
+        const regex = /^[0-9\b]+$/;
 
-            // If 'Present' checkbox is checked, clear the endDate value
-            if (field === 'present' && value) {
-                updatedRentalHistory[index].endDate = 'Present';
-            }
+        // Check if the entered value is a valid digit or backspace
+        if (value === '' || regex.test(value)) {
+            setFormData((prevData) => {
+                const updatedRentalHistory = [...prevData.rentalHistory];
+                updatedRentalHistory[index][field] = formatPhoneNumber(value);
 
-            return {
-                ...prevData,
-                rentalHistory: updatedRentalHistory,
-            };
-        });
+                // If 'Present' checkbox is checked, clear the endDate value
+                if (field === 'present' && value) {
+                    updatedRentalHistory[index].endDate = 'Present';
+                }
+
+                return {
+                    ...prevData,
+                    rentalHistory: updatedRentalHistory,
+                };
+            });
+        }
     };
+
+    // Function to format the phone number as XXX-XXX-XXXX
+    const formatPhoneNumber = (value) => {
+        const cleaned = ('' + value).replace(/\D/g, '');
+        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+        if (match) {
+            return match[1] + '-' + match[2] + '-' + match[3];
+        }
+        return value;
+    };
+
+
 
     return (
         <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', padding: '20px' }}>
-        <h2 className="step-title">Previous Tenant Experience</h2>
+            <h2 className="step-title">Previous Tenant Experience</h2>
             <p className="step-description">Please Add Your Previous Rental History:</p>
 
             {Array.isArray(formData.rentalHistory) && formData.rentalHistory.map((entry, index) => (
@@ -252,6 +272,16 @@ const OffCampusHousingFormStep13 = () => {
                             value={entry.ownerName}
                             onChange={(e) => handleInputChange(index, 'ownerName', e.target.value)}
                         />
+                        <div className="form-row">
+                            <label>Owner's Phone Number:</label>
+                            <input
+                                type="tel"
+                                value={entry.ownerPhoneNumber}
+                                onChange={(e) => handleInputChange(index, 'ownerPhoneNumber', e.target.value)}
+                                placeholder="XXX-XXX-XXXX"
+                                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                            />
+                        </div>
                         <label className="end-label">Reason For Leaving:</label>
                         <input
                             type="text"

@@ -1,42 +1,40 @@
-/* ApplyPopup.css */
-.modal {
-    display: none;
+.apply-popup-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Opaque background */
+    display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1;
+    z-index: 1000;
+    /* Ensure it's above other content */
 }
 
-.modal.show {
-    display: flex;
-}
-
-.modal-content {
+.apply-popup-content {
     background-color: white;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    text-align: center;
-}
-
-/* Add more styles as needed */
-
-/* CSS for modal overlay */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+    border-radius: 10px;
+    max-width: 600px; /* Adjust as necessary */
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    position: relative;
+    text-align: center; /* Centers text horizontally */
+
+    /* Flexbox properties for vertical centering */
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Ensure a higher z-index value to appear in front */
 }
 
+.apply-popup-close {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+}

@@ -71,8 +71,6 @@ const ProfilePage = () => {
 
       {/* Contact Info */}
       <div style={styles.contactContainer}>
-        <p style={styles.contactInfo}>Email: {userProfile.email}</p>
-        <p style={styles.contactInfo}>Phone: {userProfile.phoneNumber}</p>
       </div>
 
       {/* Preferences for Housing Types */}

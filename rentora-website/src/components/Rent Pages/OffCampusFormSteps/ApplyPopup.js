@@ -1,83 +1,179 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { db } from "../../config";
+import "./ApplyPopup.css"
 
-const ApplyPopup = () => {
-    // State for user selections and inputs within the popup
-    const [selectedRoommates, setSelectedRoommates] = useState([]);
-    const [selectedMoveInDate, setSelectedMoveInDate] = useState('');
-    const [paymentAmount, setPaymentAmount] = useState('');
 
-    // Function to handle user selections for roommates
-    const handleRoommateSelection = (roomId) => {
-        // Toggle the selection of roommates
-        if (selectedRoommates.includes(roomId)) {
-            setSelectedRoommates(selectedRoommates.filter(id => id !== roomId));
-        } else {
-            setSelectedRoommates([...selectedRoommates, roomId]);
+const ApplyPopup = ({ user, listing, closePopup }) => {
+
+    const [applicationData, setApplicationData] = useState({
+        preferredMoveInDate: '',
+        selectedRoommates: []
+    });
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+
+    const handleSearch = async () => {
+        // Ensure necessary data is available
+        if (!searchQuery || !user || !user.schoolName) {
+            console.log("Search query or user data is not available");
+            return;
+        }
+    
+        try {
+            const querySnapshot = await db.collection('users')
+                .where('schoolName', '==', user.schoolName)
+                .where('firstName', '==', searchQuery) // or any other relevant field
+                .get();
+    
+            const results = querySnapshot.docs.map(doc => doc.data());
+            setSearchResults(results);
+        } catch (error) {
+            console.error('Error fetching search results:', error);
         }
     };
 
-    // Function to handle submitting the application
-    const handleSubmit = () => {
-        // Implement logic for submitting the application and making payment
-        // You can use the selectedRoommates, selectedMoveInDate, and paymentAmount here
-        // For simplicity, we'll just log the selected data for demonstration purposes
-        console.log('Selected Roommates:', selectedRoommates);
-        console.log('Selected Move-In Date:', selectedMoveInDate);
-        console.log('Payment Amount:', paymentAmount);
+    const handleSelectRoommate = (roommateId) => {
+        setApplicationData(prevData => ({
+            ...prevData,
+            selectedRoommates: prevData.selectedRoommates.includes(roommateId)
+                ? prevData.selectedRoommates.filter(id => id !== roommateId)
+                : [...prevData.selectedRoommates, roommateId]
+        }));
+    };
+    
+    useEffect(() => {
+        const fetchApplicationData = async () => {
+            if (listing && user) {
+                const formattedAddress = listing.address.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
+                const documentId = user.id;
 
-        // Close the popup (you can implement this as needed)
+                try {
+                    const docRef = db.collection('offcampus_listing_applications')
+                                    .doc(formattedAddress)
+                                    .collection('applications')
+                                    .doc(documentId);
+
+                    const doc = await docRef.get();
+
+                    if (doc.exists) {
+                        setApplicationData(doc.data());
+                    } else {
+                        // Reset form if there's no existing data
+                        setApplicationData({
+                            roommatePreference: '',
+                            moveInDate: '',
+                            additionalComments: ''
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error fetching application data:', error);
+                }
+            }
+        };
+
+        fetchApplicationData();
+    }, [user, listing]);
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!listing || !listing.address) {
+            console.error('Listing data is not available or address is undefined');
+            return;
+        }
+
+        const formattedAddress = listing.address.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
+
+        // Use the user's ID as the document ID
+        const documentId = user.id;
+
+        const dataToSave = { 
+            ...applicationData,
+            selectedRoommates: applicationData.selectedRoommates.map(roommate => roommate.id) // Assuming each roommate has an id
+        };
+
+        try {
+            // Update the document with the new data
+            await db.collection('offcampus_listing_applications')
+                .doc(formattedAddress)
+                .collection('applications')
+                .doc(documentId)
+                .set(dataToSave, { merge: true });
+
+            closePopup();
+        } catch (error) {
+            console.error('Error submitting application:', error);
+        }
     };
 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            if (user && user.schoolName) {
+                try {
+                    const querySnapshot = await db.collection('users')
+                        .where('schoolName', '==', user.schoolName)
+                        .get();
+                    
+                    const usersList = querySnapshot.docs.map(doc => {
+                        const userData = doc.data();
+                        return { firstName: userData.firstName, lastName: userData.lastName };
+                    });
+
+                    console.log('Users with the same schoolName:', usersList);
+                } catch (error) {
+                    console.error('Error fetching users:', error);
+                }
+            }
+        };
+
+        fetchUsers();
+    }, [user]);
     return (
-        <div className="apply-popup">
-            <h2>Apply for Off-Campus Housing</h2>
+        <div className="apply-popup-overlay">
+            <div className="apply-popup-content">
+                <button className="apply-popup-close" onClick={closePopup}>X</button>
+                
+                <h2>Apply for {listing.address}</h2>
 
-            {/* Roommate selection */}
-            <div>
-                <h3>Choose Roommates:</h3>
-                <label>
-                    <input
-                        type="checkbox"
-                        value="roommate1"
-                        checked={selectedRoommates.includes('roommate1')}
-                        onChange={() => handleRoommateSelection('roommate1')}
-                    />
-                    Roommate 1
-                </label>
-                <label>
-                    <input
-                        type="checkbox"
-                        value="roommate2"
-                        checked={selectedRoommates.includes('roommate2')}
-                        onChange={() => handleRoommateSelection('roommate2')}
-                    />
-                    Roommate 2
-                </label>
-                {/* Add more roommate options as needed */}
-            </div>
-
-            {/* Move-in date selection */}
-            <div>
-                <h3>Select Move-In Date:</h3>
-                <input
-                    type="date"
-                    value={selectedMoveInDate}
-                    onChange={(e) => setSelectedMoveInDate(e.target.value)}
+                {/* Roommate Search Feature */}
+                <input 
+                    type="text" 
+                    value={searchQuery} 
+                    onChange={(e) => setSearchQuery(e.target.value)} 
+                    placeholder="Search for roommates"
                 />
-            </div>
+                <button onClick={handleSearch}>Search</button>
 
-            {/* Payment */}
-            <div>
-                <h3>Payment Amount:</h3>
-                <input
-                    type="text"
-                    value={paymentAmount}
-                    onChange={(e) => setPaymentAmount(e.target.value)}
-                />
-            </div>
+                <div>
+                    {searchResults.map((roommate) => (
+                        <div key={roommate.id}>
+                            <label>
+                                <input 
+                                    type="checkbox"
+                                    checked={applicationData.selectedRoommates.includes(roommate.id)}
+                                    onChange={() => handleSelectRoommate(roommate.id)}
+                                />
+                                {roommate.firstName} {roommate.lastName}
+                            </label>
+                        </div>
+                    ))}
+                </div>
 
-            {/* Submit button */}
-            <button onClick={handleSubmit}>Submit Application</button>
+                {/* Preferred Move-In Date */}
+                <label>
+                    Preferred Move-In Date:
+                    <input 
+                        type="date" 
+                        name="preferredMoveInDate" 
+                        value={applicationData.preferredMoveInDate} 
+                        onChange={(e) => setApplicationData({ ...applicationData, preferredMoveInDate: e.target.value })}
+                    />
+                </label>
+                
+                <button onClick={handleSubmit}>Submit Application</button>
+            </div>
         </div>
     );
 };
