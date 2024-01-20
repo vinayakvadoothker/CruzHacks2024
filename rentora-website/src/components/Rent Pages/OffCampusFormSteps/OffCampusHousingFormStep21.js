@@ -93,7 +93,36 @@ const OffCampusHousingFormStep21 = () => {
 
     const handleNext = () => {
         saveGuarantorInfo();
+
+        sendEmailToGuarantor({
+            to: guarantorEmail,
+            subject: 'Guarantor Request',
+            text: 'This is a test email for providing your information.',
+        });
+
+        // Navigate to the next step
         navigate('/rent/off-campus/step22');
+    };
+
+    const sendEmailToGuarantor = async (emailData) => {
+        try {
+            // Make a request to your server-side endpoint to send the email
+            const response = await fetch('http://localhost:3001/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(emailData),
+            });
+
+            if (response.ok) {
+                console.log('Email sent successfully');
+            } else {
+                console.error('Failed to send email');
+            }
+        } catch (error) {
+            console.error('Error sending email:', error);
+        }
     };
 
     return (
