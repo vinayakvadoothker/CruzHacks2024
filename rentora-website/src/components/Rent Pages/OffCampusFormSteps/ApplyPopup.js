@@ -42,9 +42,9 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
 
     useEffect(() => {
         const filteredResults = userDetails.filter(user =>
-            (user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.email.toLowerCase().includes(searchTerm.toLowerCase()))
+        (user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase()))
         );
 
         setSearchResults(filteredResults);
@@ -91,25 +91,23 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        // Validate form fields
+
+        // Check if all required fields are filled
         if (!applicationData.preferredMoveInDate ||
-            applicationData.numberOfPets === 0 ||
-            !applicationData.signature) {
+            applicationData.numberOfPets < 0 || // Assuming 0 is a valid number of pets
+            applicationData.signature.trim() === '') {
             alert('Please fill out all required fields before submitting the application.');
             return;
         }
-    
+
         if (!listing || !listing.address) {
             console.error('Listing data is not available or address is undefined');
             return;
         }
-    
+
         const formattedAddress = listing.address.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
-    
-        // Use the user's ID as the document ID
-        const documentId = user.id;
-    
+        const clerkUserId = user.id;
+
         // Extract selected roommates' information
         const selectedRoommatesData = selectedRoommates.map(userId => {
             const roommate = userDetails.find(user => user.id === userId);
@@ -119,26 +117,26 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 email: roommate.email
             };
         });
-    
+
         const dataToSave = {
             ...applicationData,
+            address: listing.address, // Saving the original address
             selectedRoommatesData: selectedRoommatesData
         };
-    
+
         try {
-            // Update the document with the new data
-            await db.collection('offcampus_listing_applications')
+            // Save the application data
+            await db.collection('SurveyResponses')
+                .doc(clerkUserId)
+                .collection('offcampusapplications')
                 .doc(formattedAddress)
-                .collection('applications')
-                .doc(documentId)
                 .set(dataToSave, { merge: true });
-    
+
             closePopup();
         } catch (error) {
             console.error('Error submitting application:', error);
         }
     };
-    
 
     function getTodaysDate() {
         const today = new Date();

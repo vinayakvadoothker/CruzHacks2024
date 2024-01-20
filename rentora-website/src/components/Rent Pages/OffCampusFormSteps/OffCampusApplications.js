@@ -1,46 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { db } from "../../config";
+import { useUser } from "@clerk/clerk-react";
 import "./OffCampusApplications.css";
 import ApplyPopup from './ApplyPopup';
 
 const OffCampusApplications = () => {
+    const { user } = useUser();
     const [applications, setApplications] = useState([]);
     const [editApplication, setEditApplication] = useState(null);
 
-    useEffect(() => {
-        const fetchAllApplications = async () => {
+    // Memoizing the fetchUserApplications function
+    const fetchUserApplications = useCallback(async () => {
+        if (user) {
             try {
-                const response = await db.collectionGroup('applications').get();
+                const applicationsResponse = await db.collection('SurveyResponses')
+                    .doc(user.id)
+                    .collection('offcampusapplications')
+                    .get();
+                
+                const userApplications = applicationsResponse.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
 
-                const data = response.docs.map(doc => {
-                    const applicationData = doc.data();
-                    const address = doc.ref.parent.parent.id;
-                    return {
-                        id: doc.id,
-                        address,
-                        ...applicationData,
-                    };
-                });
-                setApplications(data);
+                setApplications(userApplications);
             } catch (error) {
                 console.error('Error fetching applications:', error);
             }
-        };
+        } else {
+            console.log('No user found');
+        }
+    }, [user]); // Dependency array
 
-        fetchAllApplications();
-    }, []);
+    useEffect(() => {
+        fetchUserApplications();
+    }, [fetchUserApplications]); // Dependency array includes 'fetchUserApplications'
 
     const handleEdit = (applicationId) => {
-        const selectedApplication = applications.find(application => application.id === applicationId);
+        const selectedApplication = applications.find(app => app.id === applicationId);
         setEditApplication(selectedApplication);
     };
+
+    const handleApplicationUpdate = async () => {
+        setEditApplication(null);
+        await fetchUserApplications();
+    };
+
+    function formatAddress(address) {
+        // Check if address is defined
+        if (!address) {
+            return 'Address not available'; // or some default text
+        }
+        return address.replace(/_/g, ' ');
+    }
 
     return (
         <div className="scrollable-container">
             <div className="offcampus-applications-container">
                 <h2>Your Off-Campus Applications</h2>
                 {applications.map(application => (
-                    <div key={application.address} className="application-container">
+                    <div key={application.id} className="application-container">
                         <h3>{formatAddress(application.address)}</h3>
                         <p>Preferred Move-In Date: {application.preferredMoveInDate}</p>
                         <p>Number of Pets: {application.numberOfPets}</p>
@@ -57,20 +76,15 @@ const OffCampusApplications = () => {
 
                 {editApplication && (
                     <ApplyPopup
-                        user={{/* pass the user data here */}}
-                        listing={{/* pass the listing data here */}}
-                        closePopup={() => setEditApplication(null)}
+                        user={user}
+                        listing={{ address: editApplication.address }}
+                        closePopup={handleApplicationUpdate}
                         editApplicationData={editApplication}
                     />
                 )}
             </div>
         </div>
     );
-
-    function formatAddress(address) {
-        const formattedAddress = address.replace(/_/g, ' ');
-        return formattedAddress;
-    }
 };
 
 export default OffCampusApplications;
