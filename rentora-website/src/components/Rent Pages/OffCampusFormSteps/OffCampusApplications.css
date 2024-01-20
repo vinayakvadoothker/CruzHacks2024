@@ -1,0 +1,48 @@
+/* OffCampusApplications.css */
+
+.scrollable-container {
+    max-height: 850px; /* Set the maximum height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.offcampus-applications-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    text-align: center; /* Center the text horizontally */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.application-container {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly opaque white background */
+    border-radius: 10px; /* Adjust the value for the desired level of rounding */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.application-container h2 {
+    color: #222; /* Adjust the color as needed */
+    margin-bottom: 15px; /* Add margin to separate from other elements */
+    text-align: center; /* Center the text horizontally */
+}
+
+.application-container h3 {
+    color: #333;
+}
+
+.application-container h4 {
+    margin-top: 15px;
+    color: #555;
+}
+
+.application-container p {
+    margin: 10px 0;
+    color: #777;
+}
+
+/* Add more styling based on your design preferences */

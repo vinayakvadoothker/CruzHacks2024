@@ -13,6 +13,7 @@ import VenturePage from './components/VenturePage'; // Import VenturePage compon
 import ProfilePage from './components/ProfilePage'; // Import ProfilePage component
 import GuarantorForm from './components/Rent Pages/OffCampusFormSteps/GuarantorForm'; // Import GuarantorForm component
 import AddOffCampusListing from './components/Rent Pages/OffCampusFormSteps/AddOffCampusListing'; // Import AddOffCampusListing component
+import OffCampusApplications from './components/Rent Pages/OffCampusFormSteps/OffCampusApplications';
 
 import './App.css';
 
@@ -93,11 +94,40 @@ const Header = () => {
 
 
 const RentHeader = () => {
+  const showOffCampusDropdown = () => {
+    const offCampusDropdown = document.getElementById('offCampusDropdown');
+    if (offCampusDropdown) {
+      offCampusDropdown.style.display = 'block';
+    }
+  };
+
+  const hideOffCampusDropdown = () => {
+    const offCampusDropdown = document.getElementById('offCampusDropdown');
+    if (offCampusDropdown) {
+      offCampusDropdown.style.display = 'none';
+    }
+  };
+
   return (
     <nav>
-      <ul>
-        <li>
-          <Link to="/rent/off-campus">Off-Campus</Link>
+      <ul style={styles.list}>
+        <li style={styles.offCampusContainer} onMouseEnter={showOffCampusDropdown} onMouseLeave={hideOffCampusDropdown}>
+          <div className="dropdown">
+            <Link to="/rent/off-campus">Off-Campus</Link>
+            <div id="offCampusDropdown" style={styles.dropdownContent}>
+            <span style={styles.icon}>🏠</span>
+            <Link to="/rent/off-campus" style={styles.myApplicationsLink}>
+              Listings
+              </Link>
+              <div>
+                   
+              </div>
+            <span style={styles.icon}>📄</span>
+              <Link to="/rent/off-campus/myapplications" style={styles.myApplicationsLink}>
+                My Applications
+              </Link>
+            </div>
+          </div>
         </li>
         <li>
           <Link to="/rent/for-all">For-All</Link>
@@ -142,6 +172,7 @@ const App = () => {
                 <Routes>
                   <Route index element={<RentPage />} />
                   <Route path="/off-campus/*" element={<OffCampusPage />} />
+                  <Route path="/off-campus/myapplications" element={<OffCampusApplications />} />
                   <Route path="/for-all" element={<ForAllPage />} />
                 </Routes>
               </div>
@@ -181,7 +212,6 @@ const App = () => {
 
 export default App;
 
-// Styling for the profile image
 const styles = {
   cursorPointer: {
     cursor: 'pointer',
@@ -195,25 +225,40 @@ const styles = {
     height: '30px',
     borderRadius: '50%',
   },
-
   dropdownContent: {
     display: 'none',
     position: 'absolute',
-    backgroundColor: 'rgba(249, 249, 249, 0.9)', // Slightly transparent white background
+    backgroundColor: 'rgba(249, 249, 249, 0.9)',
     minWidth: '130px',
     boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
     zIndex: 1,
     right: 0,
-    top: '30px', // Adjust as needed
-    borderRadius: '8px', // Curved corners
-    opacity: 0.9, // Slightly transparent
+    top: '30px',
+    borderRadius: '8px',
+    opacity: 0.9,
   },
-
   dropdownItem: {
     padding: '12px 16px',
     display: 'block',
-    textAlign: 'center', // Center text
-    fontSize: '20px', // Font size
-    fontFamily: 'monospace', // Font family
+    textAlign: 'center',
+    fontSize: '20px',
+    fontFamily: 'monospace',
   },
+
+  offCampusContainer: {
+    position: 'relative',
+    display: 'inline-block',
+    width: '200px', // Adjust the width as needed
+  },
+  dropdown: {
+    position: 'relative',
+  },
+
+  myApplicationsLink: {
+    fontSize: '18px', // Adjust the font size as needed
+    padding: '5px 10px', // Adjust the padding as needed
+    display: 'block',
+  },
+
 };
+

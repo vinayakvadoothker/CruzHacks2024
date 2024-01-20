@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { db } from "../../config";
 import "./ApplyPopup.css";
 
-const ApplyPopup = ({ user, listing, closePopup }) => {
+const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
     const [userDetails, setUserDetails] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedTerm, setSelectedTerm] = useState('');
     const [selectedRoommates, setSelectedRoommates] = useState([]);
     const [applicationData, setApplicationData] = useState({
         preferredMoveInDate: '',
-        selectedRoommatesData: [] // Added field for selected roommates' data
-        // add other form fields as needed
+        selectedRoommatesData: [],
+        numberOfPets: 0,
+        anySmokers: false,
+        todaysDate: getTodaysDate(),
+        signature: ''
     });
     const [isDropdownVisible, setDropdownVisible] = useState(false);
 
@@ -22,7 +24,6 @@ const ApplyPopup = ({ user, listing, closePopup }) => {
                 const data = await response.json();
                 setUserDetails(data);
 
-                // Check if the user has already applied for the current listing
                 const existingApplication = data.find(user => user.id === user.id && user.listingTitle === listing.title);
                 if (existingApplication) {
                     setApplicationData({
@@ -40,22 +41,26 @@ const ApplyPopup = ({ user, listing, closePopup }) => {
     }, [user.id, listing.title]);
 
     useEffect(() => {
-        // Filter users based on the search term and condition
         const filteredResults = userDetails.filter(user =>
-        (user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase()))
+            (user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.email.toLowerCase().includes(searchTerm.toLowerCase()))
         );
 
         setSearchResults(filteredResults);
     }, [userDetails, searchTerm]);
 
+    useEffect(() => {
+        if (editApplicationData) {
+            setApplicationData(editApplicationData);
+            setSelectedRoommates(editApplicationData.selectedRoommatesData.map(roommate => roommate.id) || []);
+        }
+    }, [editApplicationData]);
+
     const handleChange = (e) => {
         const newSearchTerm = e.target.value.toLowerCase();
         setSearchTerm(e.target.value);
-        setDropdownVisible(!!newSearchTerm); // Show the dropdown only when there's input
-
-        setSelectedTerm(newSearchTerm);
+        setDropdownVisible(!!newSearchTerm);
     };
 
     const handleCheckboxChange = (userId) => {
@@ -72,19 +77,39 @@ const ApplyPopup = ({ user, listing, closePopup }) => {
         }
     };
 
+    const handlePetsChange = (e) => {
+        setApplicationData({ ...applicationData, numberOfPets: parseInt(e.target.value) || 0 });
+    };
+
+    const handleSmokersChange = (e) => {
+        setApplicationData({ ...applicationData, anySmokers: e.target.checked });
+    };
+
+    const handleSignatureChange = (e) => {
+        setApplicationData({ ...applicationData, signature: e.target.value });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
+        // Validate form fields
+        if (!applicationData.preferredMoveInDate ||
+            applicationData.numberOfPets === 0 ||
+            !applicationData.signature) {
+            alert('Please fill out all required fields before submitting the application.');
+            return;
+        }
+    
         if (!listing || !listing.address) {
             console.error('Listing data is not available or address is undefined');
             return;
         }
-
+    
         const formattedAddress = listing.address.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
-
+    
         // Use the user's ID as the document ID
         const documentId = user.id;
-
+    
         // Extract selected roommates' information
         const selectedRoommatesData = selectedRoommates.map(userId => {
             const roommate = userDetails.find(user => user.id === userId);
@@ -94,12 +119,12 @@ const ApplyPopup = ({ user, listing, closePopup }) => {
                 email: roommate.email
             };
         });
-
+    
         const dataToSave = {
             ...applicationData,
             selectedRoommatesData: selectedRoommatesData
         };
-
+    
         try {
             // Update the document with the new data
             await db.collection('offcampus_listing_applications')
@@ -107,12 +132,22 @@ const ApplyPopup = ({ user, listing, closePopup }) => {
                 .collection('applications')
                 .doc(documentId)
                 .set(dataToSave, { merge: true });
-
+    
             closePopup();
         } catch (error) {
             console.error('Error submitting application:', error);
         }
     };
+    
+
+    function getTodaysDate() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        const yyyy = today.getFullYear();
+
+        return `${yyyy}-${mm}-${dd}`;
+    }
 
     return (
         <div className="apply-popup-overlay">
@@ -129,7 +164,6 @@ const ApplyPopup = ({ user, listing, closePopup }) => {
                         onChange={(e) => setApplicationData({ ...applicationData, preferredMoveInDate: e.target.value })}
                     />
                 </label>
-                <button onClick={handleSubmit}>Submit Application</button>
 
                 {/* Search field with multi-select */}
                 <div className="search-dropdown">
@@ -143,7 +177,7 @@ const ApplyPopup = ({ user, listing, closePopup }) => {
                         />
                     </label>
                     {isDropdownVisible && searchResults.length > 0 && (
-                        <div className="dropdown-content narrower-dropdown">
+                        <div className="dropdown-content narrower-dropdown" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             <h3>Search Results</h3>
                             {searchResults.map(result => (
                                 <div key={result.id}>
@@ -161,22 +195,66 @@ const ApplyPopup = ({ user, listing, closePopup }) => {
                             ))}
                         </div>
                     )}
-
-                    {/* Display selected roommates */}
-                    {selectedRoommates.length > 0 && (
-                        <div className="selected-roommates">
-                            <h3>Selected Roommates</h3>
-                            {selectedRoommates.map(userId => {
-                                const roommate = userDetails.find(user => user.id === userId);
-                                return (
-                                    <div key={userId}>
-                                        <p>{roommate ? `${roommate.firstName} ${roommate.lastName}` : 'N/A'}</p>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
                 </div>
+
+                {/* Additional form fields */}
+                <label>
+                    Number of Pets:
+                    <input
+                        type="number"
+                        name="numberOfPets"
+                        value={applicationData.numberOfPets}
+                        onChange={handlePetsChange}
+                    />
+                </label>
+
+                <label>
+                    Any Smokers?
+                    <input
+                        type="checkbox"
+                        name="anySmokers"
+                        checked={applicationData.anySmokers}
+                        onChange={handleSmokersChange}
+                    />
+                </label>
+
+                <label>
+                    Today's Date:
+                    <input
+                        type="date"
+                        name="todaysDate"
+                        value={applicationData.todaysDate}
+                        onChange={() => { }} // This field is read-only
+                        disabled
+                    />
+                </label>
+
+                <label>
+                    Signature:
+                    <input
+                        type="text"
+                        name="signature"
+                        value={applicationData.signature}
+                        onChange={handleSignatureChange}
+                    />
+                </label>
+
+                {/* Display selected roommates */}
+                {selectedRoommates.length > 0 && (
+                    <div className="selected-roommates">
+                        <h3>Selected Roommates</h3>
+                        {selectedRoommates.map(userId => {
+                            const roommate = userDetails.find(user => user.id === userId);
+                            return (
+                                <div key={userId}>
+                                    <p>{roommate ? `${roommate.firstName} ${roommate.lastName}` : 'N/A'}</p>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+                {/* Submit Application button */}
+                <button onClick={handleSubmit}>Submit Application</button>
             </div>
         </div>
     );
