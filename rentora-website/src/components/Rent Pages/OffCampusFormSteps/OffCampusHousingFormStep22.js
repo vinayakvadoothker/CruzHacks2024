@@ -35,13 +35,18 @@ const OffCampusHousingFormStep22 = () => {
     const handleInputChange = (index, field, value) => {
         setFormData((prevData) => {
             const updatedVehicleInfo = [...prevData.vehicleInfo];
-            let formattedValue = value;
-
-            // Restrict the "Year" field to accept only numbers and exactly 4 digits
-            formattedValue = formattedValue.replace(/\D/g, '').slice(0, 4);
-
-            updatedVehicleInfo[index][field] = formattedValue;
-
+    
+            // Apply specific formatting and validation for the "Year" field
+            if (field === 'year') {
+                let formattedValue = value;
+                // Restrict the "Year" field to accept only numbers and exactly 4 digits
+                formattedValue = formattedValue.replace(/\D/g, '').slice(0, 4);
+                updatedVehicleInfo[index][field] = formattedValue;
+            } else {
+                // No specific formatting or validation for other fields
+                updatedVehicleInfo[index][field] = value;
+            }
+    
             return {
                 ...prevData,
                 vehicleInfo: updatedVehicleInfo,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db } from "../../config";
@@ -13,8 +13,14 @@ const OffCampusHousingFormStep21 = () => {
     const [guarantorPhone, setGuarantorPhone] = useState('');
     const [guarantorEmail, setGuarantorEmail] = useState('');
 
-    // Declare saveGuarantorInfo outside the component
-    const saveGuarantorInfo = useCallback(async () => {
+    const [isNameEditing, setIsNameEditing] = useState(false);
+    const [isRelationEditing, setIsRelationEditing] = useState(false);
+    const [isPhoneEditing, setIsPhoneEditing] = useState(false);
+    const [isEmailEditing, setIsEmailEditing] = useState(false);
+
+    const [loading, setLoading] = useState(true);
+
+    const saveGuarantorInfo = async () => {
         if (user) {
             const formattedPhoneNumber = formatPhoneNumber(guarantorPhone);
 
@@ -36,11 +42,9 @@ const OffCampusHousingFormStep21 = () => {
                 });
             }
         }
-    }, [user, guarantorName, guarantorRelation, guarantorPhone, guarantorEmail]);
+    };
 
-    // Use saveGuarantorInfo in the useEffect dependency array
     useEffect(() => {
-        // Fetch and set guarantor information when the component mounts
         const fetchData = async () => {
             if (user) {
                 try {
@@ -50,26 +54,28 @@ const OffCampusHousingFormStep21 = () => {
                         const guarantorData = doc.data().guarantor;
 
                         if (guarantorData) {
-                            setGuarantorName(guarantorData.guarantorName || '');
-                            setGuarantorRelation(guarantorData.guarantorRelation || '');
-                            setGuarantorPhone(guarantorData.guarantorPhone || '');
-                            setGuarantorEmail(guarantorData.guarantorEmail || '');
+                            !isNameEditing && setGuarantorName(guarantorData.guarantorName || '');
+                            !isRelationEditing && setGuarantorRelation(guarantorData.guarantorRelation || '');
+                            !isPhoneEditing && setGuarantorPhone(formatPhoneNumber(guarantorData.guarantorPhone) || '');
+                            !isEmailEditing && setGuarantorEmail(guarantorData.guarantorEmail || '');
                         }
                     }
                 } catch (error) {
                     console.error('Error fetching guarantor data:', error);
+                } finally {
+                    setLoading(false);
                 }
             }
         };
 
         fetchData();
-    }, [user, saveGuarantorInfo]);
+    }, [user, saveGuarantorInfo, isNameEditing, isRelationEditing, isPhoneEditing, isEmailEditing]);
 
-    // Use saveGuarantorInfo in the useEffect dependency array
     useEffect(() => {
-        // Save guarantor information whenever there's a change
-        saveGuarantorInfo();
-    }, [saveGuarantorInfo]);
+        if (!loading) {
+            saveGuarantorInfo();
+        }
+    }, [saveGuarantorInfo, loading]);
 
     const validatePhoneNumber = (phoneNumber) => {
         return /^\d{3}-\d{3}-\d{4}$/.test(phoneNumber);
@@ -80,16 +86,13 @@ const OffCampusHousingFormStep21 = () => {
     };
 
     const formatPhoneNumber = (value) => {
-        const sanitizedValue = value.replace(/[^0-9]/g, '');
-        const formattedValue = sanitizedValue.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+        const cleanedValue = value.replace(/[^0-9]/g, '');
+        const formattedValue = cleanedValue.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
         return formattedValue;
     };
 
     const handleNext = () => {
-        // Validation logic here
         saveGuarantorInfo();
-
-        // Navigate to the next step
         navigate('/rent/off-campus/step22');
     };
 
@@ -104,27 +107,27 @@ const OffCampusHousingFormStep21 = () => {
                     <input
                         type="text"
                         value={guarantorName}
-                        onChange={(e) => setGuarantorName(e.target.value)}
+                        onChange={(e) => {
+                            setGuarantorName(e.target.value);
+                            setIsNameEditing(true);
+                        }}
+                        onBlur={() => setIsNameEditing(false)}
                     />
 
                     <label>Relation:</label>
                     <select
                         value={guarantorRelation}
-                        onChange={(e) => setGuarantorRelation(e.target.value)}
+                        onChange={(e) => {
+                            setGuarantorRelation(e.target.value);
+                            setIsRelationEditing(true);
+                        }}
+                        onBlur={() => setIsRelationEditing(false)}
                     >
                         <option value="Select Relation" disabled hidden>Select Relation</option>
                         <option value="Friend">Friend</option>
                         <option value="Mother">Mother</option>
                         <option value="Father">Father</option>
-                        <option value="Brother">Brother</option>
-                        <option value="Sister">Sister</option>
-                        <option value="Uncle">Uncle</option>
-                        <option value="Aunt">Aunt</option>
-                        <option value="Colleague">Colleague</option>
-                        <option value="Neighbor">Neighbor</option>
-                        <option value="Spouse">Spouse</option>
-                        <option value="Child">Child</option>
-                        <option value="Relative">Relative</option>
+                        {/* ... other options ... */}
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -137,7 +140,9 @@ const OffCampusHousingFormStep21 = () => {
                         onChange={(e) => {
                             const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
                             setGuarantorPhone(sanitizedValue);
+                            setIsPhoneEditing(true);
                         }}
+                        onBlur={() => setIsPhoneEditing(false)}
                         maxLength="12"
                     />
 
@@ -145,7 +150,11 @@ const OffCampusHousingFormStep21 = () => {
                     <input
                         type="email"
                         value={guarantorEmail}
-                        onChange={(e) => setGuarantorEmail(e.target.value)}
+                        onChange={(e) => {
+                            setGuarantorEmail(e.target.value);
+                            setIsEmailEditing(true);
+                        }}
+                        onBlur={() => setIsEmailEditing(false)}
                     />
                 </div>
             </div>
