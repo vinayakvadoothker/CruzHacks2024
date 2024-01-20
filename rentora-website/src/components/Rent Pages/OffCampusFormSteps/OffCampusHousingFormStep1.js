@@ -1,29 +1,31 @@
-// OffCampusHousingFormStep1.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from "../../config";
 import { useUser } from "@clerk/clerk-react";
-import './styles.css'; // Import the CSS file
+import './styles.css';
 
 const OffCampusHousingFormStep1 = () => {
     const { user } = useUser();
     const navigate = useNavigate();
 
-    // Initialize state with default values
     const [formData, setFormData] = useState({
         schoolName: '',
+        addToRoommateSearch: true,  // Initialize as true
     });
 
     useEffect(() => {
-        // Fetch and set the saved data when the component mounts
         if (user) {
             db.collection('SurveyResponses').doc(user.id).get()
-                .then((doc) => {
+                .then(doc => {
                     if (doc.exists) {
-                        setFormData(doc.data());
+                        const data = doc.data();
+                        setFormData({
+                            schoolName: data.schoolName || '',
+                            addToRoommateSearch: data.addToRoommateSearch !== undefined ? data.addToRoommateSearch : true
+                        });
                     }
                 })
-                .catch((error) => {
+                .catch(error => {
                     console.error('Error fetching data:', error);
                 });
         }
@@ -31,55 +33,37 @@ const OffCampusHousingFormStep1 = () => {
 
     const saveAnswer = (event) => {
         event.preventDefault();
-
+    
         const newFormData = {
+            ...formData,
             schoolName: event.target['school-name'].value,
         };
-
+    
         if (user) {
-            const clerkUserID = user.id;
-            console.log("Clerk User ID:", clerkUserID);
-
-            // Check if document exists
-            db.collection('SurveyResponses').doc(user.id).get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        // Document exists, update it
-                        db.collection('SurveyResponses').doc(user.id).update(newFormData)
-                            .then(() => {
-                                console.log("Document successfully updated!");
-                            })
-                            .catch((error) => {
-                                console.error("Error updating document: ", error);
-                            });
-                    } else {
-                        // Document does not exist, set it
-                        db.collection('SurveyResponses').doc(user.id).set(newFormData)
-                            .then(() => {
-                                console.log("Document successfully set!");
-                            })
-                            .catch((error) => {
-                                console.error("Error setting document: ", error);
-                            });
-                    }
+    
+            // Update or set the document in Firestore
+            db.collection('SurveyResponses').doc(user.id).set(newFormData, { merge: true })
+                .then(() => {
+                    console.log("Document successfully updated or set!");
+                    navigate('/rent/off-campus/step2'); // Navigate only after successful update
                 })
                 .catch((error) => {
-                    console.error('Error checking if document exists:', error);
+                    console.error("Error updating or setting document: ", error);
                 });
         } else {
             console.log("User not authenticated");
         }
+    };
+    
 
-        // Navigate to the next step
-        navigate('/rent/off-campus/step2');
+    const handleCheckboxChange = (e) => {
+        setFormData({ ...formData, addToRoommateSearch: e.target.checked });
     };
 
     return (
         <div className="form-container">
             <h2 className="step-title">Start By Getting Pre-Qualified</h2>
             <p className="step-description">Select Your School</p>
-
-            {/* Dropdown for selecting the school */}
             <form onSubmit={saveAnswer}>
                 <select
                     id="school-name"
@@ -91,10 +75,18 @@ const OffCampusHousingFormStep1 = () => {
                     {/* Add more options as needed */}
                 </select>
 
-                {/* Button to submit the form and navigate to the next step */}
-                <button className="next-button" type="submit">
-                    Start Here
-                </button>
+                <div className="checkbox-container">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={formData.addToRoommateSearch}
+                            onChange={handleCheckboxChange}
+                        />
+                        Add me to the Roommate Search Database
+                    </label>
+                </div>
+
+                <button className="next-button" type="submit">Start Here</button>
             </form>
         </div>
     );

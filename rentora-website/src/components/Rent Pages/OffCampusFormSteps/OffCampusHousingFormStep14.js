@@ -9,7 +9,7 @@ const OffCampusHousingFormStep14 = () => {
     const navigate = useNavigate();
     const [errorMessage] = useState('');
     const [formData, setFormData] = useState({
-        monthlyIncome: [],
+        monthlyIncome2: [],
     });
 
     useEffect(() => {
@@ -20,7 +20,7 @@ const OffCampusHousingFormStep14 = () => {
                 .get()
                 .then((doc) => {
                     if (doc.exists) {
-                        const savedData = doc.data().monthlyIncome || [];
+                        const savedData = doc.data().monthlyIncome2 || [];
     
                         // Map the saved data to set initial form data
                         const initialFormData = savedData.map(entry => {
@@ -48,7 +48,7 @@ const OffCampusHousingFormStep14 = () => {
     
                         setFormData(prevData => ({
                             ...prevData,
-                            monthlyIncome: initialFormData,
+                            monthlyIncome2: initialFormData,
                         }));
                     }
                 })
@@ -80,11 +80,11 @@ const OffCampusHousingFormStep14 = () => {
 
     const handleInputChange = (index, field, value) => {
         setFormData((prevData) => {
-            const updatedMonthlyIncome = [...prevData.monthlyIncome];
-            updatedMonthlyIncome[index][field] = field === 'amount' ? formatCurrency(value) : value;
+            const updatedmonthlyIncome2 = [...prevData.monthlyIncome2];
+            updatedmonthlyIncome2[index][field] = field === 'amount' ? formatCurrency(value) : value;
             return {
                 ...prevData,
-                monthlyIncome: updatedMonthlyIncome,
+                monthlyIncome2: updatedmonthlyIncome2,
             };
         });
     };
@@ -92,7 +92,7 @@ const OffCampusHousingFormStep14 = () => {
     const handleAddEntry = () => {
         setFormData((prevData) => ({
             ...prevData,
-            monthlyIncome: [...prevData.monthlyIncome, {
+            monthlyIncome2: [...prevData.monthlyIncome2, {
                 source: 'Select Source',
                 amount: '',
                 otherSource: '',
@@ -102,18 +102,18 @@ const OffCampusHousingFormStep14 = () => {
 
     const handleDeleteEntry = (index) => {
         setFormData((prevData) => {
-            const updatedMonthlyIncome = [...prevData.monthlyIncome];
-            updatedMonthlyIncome.splice(index, 1);
+            const updatedmonthlyIncome2 = [...prevData.monthlyIncome2];
+            updatedmonthlyIncome2.splice(index, 1);
             return {
                 ...prevData,
-                monthlyIncome: updatedMonthlyIncome,
+                monthlyIncome2: updatedmonthlyIncome2,
             };
         });
     };
 
     const saveAnswer = () => {
         // Validation logic here
-        const isValid = formData.monthlyIncome.every(entry => entry.source !== '' && entry.amount !== '');
+        const isValid = formData.monthlyIncome2.every(entry => entry.source !== '' && entry.amount !== '');
 
         if (!isValid) {
             // Display a popup or show an error message
@@ -121,7 +121,7 @@ const OffCampusHousingFormStep14 = () => {
             return;
         }
 
-        const isOtherSourceEmpty = formData.monthlyIncome.some(entry => entry.source === 'Other' && entry.otherSource === '');
+        const isOtherSourceEmpty = formData.monthlyIncome2.some(entry => entry.source === 'Other' && entry.otherSource === '');
 
         if (isOtherSourceEmpty) {
             // Display an alert for entries with source set to "Other" and empty otherSource
@@ -130,7 +130,7 @@ const OffCampusHousingFormStep14 = () => {
         }
 
         // Check for undefined or empty source values
-        const isSourceUndefined = formData.monthlyIncome.some(entry => entry.source === undefined || entry.source === '' || entry.source === 'Select Source');
+        const isSourceUndefined = formData.monthlyIncome2.some(entry => entry.source === undefined || entry.source === '' || entry.source === 'Select Source');
 
         if (isSourceUndefined) {
             // Display an alert for entries with undefined, empty, or "Select Source" values
@@ -139,7 +139,7 @@ const OffCampusHousingFormStep14 = () => {
         }
 
         // Check for undefined or empty amount values
-        const isAmountUndefined = formData.monthlyIncome.some(entry => entry.amount === undefined || entry.amount === '');
+        const isAmountUndefined = formData.monthlyIncome2.some(entry => entry.amount === undefined || entry.amount === '');
 
         if (isAmountUndefined) {
             // Display an alert for entries with undefined or empty amount values
@@ -148,7 +148,7 @@ const OffCampusHousingFormStep14 = () => {
         }
 
         const formattedData = {
-            monthlyIncome: formData.monthlyIncome.map(entry => ({
+            monthlyIncome2: formData.monthlyIncome2.map(entry => ({
                 source: entry.source === 'Other' ? entry.otherSource : entry.source,
                 amount: formatCurrency(entry.amount),
             })),
@@ -174,7 +174,7 @@ const OffCampusHousingFormStep14 = () => {
         <h2 className="step-title">Monthly Income</h2>
             <p className="step-description">Please Add Your Monthly Income:</p>
 
-            {Array.isArray(formData.monthlyIncome) && formData.monthlyIncome.map((entry, index) => (
+            {Array.isArray(formData.monthlyIncome2) && formData.monthlyIncome2.map((entry, index) => (
                 <div key={index} className="monthly-income-entry">
                     <div className="form-row">
                         <label>Source:</label>
@@ -221,7 +221,7 @@ const OffCampusHousingFormStep14 = () => {
             <button
                 className="next-button"
                 onClick={saveAnswer}
-                disabled={formData.monthlyIncome.some(entry => entry.source === '' || entry.source === 'Select Source')}
+                disabled={formData.monthlyIncome2.some(entry => entry.source === '' || entry.source === 'Select Source')}
             >
                 Next
             </button>
