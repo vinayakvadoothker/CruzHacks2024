@@ -1,5 +1,5 @@
 # Rentora
-A Repo for A Website and App - Rentora.ai
+A Repo for A Website and App - Rentora.net
 
 
 # Rentora Website
