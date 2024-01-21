@@ -39,19 +39,19 @@ app.post('/api/chat', async (req, res) => {
                       },
                       {
                         "role": "system",
-                        "content": "1) Address: 1230 Broadway, Santa Cruz, CA, USA. Bathrooms: 1, Bedrooms: 2, Description: Its the best, Price: $2000, Size: 788 sqft."
+                        "content": "1) Address: 1230 Broadway, Santa Cruz, CA, USA. Bathrooms: 1, Bedrooms: 2, Description: It's the best, Price: $2000, Size: 788 sqft."
                       },
                       {
                         "role": "system",
-                        "content": "2) Address: 435 Meder Street, Santa Cruz, CA, USA. Bathrooms: 4, Bedrooms: 4, Description: Beautiful Home By Campus, Price: $8000, Size: 2100 sqft."
+                        "content": "2) Address: 135 Chrystal Terrace unit a, Santa Cruz, CA, USA. Bathrooms: 1, Bedrooms: 2, Description: Perfect Home for 1 or 2!, Price: $4490, Size: 871 sqft."
                       },
                       {
                         "role": "system",
-                        "content": "3) Address: 444 May Avenue, Santa Cruz, CA, USA. Bathrooms: 2, Bedrooms: 2, Description: This is the perfect fit, Price: $2600, Size: 1400 sqft."
+                        "content": "3) Address: 435 Meder Street, Santa Cruz, CA, USA. Bathrooms: 4, Bedrooms: 5, Description: Stunning Home With Many Rooms, Price: $8000, Size: 2269 sqft."
                       },
                       {
                         "role": "system",
-                        "content": "4) Address: 938 Waffle Street Southeast, Palm Bay, FL, USA. Bathrooms: 1.5, Bedrooms: 4, Description: Smells pretty nice, Price: $4500, Size: 1500 sqft."
+                        "content": "4) Address: 864 Nobel Drive, Santa Cruz, CA, USA. Bathrooms: 1, Bedrooms: 2, Description: Perfect For Students, Price: $3975, Size: 878 sqft."
                       },
                       {
                         "role": "user",
