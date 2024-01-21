@@ -51,8 +51,14 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev:api": "node emailServer.js",
+    "dev:openai": "node rentora-ai-assistant.js",
+    "dev:client": "npm start",
+    "dev:server": "/usr/local/bin/python3 /Users/vinv/Documents/Rentora.ai/rentora-website/app.py",
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\" \"npm run dev:api\" \"npm run dev:openai\""
   },
+  
   "eslintConfig": {
     "extends": [
       "react-app",
