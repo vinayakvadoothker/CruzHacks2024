@@ -72,7 +72,7 @@ const OffCampusHousingFormStep13 = () => {
             const formattedData = {
                 rentalHistory: formData.rentalHistory.map(entry => ({
                     address: entry.address,
-                    monthlyRent: parseFloat(entry.monthlyRent.replace(/[^0-9.]/g, '')), // Convert to numeric value
+                    monthlyRent: entry.monthlyRent ? parseFloat(String(entry.monthlyRent).replace(/[^0-9.]/g, '')) : 0,
                     startDate: entry.startDate,
                     endDate: entry.present ? 'Present' : entry.endDate,
                     present: entry.present,
@@ -146,22 +146,27 @@ const OffCampusHousingFormStep13 = () => {
         });
     };
     const formatCurrency = (value) => {
-        // Convert the value to a number
-        const numericValue = parseFloat(value.replace(/[^0-9.]/g, ''));
-
+        // Convert value to a string in case it's not
+        const strValue = value ? String(value) : '';
+    
+        // Convert the string value to a number, removing non-numeric characters
+        const numericValue = parseFloat(strValue.replace(/[^0-9.]/g, ''));
+    
         // Check if it's a valid number
         if (!isNaN(numericValue)) {
             // Format the number with commas
             return numericValue.toLocaleString('en-US');
         }
-
+    
         // If the value is not a valid number, return it as is
-        return value;
+        return strValue;
     };
-
+    
     const formatPhoneNumber = (value) => {
+        // Ensure the value is a string
+        const strValue = String(value);
         // Remove any non-digit characters
-        const cleaned = ('' + value).replace(/\D/g, '');
+        const cleaned = strValue.replace(/\D/g, '');
     
         // Limit the cleaned value to a maximum of 10 digits
         const maxLength = 10;
@@ -170,7 +175,7 @@ const OffCampusHousingFormStep13 = () => {
         // Use regex to format it as XXX-XXX-XXXX
         const match = truncatedValue.match(/^(\d{3})(\d{3})(\d{4})$/);
         if (match) {
-            return match[1] + '-' + match[2] + '-' + match[3];
+            return `${match[1]}-${match[2]}-${match[3]}`;
         }
     
         return truncatedValue;

@@ -10,7 +10,7 @@ const port = 3010; // You can change the port number as needed
 
 // Replace with your Firebase service account key path and Firebase project URL
 const serviceAccount = require('./rentora1.json'); // Update with the actual path
-const databaseURL = "https://your-firebase-project.firebaseio.com"; // Update with your Firebase project URL
+const databaseURL = "https://rentora-dbfa3.firebaseio.com"; // Update with your Firebase project URL
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
@@ -20,8 +20,8 @@ admin.initializeApp({
 
 });
 
-  const storage = admin.storage();
-  const bucket = storage.bucket();
+const storage = admin.storage();
+const bucket = storage.bucket();
 // Firestore database instance
 const db = admin.firestore();
 
@@ -47,37 +47,43 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             const form = pdfDoc.getForm();
 
             // Fill in the form fields with data from formData
-            form.getTextField("Applicant's First Name").setText(formData.firstName);
-            form.getTextField("Applicant's Last Name").setText(formData.lastName);
-            form.getTextField('Middle initial').setText(formData.middleName);
-            form.getTextField('Date of birth').setText(formData.dateOfBirth);
-            form.getTextField('Email Address').setText(formData.email);
-            form.getTextField('Contact number').setText(formData.phone);
-            form.getTextField('ID number').setText(formData.studentId);
-            form.getTextField('Issuing Govt').setText(formData.issuingGovernment);
-            form.getTextField('Expires').setText(formData.idExpiryDate);
-            form.getTextField('3 If applicable Current or Previous Campus Address').setText(formData.college.address);
-            form.getTextField('FromTo_3').setText(`${formData.startDate} - Present`);
-            form.getTextField('Rent Amount_3').setText(formData.rentalHistory[0].monthlyRent);
-            form.getTextField('HousingResidentialLife Office Phone').setText(formData.college.phoneNumber);
-            form.getTextField('Student ID').setText(formData.studentId);
-            form.getTextField('10 Personal Reference').setText(formData.references[1].name);
-            form.getTextField('Phone Number').setText(formData.references[1].phoneNumber);
-            form.getTextField('11 In case of emergency please contact').setText(formData.references[0].name);
-            form.getTextField('Phone_3').setText(formData.references[0].phoneNumber);
-            form.getTextField('Relation').setText(formData.references[0].relation);
-            form.getTextField('Email').setText(formData.references[0].email);
-            form.getTextField('12 Vehicles MakeYearLicense  1').setText(`${formData.vehicleInfo[0].make} / ${formData.vehicleInfo[0].year} / ${formData.vehicleInfo[0].licenseNumber}`);
+            form.getTextField("Applicant's First Name").setText(formData.firstName.toString());
+            form.getTextField("Applicant's Last Name").setText(formData.lastName.toString());
+            form.getTextField('Middle initial').setText(formData.middleName.toString());
+            form.getTextField('Date of birth').setText(formData.dateOfBirth.toString());
+            form.getTextField('Email Address').setText(formData.email.toString());
+            form.getTextField('Contact number').setText(formData.phone.toString());
+            form.getTextField('ID number').setText(formData.studentId.toString());
+            form.getTextField('Issuing Govt').setText(formData.issuingGovernment.toString());
+            form.getTextField('Expires').setText(formData.idExpiryDate.toString());
+            form.getTextField('3 If applicable Current or Previous Campus Address').setText(formData.college.address.toString());
+            form.getTextField('FromTo_3').setText(`${formData.startDate.toString()} - Present`);
+            form.getTextField('Rent Amount_3').setText(formData.rentalHistory[0].monthlyRent.toString());
+            form.getTextField('HousingResidentialLife Office Phone').setText(formData.college.phoneNumber.toString());
+            form.getTextField('Student ID').setText(formData.studentId.toString());
+            form.getTextField('10 Personal Reference').setText(formData.references[1].name.toString());
+            form.getTextField('Phone Number').setText(formData.references[1].phoneNumber.toString());
+            form.getTextField('11 In case of emergency please contact').setText(formData.references[0].name.toString());
+            form.getTextField('Phone_3').setText(formData.references[0].phoneNumber.toString());
+            form.getTextField('Relation').setText(formData.references[0].relation.toString());
+            form.getTextField('Email').setText(formData.references[0].email.toString());
+            form.getTextField('Photo ID Type').setText(formData.photoIdType.toString());
+            // Example of setting the vehicle information
+            if (formData.vehicleInfo && formData.vehicleInfo.length > 0) {
+                const firstVehicle = formData.vehicleInfo[0];
+                const vehicleDetails = `${firstVehicle.make} / ${firstVehicle.year} / ${firstVehicle.licenseNumber}`;
+                form.getTextField('12 Vehicles MakeYearLicense  1').setText(vehicleDetails);
+            }
 
 
             formData.monthlyIncome2.forEach((income) => {
                 if (income.source === "Employment") {
-                    form.getTextField('8 Current Gross Income').setText(income.amount);
-                    form.getTextField('Per').setText(`Month`);
-                    form.getTextField('Savings').setText(`N/A`);
+                    form.getTextField('8 Current Gross Income').setText(income.amount.toString());
+                    form.getTextField('Per').setText(`Month`.toString());
+                    form.getTextField('Savings').setText(`N/A`.toString());
                 } else if (income.source === "Scholarship") {
-                    form.getTextField('9 Financial Aid Award').setText(income.amount);
-                    form.getTextField('Per_2').setText(`Month`);
+                    form.getTextField('9 Financial Aid Award').setText(income.amount.toString());
+                    form.getTextField('Per_2').setText(`Month`.toString());
 
                 }
             });
@@ -95,22 +101,22 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             // Fill in the form fields for present occupation
             if (sortedEmploymentHistory.length > 0 && sortedEmploymentHistory[0].present) {
                 const presentEmployment = sortedEmploymentHistory[0];
-                form.getTextField('6 Present Occupation').setText(presentEmployment.title);
-                form.getTextField('Employer').setText(presentEmployment.employer);
-                form.getTextField('FromTo_4').setText(`${presentEmployment.startDate} - ${presentEmployment.endDate}`);
-                form.getTextField('Name of Supervisor').setText(presentEmployment.nameOfSupervisor);
-                form.getTextField('Phone').setText(presentEmployment.supervisorPhoneNumber);
-                form.getTextField('City_3').setText(presentEmployment.cityOfEmployment);
+                form.getTextField('6 Present Occupation').setText(presentEmployment.title.toString());
+                form.getTextField('Employer').setText(presentEmployment.employer.toString());
+                form.getTextField('FromTo_4').setText(`${presentEmployment.startDate.toString()} - ${presentEmployment.endDate.toString()}`);
+                form.getTextField('Name of Supervisor').setText(presentEmployment.nameOfSupervisor.toString());
+                form.getTextField('Phone').setText(presentEmployment.supervisorPhoneNumber.toString());
+                form.getTextField('City_3').setText(presentEmployment.cityOfEmployment.toString());
             }
 
             // Fill in the form fields for the first previous occupation after present
             if (previousEmployment) {
-                form.getTextField('7 Previous Occupation').setText(previousEmployment.title);
-                form.getTextField('Employer_2').setText(previousEmployment.employer);
-                form.getTextField('FromTo_5').setText(`${previousEmployment.startDate} - ${previousEmployment.endDate}`);
-                form.getTextField('Name of Supervisor_2').setText(previousEmployment.nameOfSupervisor);
-                form.getTextField('Phone_2').setText(previousEmployment.supervisorPhoneNumber);
-                form.getTextField('City_4').setText(previousEmployment.cityOfEmployment);
+                form.getTextField('7 Previous Occupation').setText(previousEmployment.title.toString());
+                form.getTextField('Employer_2').setText(previousEmployment.employer.toString());
+                form.getTextField('FromTo_5').setText(`${previousEmployment.startDate.toString()} - ${previousEmployment.endDate.toString()}`);
+                form.getTextField('Name of Supervisor_2').setText(previousEmployment.nameOfSupervisor.toString());
+                form.getTextField('Phone_2').setText(previousEmployment.supervisorPhoneNumber.toString());
+                form.getTextField('City_4').setText(previousEmployment.cityOfEmployment.toString());
             }
 
             // Rental History
@@ -150,41 +156,41 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             });
 
             // Fill in the form fields for present address
-            form.getTextField('1 Present Address').setText(presentAddresses[0].address);
-            form.getTextField('City').setText(presentAddresses[0].city);
-            form.getTextField('State').setText(presentAddresses[0].state);
+            form.getTextField('1 Present Address').setText(presentAddresses[0].address.toString());
+            form.getTextField('City').setText(presentAddresses[0].city.toString().toString());
+            form.getTextField('State').setText(presentAddresses[0].state.toString().toString());
             form.getTextField('Zip Code').setText(presentAddresses[0].zipCode);
-            form.getTextField('OwnerManager').setText(presentAddresses[0].ownerManager);
+            form.getTextField('OwnerManager').setText(presentAddresses[0].ownerManager.toString());
             form.getTextField('Phone Required').setText(presentAddresses[0].ownerPhoneNumber);
-            form.getTextField('Rent Amount').setText(presentAddresses[0].rentAmount);
-            form.getTextField('FromTo').setText(presentAddresses[0].fromTo);
-            form.getTextField('Reason for Leaving').setText(presentAddresses[0].reasonForLeaving);
+            form.getTextField('Rent Amount').setText(presentAddresses[0].rentAmount.toString());
+            form.getTextField('FromTo').setText(presentAddresses[0].fromTo.toString());
+            form.getTextField('Reason for Leaving').setText(presentAddresses[0].reasonForLeaving.toString());
 
             // Fill in the form fields for previous address
-            form.getTextField('2 Previous Address').setText(previousAddresses[0].address);
-            form.getTextField('City_2').setText(previousAddresses[0].city);
-            form.getTextField('State_2').setText(previousAddresses[0].state);
+            form.getTextField('2 Previous Address').setText(previousAddresses[0].address.toString());
+            form.getTextField('City_2').setText(previousAddresses[0].city.toString());
+            form.getTextField('State_2').setText(previousAddresses[0].state.toString());
             form.getTextField('Zip Code_2').setText(previousAddresses[0].zipCode);
-            form.getTextField('OwnerManager_2').setText(previousAddresses[0].ownerManager);
+            form.getTextField('OwnerManager_2').setText(previousAddresses[0].ownerManager.toString());
             form.getTextField('Phone Required_2').setText(previousAddresses[0].ownerPhoneNumber);
-            form.getTextField('Rent Amount_2').setText(previousAddresses[0].rentAmount);
-            form.getTextField('FromTo_2').setText(previousAddresses[0].fromTo);
-            form.getTextField('Reason for Leaving_2').setText(previousAddresses[0].reasonForLeaving);
+            form.getTextField('Rent Amount_2').setText(previousAddresses[0].rentAmount.toString());
+            form.getTextField('FromTo_2').setText(previousAddresses[0].fromTo.toString());
+            form.getTextField('Reason for Leaving_2').setText(previousAddresses[0].reasonForLeaving.toString());
 
             // ... Continue for other fields as necessary ...
 
             // // Employment History - Assuming your form has fields for each employment history entry
             // formData.employmentHistory.forEach((employment, index) => {
-            //   form.getTextField(`Employer ${index + 1}`).setText(employment.employer);
-            //   form.getTextField(`Job Title ${index + 1}`).setText(employment.title);
-            //   form.getTextField(`City of Employment ${index + 1}`).setText(employment.cityOfEmployment);
+            //   form.getTextField(`Employer ${index + 1}`).setText(employment.employer.toString());
+            //   form.getTextField(`Job Title ${index + 1}`).setText(employment.title.toString());
+            //   form.getTextField(`City of Employment ${index + 1}`).setText(employment.cityOfEmployment.toString());
             //   // ... additional fields for each employment history entry ...
             // });
 
             // // Rental History - Similar approach as employment history
             // formData.rentalHistory.forEach((rental, index) => {
-            //   form.getTextField(`Address ${index + 1}`).setText(rental.address);
-            //   form.getTextField(`Monthly Rent ${index + 1}`).setText(rental.monthlyRent);
+            //   form.getTextField(`Address ${index + 1}`).setText(rental.address.toString());
+            //   form.getTextField(`Monthly Rent ${index + 1}`).setText(rental.monthlyRent.toString());
             //   // ... additional fields for each rental history entry ...
             // });
 
