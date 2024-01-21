@@ -188,10 +188,9 @@ const OffCampusHousingFormStep21 = () => {
                         onBlur={() => setIsRelationEditing(false)}
                     >
                         <option value="Select Relation" disabled hidden>Select Relation</option>
-                        <option value="Friend">Friend</option>
-                        <option value="Mother">Mother</option>
-                        <option value="Father">Father</option>
-                        {/* ... other options ... */}
+                        <option value="Parent">Parent</option>
+                        <option value="Legal Guardian">Legal Guardian</option>
+                        <option value="Family Member">Family Member</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>

@@ -184,18 +184,9 @@ const GuarantorForm = () => {
                                 onChange={(e) => handleGuarantorInputChange('guarantorRelation', e.target.value)}
                             >
                                 <option value="Select Relation" disabled hidden>Select Relation</option>
-                                <option value="Friend">Friend</option>
-                                <option value="Mother">Mother</option>
-                                <option value="Father">Father</option>
-                                <option value="Brother">Brother</option>
-                                <option value="Sister">Sister</option>
-                                <option value="Uncle">Uncle</option>
-                                <option value="Aunt">Aunt</option>
-                                <option value="Colleague">Colleague</option>
-                                <option value="Neighbor">Neighbor</option>
-                                <option value="Spouse">Spouse</option>
-                                <option value="Child">Child</option>
-                                <option value="Relative">Relative</option>
+                                <option value="Parent">Parent</option>
+                                <option value="Legal Guardian">Legal Guardian</option>
+                                <option value="Family Member">Family Member</option>
                                 <option value="Other">Other</option>
                             </select>
                         </div>

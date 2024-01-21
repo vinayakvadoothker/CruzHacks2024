@@ -8,7 +8,7 @@ import './styles.css'; // Import the CSS file
 const OffCampusHousingFormStep13 = () => {
     const { user } = useUser();
     const navigate = useNavigate();
-    const [errorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         rentalHistory: [],
     });
@@ -21,10 +21,9 @@ const OffCampusHousingFormStep13 = () => {
                 .get()
                 .then((doc) => {
                     if (doc.exists) {
-                        setFormData(prevData => ({
-                            ...prevData,
+                        setFormData({
                             rentalHistory: doc.data().rentalHistory || [],
-                        }));
+                        });
                     }
                 })
                 .catch((error) => {
@@ -37,24 +36,7 @@ const OffCampusHousingFormStep13 = () => {
         return isPresent || (start && end && new Date(start) <= new Date(end));
     };
 
-    const formatCurrency = (value) => {
-        // Convert the value to a number
-        const numericValue = parseFloat(value.replace(/[^0-9.]/g, ''));
 
-        // Check if it's a valid number
-        if (!isNaN(numericValue)) {
-            // Format the number as currency (USD) with commas
-            return numericValue.toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-            });
-        }
-
-        // If the value is not a valid number, return it as is
-        return value;
-    };
 
     const handleAddressChange = (address, index) => {
         setFormData((prevData) => {
@@ -75,8 +57,8 @@ const OffCampusHousingFormStep13 = () => {
         );
 
         if (isInvalid) {
-            // Display a popup or show an error message
-            alert("Please fill out all fields in the form before proceeding.");
+            // Display an error message
+            setErrorMessage("Please fill out all fields in the form before proceeding.");
             return;
         }
 
@@ -90,7 +72,7 @@ const OffCampusHousingFormStep13 = () => {
             const formattedData = {
                 rentalHistory: formData.rentalHistory.map(entry => ({
                     address: entry.address,
-                    monthlyRent: entry.monthlyRent,
+                    monthlyRent: parseFloat(entry.monthlyRent.replace(/[^0-9.]/g, '')), // Convert to numeric value
                     startDate: entry.startDate,
                     endDate: entry.present ? 'Present' : entry.endDate,
                     present: entry.present,
@@ -99,6 +81,7 @@ const OffCampusHousingFormStep13 = () => {
                     reasonForLeaving: entry.reasonForLeaving,
                 })),
             };
+
 
             console.log("Formatted Data:", formattedData);
 
@@ -114,8 +97,8 @@ const OffCampusHousingFormStep13 = () => {
                     console.error("Error updating document: ", error);
                 });
         } else {
-            // Display a popup or show an error message
-            alert("Please ensure that Start Date and End Date are provided and that End Date is after Start Date for all entries, or set it to 'Present' if you are still involved");
+            // Display an error message
+            setErrorMessage("Please ensure that Start Date and End Date are provided and that End Date is after Start Date for all entries, or set it to 'Present' if you are still involved");
         }
     };
 
@@ -147,38 +130,52 @@ const OffCampusHousingFormStep13 = () => {
     };
 
     const handleInputChange = (index, field, value) => {
-        // Regular expression to match only digits
-        const regex = /^[0-9\b]+$/;
+        setFormData((prevData) => {
+            const updatedRentalHistory = [...prevData.rentalHistory];
+            updatedRentalHistory[index][field] = value;
 
-        // Check if the entered value is a valid digit or backspace
-        if (value === '' || regex.test(value)) {
-            setFormData((prevData) => {
-                const updatedRentalHistory = [...prevData.rentalHistory];
-                updatedRentalHistory[index][field] = formatPhoneNumber(value);
+            // If 'Present' checkbox is checked, clear the endDate value
+            if (field === 'present' && value) {
+                updatedRentalHistory[index].endDate = 'Present';
+            }
 
-                // If 'Present' checkbox is checked, clear the endDate value
-                if (field === 'present' && value) {
-                    updatedRentalHistory[index].endDate = 'Present';
-                }
-
-                return {
-                    ...prevData,
-                    rentalHistory: updatedRentalHistory,
-                };
-            });
-        }
+            return {
+                ...prevData,
+                rentalHistory: updatedRentalHistory,
+            };
+        });
     };
+    const formatCurrency = (value) => {
+        // Convert the value to a number
+        const numericValue = parseFloat(value.replace(/[^0-9.]/g, ''));
 
-    // Function to format the phone number as XXX-XXX-XXXX
-    const formatPhoneNumber = (value) => {
-        const cleaned = ('' + value).replace(/\D/g, '');
-        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-        if (match) {
-            return match[1] + '-' + match[2] + '-' + match[3];
+        // Check if it's a valid number
+        if (!isNaN(numericValue)) {
+            // Format the number with commas
+            return numericValue.toLocaleString('en-US');
         }
+
+        // If the value is not a valid number, return it as is
         return value;
     };
 
+    const formatPhoneNumber = (value) => {
+        // Remove any non-digit characters
+        const cleaned = ('' + value).replace(/\D/g, '');
+    
+        // Limit the cleaned value to a maximum of 10 digits
+        const maxLength = 10;
+        const truncatedValue = cleaned.slice(0, maxLength);
+    
+        // Use regex to format it as XXX-XXX-XXXX
+        const match = truncatedValue.match(/^(\d{3})(\d{3})(\d{4})$/);
+        if (match) {
+            return match[1] + '-' + match[2] + '-' + match[3];
+        }
+    
+        return truncatedValue;
+    };
+    
 
 
     return (
@@ -227,6 +224,7 @@ const OffCampusHousingFormStep13 = () => {
                             value={formatCurrency(entry.monthlyRent)}
                             onChange={(e) => handleInputChange(index, 'monthlyRent', e.target.value)}
                         />
+
                         <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
                     </div>
                     <div className="form-row">
@@ -276,7 +274,7 @@ const OffCampusHousingFormStep13 = () => {
                             <label>Owner's Phone Number:</label>
                             <input
                                 type="tel"
-                                value={entry.ownerPhoneNumber}
+                                value={formatPhoneNumber(entry.ownerPhoneNumber)}
                                 onChange={(e) => handleInputChange(index, 'ownerPhoneNumber', e.target.value)}
                                 placeholder="XXX-XXX-XXXX"
                                 pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
