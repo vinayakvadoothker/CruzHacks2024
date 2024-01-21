@@ -17,7 +17,7 @@ Before you start, make sure you have Node.js and npm installed on your machine.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/vinayakvadoothker/Rentora
+git clone https://github.com/vinayakvadoothker/CruzHacks2024
 ```
 
 2. Navigate to the project directory:
@@ -36,10 +36,12 @@ npm install
 
 1. Create a .env file in the root of your project.
 
-2. Add your Clerk Publishable Key to the .env file:
+2. Add your Clerk Publishable key, Google Maps API key, and OpenAI API key to the .env file:
 
 ```env
 REACT_APP_CLERK_PUBLISHABLE_KEY=your-publishable-key
+REACT_APP_GOOGLE_MAPS_API_KEY=your-publishable-key
+OPENAI_API_KEY=your-publishable-key
 ```
 
 ### Usage
@@ -49,7 +51,7 @@ REACT_APP_CLERK_PUBLISHABLE_KEY=your-publishable-key
 To run the project in development mode:
 
 ```bash
-npm start
+npm run dev
 ```
 
 This will start the development server at [http://localhost:3000](http://localhost:3000).
