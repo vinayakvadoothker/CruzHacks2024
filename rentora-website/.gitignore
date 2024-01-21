@@ -20,3 +20,5 @@ yarn-error.log*
 rentora-website/node_modules/.cache/
 rentora-dbfa3-firebase-adminsdk-4rpix-4bb6bae0fe.json
 rentora-website/src/components/rentora-ai-assistant.js
+rentora1.json
+../.DS_Store

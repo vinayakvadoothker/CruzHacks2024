@@ -1,10 +1,37 @@
 // ProfilePage.js
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useClerk } from '@clerk/clerk-react';
+import { db } from "../config";
+import { Document, Page, pdfjs } from 'react-pdf';
+
+
 
 const ProfilePage = () => {
   const { user } = useClerk();
+  const [pdfUrl, setPdfUrl] = useState('');
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const fetchPdfUrl = async () => {
+      if (user) {
+        try {
+          // Fetch the PDF URL from the database based on the user's ID
+          const doc = await db.collection('FilledPDFs').doc(user.id).get();
+
+          if (doc.exists) {
+            const userData = doc.data();
+            if (userData.pdfUrl) {
+              setPdfUrl(userData.pdfUrl);
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching PDF URL:', error);
+        }
+      }
+    };
+
+    fetchPdfUrl();
+  }, [user]);
 
   // Dummy data for demonstration, replace with actual user data
   const userProfile = {
@@ -75,9 +102,31 @@ const ProfilePage = () => {
 
       {/* Preferences for Housing Types */}
       <div style={styles.preferencesContainer}>
-        <h3 style={styles.preferencesHeading}>Housing Preferences</h3>
-        <p style={styles.preferencesText}>{userProfile.housingPreferences}</p>
+        <h3 style={styles.preferencesHeading}>Rental Application Packet</h3>
       </div>
+      {/* Display the PDF URL */}
+      {pdfUrl && (
+  <div style={{ marginTop: '20px' }}>
+    <h3 style={{ marginBottom: '10px' }}>Your Rental Application:</h3>
+    <button
+      style={{
+        backgroundColor: '#3498db',
+        color: '#fff',
+        border: 'none',
+        padding: '10px 20px',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        fontWeight: 'bold',
+        fontFamily: 'monospace',
+        fontSize: '16px',
+      }}
+      onClick={() => window.open(pdfUrl, '_blank')}
+    >
+      View PDF
+    </button>
+  </div>
+)}
+
     </div>
   );
 };

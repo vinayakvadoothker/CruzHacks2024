@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db } from "../../config";
+import axios from 'axios'; // Import Axios for making HTTP requests
 import './styles.css';
 
 const OffCampusHousingFormStep23 = () => {
@@ -36,7 +37,20 @@ const OffCampusHousingFormStep23 = () => {
                 offcampusformdone: true,
             });
 
-            // Navigate to the next step or any other route
+            // Log the data being sent to the server
+            console.log('Data sent to server for PDF generation:', { userId: user.id });
+
+            // Make an HTTP request to generate the PDF
+            const response = await axios.get(`http://localhost:3010/generate-pdf/${user.id}`, {
+                responseType: 'blob', // Specify that the response should be treated as a Blob
+            });
+
+            // Log the response from the server
+            console.log('Response from server:', response);
+
+            // Handle the response or further actions as needed
+
+            // Clean up and navigate to the next step or any other route
             navigate('/onboarding');
         } catch (error) {
             console.error('Error saving form data:', error);

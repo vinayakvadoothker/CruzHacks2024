@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/react": "^18.2.39",
     "axios": "^1.6.5",
+    "body-parser": "^1.20.2",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "cors": "^2.8.5",
@@ -20,7 +21,9 @@
     "crypto-js": "^3.1.9-1",
     "crypto-lite": "^21.8.0",
     "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "firebase": "^10.7.0",
+    "firebase-admin": "^12.0.0",
     "google-auth-library": "^9.4.1",
     "googleapis": "^129.0.0",
     "https-browserify": "^1.0.0",
@@ -32,12 +35,14 @@
     "os-browserify": "^0.3.0",
     "path": "^0.12.7",
     "path-browserify": "^1.0.1",
+    "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^3.4.120",
     "react": "^18.2.0",
     "react-chat-widget": "^3.1.4",
     "react-datepicker": "^4.25.0",
     "react-dom": "^18.2.0",
     "react-frame-component": "^5.2.6",
+    "react-pdf": "^7.7.0",
     "react-places-autocomplete": "^7.3.0",
     "react-router-dom": "^6.20.0",
     "react-scripts": "^5.0.1",
@@ -54,11 +59,11 @@
     "eject": "react-scripts eject",
     "dev:api": "node emailServer.js",
     "dev:openai": "node rentora-ai-assistant.js",
+    "dev:pdf-individual": "node individualpdf.js",
     "dev:client": "npm start",
     "dev:server": "/usr/local/bin/python3 /Users/vinv/Documents/Rentora.ai/rentora-website/app.py",
-    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\" \"npm run dev:api\" \"npm run dev:openai\""
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\" \"npm run dev:api\" \"npm run dev:openai\" \"npm run dev:pdf-individual\""
   },
-  
   "eslintConfig": {
     "extends": [
       "react-app",
