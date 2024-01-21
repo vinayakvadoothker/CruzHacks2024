@@ -141,10 +141,55 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 .collection('offcampusapplications')
                 .doc(formattedAddress)
                 .set(dataToSave, { merge: true });
+            
+            selectedRoommatesData.forEach(roommate => {
+                sendEmailToRoommate({
+                    to: roommate.email,
+                    subject: 'Application Submission',
+                    html: `
+                        <html lang="en">
+                        <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Rentora Roommate Invitation</title>
+                        </head>
+                        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f8f8;">
+                        <div style="max-width: 600px; margin: 0 auto; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; background-color: #fff;">
+                            <p style="color: #333; margin-bottom: 15px; font-size: 1.2em; font-weight: bold;">Dear ${roommate.name},</p>
+                            <p style="color: #333; margin-bottom: 15px;">${user.firstName} ${user.lastName} has chosen you as a roommate and submitted an application for ${listing.address}.</p>
+                            <p style="color: #333; margin-bottom: 15px;">Thank you for choosing to rent with Rentora!</p>
+                            <p style="color: #333; margin-bottom: 15px; margin-top: 20px; font-style: italic;">Best regards,<br />Rentora</p>
+                        </div>
+                        </body>
+                        </html>
+                    `,
+                });
+            });
 
             closePopup();
         } catch (error) {
             console.error('Error submitting application:', error);
+        }
+    };
+
+    const sendEmailToRoommate = async (emailData) => {
+        try {
+            // Make a request to your server-side endpoint to send the email
+            const response = await fetch('http://localhost:3001/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(emailData),
+            });
+    
+            if (response.ok) {
+                console.log('Email sent successfully');
+            } else {
+                console.error('Failed to send email');
+            }
+        } catch (error) {
+            console.error('Error sending email:', error);
         }
     };
 

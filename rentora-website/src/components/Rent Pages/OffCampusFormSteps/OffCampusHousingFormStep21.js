@@ -98,33 +98,31 @@ const OffCampusHousingFormStep21 = () => {
             console.log('User:', user);
             if (user.id) {
                 console.log('User ID:', user.id);
+    
+    
+                // Send email with updated HTML
                 sendEmailToGuarantor({
                     to: guarantorEmail,
                     subject: 'Guarantor Request',
                     html: `<!DOCTYPE html>
-                    <html lang="en">
-                    <head>
-                      <meta charset="UTF-8">
-                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                      <title>Email Template</title>
-                    </head>
-                    <body>
-                      <div style="font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0;">
-                        <div style="max-width: 600px; margin: 0 auto; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; background-color: #ffffff;">
-                          <h1 style="color: #333;">Dear ${guarantorName},</h1>
-                          <p style="color: #666;">${user.firstName} requests you to fill out the Guarantor Form for their Rental Application.</p>
-                          <p style="color: #666;">Click the button below to access the form:</p>
-                          <a href="localhost:3000/guarantor/${user.id}" style="display: inline-block; padding: 10px 20px; text-decoration: none; background-color: #3498db; color: #fff; border-radius: 5px;">Fill Out Form</a>
-                          <p>Thank You,<br> Rentora</p>
-                        </div>
-                      </div>
-                    </body>
-                    </html>`,
-                    
-                    /*html: `
-                    <p>Hey, ${guarantorName}, ${user.firstName} requests you to fill out the Guarantor Form for their Rental Application. Please fill it out: <a href="localhost:3000/guarantor/${user.id}">localhost:3000/guarantor/${user.id}</a></p>
-                    <p>Thank You,<br> Rentora</p>
-                  `,*/
+                        <html lang="en">
+                        <head>
+                          <meta charset="UTF-8">
+                          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                          <title>Email Template</title>
+                        </head>
+                        <body>
+                          <div style="font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0;">
+                            <div style="max-width: 600px; margin: 0 auto; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; background-color: #ffffff;">
+                              <h1 style="color: #333;">Dear ${guarantorName},</h1>
+                              <p style="color: #666;">${user.firstName} requests you to fill out the Guarantor Form for their Rental Application.</p>
+                              <p style="color: #666;">To access the form, click on the link below or copy and paste it into your browser:</p>
+<a href="localhost:3000/guarantor/${user.id}" style="color: #3498db; text-decoration: underline;">localhost:3000/guarantor/${user.id}</a>
+                              <p>Thank You,<br> Rentora</p>
+                            </div>
+                          </div>
+                        </body>
+                        </html>`,
                 });
             } else {
                 console.error('Error: user.id is undefined');
@@ -136,6 +134,7 @@ const OffCampusHousingFormStep21 = () => {
         // Navigate to the next step
         navigate('/rent/off-campus/step22');
     };
+    
     
     
 
