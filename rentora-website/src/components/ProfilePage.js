@@ -2,7 +2,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useClerk } from '@clerk/clerk-react';
 import { db } from "../config";
-import { Document, Page, pdfjs } from 'react-pdf';
 
 
 

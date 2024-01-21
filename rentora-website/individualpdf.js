@@ -40,7 +40,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             const formData = docSnapshot.data();
 
             // Replace with the actual path to your PDF form
-            const pdfPath = './rentorapdf_unlocked.pdf';
+            const pdfPath = './rentora_watermark.pdf';
 
             const pdfBuffer = await fs.promises.readFile(pdfPath);
             const pdfDoc = await PDFDocument.load(pdfBuffer);
