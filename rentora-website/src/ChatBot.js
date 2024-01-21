@@ -1,54 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { Widget, addResponseMessage, toggleWidget } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
 
 const ChatBot = () => {
-  const [isOpen, setIsOpen] = useState(false); // State to control widget visibility
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Initialize the chatbot conversation with a welcome message
-    addResponseMessage('Welcome to our ChatBot!');
+    // Initial welcome message
+    addResponseMessage("Welcome to Rentora AI Assistant!");
   }, []);
 
-  const handleNewUserMessage = async (newMessage) => {
+  const handleNewUserMessage = async (message) => {
+    setIsLoading(true);
     try {
-      const apiUrl = 'https://api.openai.com/v1/engines/text-davinci-003/completions'; 
-      const requestData = {
-        prompt: newMessage,
-        max_tokens: 150,
-        temperature: 0.7
-      };
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
-      };
-  
-      const response = await axios.post(apiUrl, requestData, { headers });
-      const aiResponse = response.data.choices[0].text.trim();
-  
-      addResponseMessage(aiResponse);
+      const response = await fetchAssistantDetails(message);
+      addResponseMessage(response.content); // Assuming 'content' holds the response message
     } catch (error) {
-      console.error('Error fetching response from OpenAI:', error);
-      addResponseMessage('Sorry, there was an error processing your request.');
+      console.error('Error:', error);
+      addResponseMessage("Sorry, I can't process your message right now.");
+    } finally {
+      setIsLoading(false);
     }
   };
-  
+
+  // Function to fetch assistant details from the server
+  const fetchAssistantDetails = async (userMessage) => {
+    const response = await fetch('/api/assistant', {
+      method: 'GET', // or 'POST' if your server expects a POST request
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message: userMessage })
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return await response.json();
+  };
+
   return (
     <div>
-    <div>
-      <button className="chatbot-toggle-button" onClick={() => setIsOpen(!isOpen)}>
+      <button onClick={() => toggleWidget()}>Toggle Chat</button>
       <Widget
-        handleNewUserMessage={handleNewUserMessage}
-        title="ChatBot"
-        subtitle="Chat with our assistant"
-        showCloseButton={true}
-        fullScreenMode={false}
-        isOpen={isOpen}
-      />      </button>
-      
-    </div>
-
+      handleNewUserMessage={handleNewUserMessage}
+      title="Rentora AI Assistant"
+      subtitle={isLoading ? "One moment please..." : "Ask me anything!"}
+    />
     </div>
   );
 };

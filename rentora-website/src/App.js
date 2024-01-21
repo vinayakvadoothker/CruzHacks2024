@@ -57,7 +57,7 @@ const Header = () => {
           <Link to="/buy">Buy</Link>
         </li>
         <li>
-          <Link to="/rent">Rent</Link>
+          <Link to="/rent/off-campus">Rent</Link>
         </li>
         <li>
           <Link to="/venture">Venture</Link>
