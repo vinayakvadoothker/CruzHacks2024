@@ -20,7 +20,7 @@ app.options('/send-email', cors());
 
 // Define your /send-email endpoint
 app.post('/send-email', async (req, res) => {
-    const { to, subject, text } = req.body;
+    const { to, subject, html } = req.body;
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -34,7 +34,7 @@ app.post('/send-email', async (req, res) => {
         from: 'rentora.ai@gmail.com',
         to,
         subject,
-        text,
+        html,
     };
 
     try {
