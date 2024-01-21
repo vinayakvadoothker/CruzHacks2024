@@ -1,4 +1,4 @@
-# rentora.ai
+# Rentora
 A Repo for A Website and App - Rentora.ai
 
 
