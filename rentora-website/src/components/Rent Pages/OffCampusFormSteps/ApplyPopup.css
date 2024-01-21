@@ -107,3 +107,22 @@ input:focus + .search-dropdown .dropdown-content {
     right: 0; /* Align with the right edge of the input */
     transform: translateX(calc(80%)); /* Move it to the right */
 }
+
+/* Add this CSS in ApplyPopup.css */
+.close-search-result {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    color: #000000;
+}
+
+.close-search-result:hover {
+    color: rgb(150, 150, 150); /* Change color on hover */
+}

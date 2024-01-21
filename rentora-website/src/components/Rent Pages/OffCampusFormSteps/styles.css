@@ -339,3 +339,40 @@ label {
   max-height: 80%;
   overflow-y: auto;
 }
+
+.expanded-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Increased z-index value to place it in front of everything */
+}
+
+.expanded-image img {
+  max-width: 90%; /* Limit image width for larger screens */
+  max-height: 90vh; /* Limit image height for larger screens */
+  object-fit: contain; /* Fit image within the container */
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 24px;
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  z-index: 10001; /* Ensure the button is on top of the image */
+}
+
+/* Style for the close button */
+.close-button:hover {
+  color: rgb(151, 151, 151); /* Change button color on hover */
+}

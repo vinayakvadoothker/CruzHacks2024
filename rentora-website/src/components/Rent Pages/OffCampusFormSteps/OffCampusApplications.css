@@ -1,48 +1,61 @@
 /* OffCampusApplications.css */
 
 .scrollable-container {
-    max-height: 850px; /* Set the maximum height as needed */
-    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 850px;
+    overflow-y: auto;
 }
 
 .offcampus-applications-container {
     max-width: 800px;
     margin: auto;
     padding: 20px;
-    text-align: center; /* Center the text horizontally */
-    overflow-y: auto; /* Enable vertical scrolling */
+    text-align: center;
+    overflow-y: auto;
 }
 
 .application-container {
     border: 1px solid #ccc;
     padding: 15px;
     margin-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.9); /* Slightly opaque white background */
-    border-radius: 10px; /* Adjust the value for the desired level of rounding */
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    /* Adjust the value for the desired level of rounding */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
+.off-campus-title {
+    color: #ffffff; /* Text color (blue) */
+    font-size: 30px; /* Font size */
+    font-weight: bold; /* Bold text */
+    font-family: monospace;
+    text-align: center; /* Center-align text */
+    padding: 10px; /* Add some padding */
+    border-radius: 5px; /* Rounded corners */
+  }
+
 .application-container h2 {
-    color: #222; /* Adjust the color as needed */
-    margin-bottom: 15px; /* Add margin to separate from other elements */
-    text-align: center; /* Center the text horizontally */
+    color: #000000;
+    /* Adjust the color as needed */
+    margin-bottom: 15px;
+    /* Add margin to separate from other elements */
+    text-align: center;
+    /* Center the text horizontally */
 }
 
 .application-container h3 {
-    color: #333;
+    color: rgb(0, 0, 0)
 }
 
 .application-container h4 {
     margin-top: 15px;
-    color: #555;
+    color: #000000;
 }
 
 .application-container p {
     margin: 10px 0;
-    color: #777;
+    color: #3f3f3f;
 }
 
-/* Add more styling based on your design preferences */

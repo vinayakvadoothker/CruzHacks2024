@@ -1,53 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import { Widget, addResponseMessage, toggleWidget } from 'react-chat-widget';
+import { Widget, addResponseMessage } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
+import './ChatBot.css';
 
 const ChatBot = () => {
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Initial welcome message
-    addResponseMessage("Welcome to Rentora AI Assistant!");
-  }, []);
+    // Initialize the chat widget and set up event handlers
+    addResponseMessage('Thank You For Using Rentora - A Rental Assistant');
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
 
-  const handleNewUserMessage = async (message) => {
-    setIsLoading(true);
-    try {
-      const response = await fetchAssistantDetails(message);
-      addResponseMessage(response.content); // Assuming 'content' holds the response message
-    } catch (error) {
-      console.error('Error:', error);
-      addResponseMessage("Sorry, I can't process your message right now.");
-    } finally {
-      setIsLoading(false);
+  const handleNewUserMessage = (newMessage) => {
+    if (newMessage.trim() === '') {
+      // Handle empty user message, if needed
+      return;
     }
-  };
 
-  // Function to fetch assistant details from the server
-  const fetchAssistantDetails = async (userMessage) => {
-    const response = await fetch('/api/assistant', {
-      method: 'GET', // or 'POST' if your server expects a POST request
+    console.log('User Message:', newMessage); // Log user's message
+
+    // Show loading indicator
+    setIsLoading(true);
+
+    // Send the user's message to your server and receive a response
+    fetch('http://localhost:3001/api/chat', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message: userMessage })
-    });
+      body: JSON.stringify({ message: newMessage }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+          console.log('Chatbot Response:', data.choices[0].message.content); // Log chatbot's response
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
+          // Display the chatbot's response
+          addResponseMessage(data.choices[0].message.content);
+        } else {
+          // Handle response format error, if needed
+        }
 
-    return await response.json();
+        // Hide loading indicator
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error sending message:', error);
+        // Hide loading indicator in case of an error
+        setIsLoading(false);
+      });
+  };
+
+  const toggleChat = () => {
+    setIsWidgetOpen(!isWidgetOpen);
   };
 
   return (
     <div>
-      <button onClick={() => toggleWidget()}>Toggle Chat</button>
-      <Widget
-      handleNewUserMessage={handleNewUserMessage}
-      title="Rentora AI Assistant"
-      subtitle={isLoading ? "One moment please..." : "Ask me anything!"}
-    />
+      <button onClick={toggleChat} className="open-chat-button">
+        <Widget
+          handleNewUserMessage={handleNewUserMessage}
+          title="Rentora"
+          subtitle="Ask Your Rental Questions"
+          showChat={isWidgetOpen}
+        />
+        {isLoading && <div>Loading...</div>}
+      </button>
     </div>
   );
 };

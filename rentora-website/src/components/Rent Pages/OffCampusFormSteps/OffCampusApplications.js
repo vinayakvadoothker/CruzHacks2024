@@ -57,7 +57,7 @@ const OffCampusApplications = () => {
     return (
         <div className="scrollable-container">
             <div className="offcampus-applications-container">
-                <h2>Your Off-Campus Applications</h2>
+                <div className='off-campus-title'>Your Off-Campus Applications</div>
                 {applications.map(application => (
                     <div key={application.id} className="application-container">
                         <h3>{formatAddress(application.address)}</h3>

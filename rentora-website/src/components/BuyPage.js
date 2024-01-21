@@ -9,7 +9,7 @@ const BuyPage = () => {
     alignItems: 'center',
     minHeight: '100vh',
     backgroundColor: 'rgba(255, 255, 255, 0)',
-    overflow: 'hidden',
+    overflow: 'auto',
   };
 
   const contentStyle = {
@@ -22,7 +22,7 @@ const BuyPage = () => {
     fontSize: '16px',
     fontWeight: 'normal',
     lineHeight: '1.5',
-    overflow: 'hidden',
+    overflow: 'auto', 
   };
 
   const listItemContainerStyle = {

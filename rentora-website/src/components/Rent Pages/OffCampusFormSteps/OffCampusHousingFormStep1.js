@@ -62,7 +62,7 @@ const OffCampusHousingFormStep1 = () => {
 
     return (
         <div className="form-container">
-            <h2 className="step-title">Start By Getting Pre-Qualified</h2>
+            <h2 className="step-title">Start By Getting Pre-Qualified (~20 Minutes)</h2>
             <p className="step-description">Select Your School</p>
             <form onSubmit={saveAnswer}>
                 <select

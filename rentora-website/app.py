@@ -2,8 +2,10 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from flask import Flask, jsonify
+from flask_cors import CORS  # Import CORS from flask_cors
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for your app
 
 # Initialize Firebase
 cred = credentials.Certificate('./rentora-dbfa3-firebase-adminsdk-4rpix-4bb6bae0fe.json')
@@ -36,4 +38,4 @@ def fetch_user_details_route():
 
 if __name__ == "__main__":
     # Run Flask app on port 3000
-    app.run(debug=True, port=3000)
+    app.run(debug=True, port=3002)

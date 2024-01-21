@@ -20,11 +20,21 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await fetch('http://localhost:3000/fetch_user_details');
+                const response = await fetch('http://localhost:3002/fetch_user_details');
                 const data = await response.json();
-                setUserDetails(data);
 
-                const existingApplication = data.find(user => user.id === user.id && user.listingTitle === listing.title);
+                const filteredData = data.filter(user => {
+                    const addToRoommateSearch = user.addToRoommateSearch;
+                    if (addToRoommateSearch === false || addToRoommateSearch === undefined || addToRoommateSearch === 'Not specified') {
+                        return false;
+                    }
+                    return true;
+                });
+
+
+                setUserDetails(filteredData);
+
+                const existingApplication = filteredData.find(user => user.id === user.id && user.listingTitle === listing.title);
                 if (existingApplication) {
                     setApplicationData({
                         ...existingApplication,
@@ -146,6 +156,9 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
 
         return `${yyyy}-${mm}-${dd}`;
     }
+    const closeSearchResult = (userId) => {
+        setSearchResults((prevResults) => prevResults.filter((result) => result.id !== userId));
+    };
 
     return (
         <div className="apply-popup-overlay">
@@ -174,11 +187,13 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                             onChange={handleChange}
                         />
                     </label>
+                    
                     {isDropdownVisible && searchResults.length > 0 && (
                         <div className="dropdown-content narrower-dropdown" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             <h3>Search Results</h3>
                             {searchResults.map(result => (
-                                <div key={result.id}>
+                                <div key={result.id} className="search-result">
+                                    <button className="close-search-result" onClick={() => closeSearchResult(result.id)}>X</button>
                                     <input
                                         type="checkbox"
                                         id={result.id}

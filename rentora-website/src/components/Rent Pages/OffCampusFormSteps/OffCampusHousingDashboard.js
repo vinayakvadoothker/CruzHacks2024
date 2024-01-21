@@ -12,6 +12,7 @@ const OffCampusHousingDashboard = () => {
     const [listingsData, setListingsData] = useState([]);
     const [activeListing, setActiveListing] = useState(null);
     const [currentImageIndexes, setCurrentImageIndexes] = useState([]);
+    const [expandedImages, setExpandedImages] = useState([]); // Add state for expanded images
 
     useEffect(() => {
         const fetchFormStatusAndListings = async () => {
@@ -31,6 +32,7 @@ const OffCampusHousingDashboard = () => {
                 }));
                 setListingsData(listings);
                 setCurrentImageIndexes(listings.map(() => 0));
+                setExpandedImages(listings.map(() => false)); // Initialize expanded state for each listing
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -79,6 +81,20 @@ const OffCampusHousingDashboard = () => {
         setActiveListing(null);
     };
 
+    // Function to toggle image expansion for a specific listing
+    const toggleImageExpansion = (index) => {
+        const newExpandedImages = [...expandedImages];
+        newExpandedImages[index] = !newExpandedImages[index];
+        setExpandedImages(newExpandedImages);
+    };
+
+    // Function to close expanded image for a specific listing
+    const closeExpandedImage = (index) => {
+        const newExpandedImages = [...expandedImages];
+        newExpandedImages[index] = false;
+        setExpandedImages(newExpandedImages);
+    };
+
     return (
         <>
             <div className="form-container" style={{ width: '70%', margin: '75px auto', maxHeight: '63vh', overflowY: 'auto', padding: '20px' }}>
@@ -97,7 +113,13 @@ const OffCampusHousingDashboard = () => {
                             <div key={listing.id} className="listing-item">
                                 <h3>{listing.title}</h3>
                                 <div className="thumbnail-container">
-                                    <img src={listing.images[currentImageIndex]} alt={listing.title} />
+                                    <img
+                                        src={listing.images[currentImageIndex]}
+                                        alt={listing.title}
+                                        className={expandedImages[index] ? 'expanded' : ''}
+                                        onClick={() => toggleImageExpansion(index)} // Pass index to toggleImageExpansion
+                                    />
+                                    <button className="expand-button" onClick={() => toggleImageExpansion(index)}>Expand</button>
                                     <div className="slideshow-arrows">
                                         <button onClick={() => handlePrevImage(index)}>&#8249;</button>
                                         <button onClick={() => handleNextImage(index)}>&#8250;</button>
@@ -126,6 +148,16 @@ const OffCampusHousingDashboard = () => {
                     closePopup={closeApplyPopup}
                 />
             )}
+
+            {expandedImages.map((expanded, index) => expanded && (
+                <div className="expanded-image" key={`expanded-${index}`}>
+                    <button className="close-button" onClick={() => closeExpandedImage(index)}>X</button>
+                    <img
+                        src={listingsData[index].images[currentImageIndexes[index]]}
+                        alt={listingsData[index].title}
+                    />
+                </div>
+            ))}
         </>
     );
 };

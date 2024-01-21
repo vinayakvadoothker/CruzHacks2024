@@ -1,0 +1,18 @@
+/* ChatBot.css */
+
+.open-chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    background-color: #007bff00;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000; /* Ensure the button is on top of other elements */
+  }
+  
+  .open-chat-button:hover {
+    background-color: #0057b300;
+  }
+  

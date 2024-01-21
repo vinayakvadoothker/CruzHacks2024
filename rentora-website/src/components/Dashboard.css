@@ -1,0 +1,33 @@
+/* Dashboard.css */
+
+.dashboard-container {
+    background-color: #f2f2f200;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin: 20px;
+  }
+  
+  .dashboard-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .analytics-section {
+    background-color: #ffffffb9;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style your AnalyticsComponent within this section */
+  .analytics-section h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  
+  /* Add more styles as needed */
+  
