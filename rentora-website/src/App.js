@@ -109,20 +109,19 @@ const RentHeader = () => {
   };
 
   return (
-    <nav>
+    <nav style={{ backgroundColor: 'transparent', padding: '0' }}>
       <ul style={styles.list}>
         <li style={styles.offCampusContainer} onMouseEnter={showOffCampusDropdown} onMouseLeave={hideOffCampusDropdown}>
           <div className="dropdown">
             <Link to="/rent/off-campus">Off-Campus</Link>
             <div id="offCampusDropdown" style={styles.dropdownContent}>
-            <span style={styles.icon}>🏠</span>
-            <Link to="/rent/off-campus" style={styles.myApplicationsLink}>
-              Listings
+              <span style={styles.icon}>🏠</span>
+              <Link to="/rent/off-campus" style={styles.myApplicationsLink}>
+                Listings
               </Link>
               <div>
-                   
               </div>
-            <span style={styles.icon}>📄</span>
+              <span style={styles.icon}>📄</span>
               <Link to="/rent/off-campus/myapplications" style={styles.myApplicationsLink}>
                 My Applications
               </Link>
@@ -134,6 +133,7 @@ const RentHeader = () => {
         </li>
       </ul>
     </nav>
+
   );
 };
 
