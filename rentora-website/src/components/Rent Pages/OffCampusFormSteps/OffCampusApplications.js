@@ -55,7 +55,7 @@ const OffCampusApplications = () => {
     }
 
     return (
-        <div className="scrollable-container">
+        <div className="scrollable-container" style={{ width: '50%', margin: '60px auto', maxHeight: '60vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
             <div className="offcampus-applications-container">
                 <div className='off-campus-title'>Your Off-Campus Applications</div>
                 {applications.map(application => (

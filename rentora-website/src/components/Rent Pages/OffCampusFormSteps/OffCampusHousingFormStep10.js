@@ -70,8 +70,8 @@ const OffCampusHousingFormStep10 = () => {
   };
 
   return (
-    <div className="form-container" style={{ marginTop: '70px', width: '500px' }}>
-      <h2 className="step-title">Time At {formData.schoolName}</h2>
+    <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+    <h2 className="step-title">Time At {formData.schoolName}</h2>
       <p className="step-description">Start Date - Proposed End Date</p>
 
       {/* Date picker for start date */}

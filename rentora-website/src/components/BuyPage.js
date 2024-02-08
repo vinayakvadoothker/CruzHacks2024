@@ -3,12 +3,10 @@ import React from 'react';
 const BuyPage = () => {
   const pageContainerStyle = {
     width: '100%',
-    height: '100%',
+    height: '80%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: 'rgba(255, 255, 255, 0)',
     overflow: 'auto',
   };
 

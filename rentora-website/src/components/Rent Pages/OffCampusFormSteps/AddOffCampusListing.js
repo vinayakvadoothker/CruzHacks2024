@@ -20,6 +20,10 @@ const AddOffCampusListing = () => {
         squareFootage: '',
         monthlyPrice: '',
         location: '',
+        agentEmail: '', // New field for listing agent email
+        agentPhone: '', // New field for listing agent phone number
+        schoolName: '', // New field for campus listing school name
+        housingType: '', // New field for type of housing
         images: [] // Array to hold image URLs
     });
     const [address, setAddress] = useState('');
@@ -100,7 +104,7 @@ const AddOffCampusListing = () => {
         navigate(-1); // This will take the user back to the previous page
     };
     return (
-        <div className="form-container" style={{ width: '50%', margin: '55px auto', maxHeight: '80vh', overflowY: 'auto', padding: '20px' }}>
+        <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
             <h2 className="step-title">Add Off-Campus Housing Listing</h2>
             <button onClick={handleBack} className="back-button">Back</button>
             <form onSubmit={handleSubmit}>
@@ -151,7 +155,20 @@ const AddOffCampusListing = () => {
                         <option value="Close">Close</option>
                         <option value="Moderate">Moderate</option>
                         <option value="Far">Far</option>
-                    </select>                </div>
+                    </select>     
+                    <select className="input-field" name="housingType" onChange={handleChange} value={formData.housingType} required>
+                        <option value="">Select Type of Housing</option>
+                        <option value="Apartment">Apartment</option>
+                        <option value="Townhome">Townhome</option>
+                        <option value="Single-Family Home">Single-Family Home</option>
+                        <option value="Large Home">Large Home</option>
+                    </select>           
+                    </div>                
+                    <div style={{ marginTop: '20px' }}> {/* Add this div for spacing */}
+                    <input className="input-field" type="email" name="agentEmail" placeholder="Listing Agent Email" onChange={handleChange} value={formData.agentEmail} required />
+                    <input className="input-field" type="tel" name="agentPhone" placeholder="Listing Agent Phone Number" onChange={handleChange} value={formData.agentPhone} required />
+                    <input className="input-field" type="text" name="schoolName" placeholder="Campus Listing School Name" onChange={handleChange} value={formData.schoolName} required />
+                </div>
                 <button className="submit-button" type="submit">Add Listing</button>
             </form>
         </div>

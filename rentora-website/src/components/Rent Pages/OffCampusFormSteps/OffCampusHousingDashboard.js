@@ -110,7 +110,7 @@ const OffCampusHousingDashboard = () => {
                     {listingsData.map((listing, index) => {
                         const currentImageIndex = currentImageIndexes[index];
                         return (
-                            <div key={listing.id} className="listing-item">
+                            <div key={listing.id} className="listing-item" >
                                 <h3>{listing.title}</h3>
                                 <div className="thumbnail-container">
                                     <img
