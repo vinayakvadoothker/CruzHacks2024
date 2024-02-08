@@ -5,6 +5,7 @@ import { db } from "../config";
 
 
 
+
 const ProfilePage = () => {
   const { user } = useClerk();
   const [pdfUrl, setPdfUrl] = useState('');
@@ -14,13 +15,17 @@ const ProfilePage = () => {
     const fetchPdfUrl = async () => {
       if (user) {
         try {
-          // Fetch the PDF URL from the database based on the user's ID
-          const doc = await db.collection('FilledPDFs').doc(user.id).get();
+          const userId = user.id;
+          // Fetch the PDF data from the database based on the user's ID
+          const doc = await db.collection('FilledPDFs').doc(userId).get();
 
           if (doc.exists) {
             const userData = doc.data();
-            if (userData.pdfUrl) {
-              setPdfUrl(userData.pdfUrl);
+            // Use the constructed field name to fetch the watermarked PDF URL
+            const watermarkedPdfFieldName = `${userId}_filled.pdf`;
+
+            if (userData[watermarkedPdfFieldName]) {
+              setPdfUrl(userData[watermarkedPdfFieldName]);
             }
           }
         } catch (error) {
@@ -31,6 +36,7 @@ const ProfilePage = () => {
 
     fetchPdfUrl();
   }, [user]);
+
 
   // Dummy data for demonstration, replace with actual user data
   const userProfile = {

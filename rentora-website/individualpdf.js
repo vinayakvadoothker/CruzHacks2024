@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
-const { PDFDocument } = require('pdf-lib');
+const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
 
 const app = express();
 const port = 3010; // You can change the port number as needed
@@ -32,17 +32,18 @@ app.use(bodyParser.json());
 app.get('/generate-pdf/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
-
         // Retrieve user data from Firestore based on the user ID
         const docSnapshot = await db.collection('SurveyResponses').doc(userId).get();
 
-        if (docSnapshot.exists) {
-            const formData = docSnapshot.data();
+        if (!docSnapshot.exists) {
+            console.log(`No data found for user ID: ${userId}`);
+            return res.status(404).json({ error: 'User data not found' });
+        }
 
-            // Replace with the actual path to your PDF form
-            const pdfPath = './rentora_watermark.pdf';
-
-            const pdfBuffer = await fs.promises.readFile(pdfPath);
+        const formData = docSnapshot.data();
+        // Function to handle the creation and uploading of a PDF
+        async function createAndUploadPDF(templatePath, outputFilename) {
+            const pdfBuffer = await fs.promises.readFile(templatePath);
             const pdfDoc = await PDFDocument.load(pdfBuffer);
             const form = pdfDoc.getForm();
 
@@ -196,50 +197,297 @@ app.get('/generate-pdf/:userId', async (req, res) => {
 
             // Flatten the form to prevent editing after filling
 
-            form.flatten();
+            // Add this inside your endpoint where you generate the PDF
+            const page = pdfDoc.addPage();
+            // Set font sizes and line height
+            const fontSize = 11;
+            const titleFontSize = 16;
+            const lineHeight = fontSize * 1.4; // Line height for better readability
 
-            // Generate a response with the filled PDF as bytes
-            const modifiedPdfBytes = await pdfDoc.save();
+            // Define the starting Y position from the top of the page
+            let yPos = page.getHeight() - 50;
 
-            // Create a unique filename for the PDF
-            const filename = `${userId}_filled.pdf`;
+            // Embed a standard font (Times-like font)
+            const font = await pdfDoc.embedFont(StandardFonts.TimesRoman);
 
-            // Upload the PDF to Firebase Storage
-            const file = bucket.file(filename);
+            // Calculate text width for center alignment
+            const textWidth = font.widthOfTextAtSize('Tenant Resume', titleFontSize);
+            const pageWidth = page.getWidth();
+            const textXPosition = (pageWidth / 2) - (textWidth / 2); // Center the text
+
+            // Draw the resume title centered
+            page.drawText('Tenant Resume', {
+                x: textXPosition,
+                y: yPos,
+                size: titleFontSize,
+                font: font,
+                color: rgb(0, 0, 0),
+            });
+
+            yPos -= lineHeight * 2; // Adjust space after title
+
+            // Calculate text width for the full name for center alignment
+            const fullName = `${formData.firstName} ${formData.lastName}`;
+            const fullNameWidth = font.widthOfTextAtSize(fullName, titleFontSize);
+            const fullNameXPosition = (pageWidth / 2) - (fullNameWidth / 2); // Center the text
+
+            // Draw the full name centered
+            page.drawText(fullName, {
+                x: fullNameXPosition,
+                y: yPos,
+                size: titleFontSize,
+                font: font,
+            });
+
+            yPos -= lineHeight / 2; // Adjust the space as needed
+
+            // Drawing a line under the name
+            const margin = 72; // One inch margin in points
+            
+            page.drawLine({
+                start: { x: margin, y: yPos },
+                end: { x: pageWidth - margin, y: yPos },
+                color: rgb(0, 0, 0),
+                thickness: 1.5,
+            });
+
+            // Adjust the yPos for the next text block
+            yPos -= lineHeight;
+
+            // Contact Information
+            const contactInfo = `${formData.rentalHistory[0].address}, Phone: ${formData.phone}, Email: ${formData.email}`;
+            const contactInfoWidth = font.widthOfTextAtSize(contactInfo, fontSize);
+            const contactInfoXPosition = (page.getWidth() / 2) - (contactInfoWidth / 2);
+
+            page.drawText(contactInfo, {
+                x: contactInfoXPosition,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            yPos -= lineHeight * 2;
+
+            // Objective
+            page.drawText('Objective:', {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            yPos -= lineHeight;
+            page.drawText(`To acquire an appropriate place for studying close to ${formData.schoolName}`, {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            yPos -= lineHeight * 2;
+
+            // Education
+            page.drawText('Education:', {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            yPos -= lineHeight;
+            const educationInfo = `${formData.schoolName}, Full-Time, Graduation Date: ${formData.endDate}, ${formData.major} Major`;
+            page.drawText(educationInfo, {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            yPos -= lineHeight * 2;
+
+            // Activities
+            page.drawText('Activities:', {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            formData.activitiesHistory.forEach(activity => {
+                yPos -= lineHeight;
+                const activityInfo = `${activity.title}, ${activity.organization}, ${activity.startDate} - ${activity.endDate}`;
+                page.drawText(activityInfo, {
+                    x: 50,
+                    y: yPos,
+                    size: fontSize,
+                    font: font,
+                });
+            });
+            yPos -= lineHeight * 2; // Space before the next section
+
+            // Employment
+            page.drawText('Employment:', {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            formData.employmentHistory.forEach(employment => {
+                yPos -= lineHeight;
+                const employmentInfo = `${employment.title}, ${employment.employer}, ${employment.startDate} - ${employment.endDate}`;
+                page.drawText(employmentInfo, {
+                    x: 50,
+                    y: yPos,
+                    size: fontSize,
+                    font: font,
+                });
+            });
+            yPos -= lineHeight * 2;
+
+            // Previous Rental Experience
+            const rentalInfo = `${formData.rentalHistory[0].address}, ${formData.college.name}, ${formData.startDate} - ${formData.endDate}`;
+            page.drawText('Previous Rental Experience:', {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            yPos -= lineHeight;
+            page.drawText(rentalInfo, {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            yPos -= lineHeight * 2;
+
+            // Monthly Income
+            page.drawText('Monthly Income:', {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            formData.monthlyIncome2.forEach(income => {
+                yPos -= lineHeight;
+                page.drawText(`${income.source}: ${income.amount}`, {
+                    x: 50,
+                    y: yPos,
+                    size: fontSize,
+                    font: font,
+                });
+            });
+            yPos -= lineHeight * 2;
+
+            // Bank Accounts
+            page.drawText('Bank Accounts:', {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            formData.bankAccounts.checkingAccounts.forEach(account => {
+                yPos -= lineHeight;
+                page.drawText(`Checking Account: ${account.name}`, {
+                    x: 50,
+                    y: yPos,
+                    size: fontSize,
+                    font: font,
+                });
+            });
+            formData.bankAccounts.savingsAccounts.forEach(account => {
+                yPos -= lineHeight;
+                page.drawText(`Savings Account: ${account.name}`, {
+                    x: 50,
+                    y: yPos,
+                    size: fontSize,
+                    font: font,
+                });
+            });
+            yPos -= lineHeight * 2;
+
+            // Credit Cards
+            page.drawText('Credit Cards:', {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            formData.creditCards.forEach(card => {
+                yPos -= lineHeight;
+                page.drawText(`Credit Card: ${card.name}`, {
+                    x: 50,
+                    y: yPos,
+                    size: fontSize,
+                    font: font,
+                });
+            });
+            yPos -= lineHeight * 2;
+
+            // References
+            page.drawText('References:', {
+                x: 50,
+                y: yPos,
+                size: fontSize,
+                font: font,
+            });
+            formData.references.forEach(reference => {
+                yPos -= lineHeight;
+                const referenceInfo = `Name: ${reference.name}, Phone: ${reference.phoneNumber}, Email: ${reference.email}, Relation: ${reference.relation}`;
+                page.drawText(referenceInfo, {
+                    x: 50,
+                    y: yPos,
+                    size: fontSize,
+                    font: font,
+                });
+            });
+            yPos -= lineHeight * 2;
+
+
+
+
+            // Continue adding other details from formData
+            // You can adjust the y value to move down for each new line
+            // Example: Address, Phone, Email, Education, Employment History, etc.
+
+            // Flatten the form to prevent editing after filling
+            const pdfBytes = await pdfDoc.save();
+        
+            // Construct the folder path with user's first and last name
+            const userFolderPath = `Rental Applications/${formData.firstName} ${formData.lastName}`;
+            const filePath = `${userFolderPath}/${outputFilename}`;
+        
+            const file = bucket.file(filePath);
             const stream = file.createWriteStream({
                 metadata: {
                     contentType: 'application/pdf',
                 },
             });
-
-            stream.on('error', (error) => {
-                console.error('Error uploading PDF to Firebase Storage:', error);
-                res.status(500).json({ error: 'Error uploading PDF to Storage' });
-            });
-
-            stream.on('finish', async () => {
-                // Get the URL of the uploaded PDF
-                const [url] = await file.getSignedUrl({
-                    action: 'read',
-                    expires: '03-01-2500', // Set an expiration date as needed
+        
+            return new Promise((resolve, reject) => {
+                stream.on('error', (error) => {
+                    console.error(`Error uploading ${filePath} to Firebase Storage:`, error);
+                    reject(error);
                 });
-
-                // Save the PDF URL in Firestore for the user
-                await db.collection('FilledPDFs').doc(userId).set({
-                    pdfUrl: url,
+        
+                stream.on('finish', async () => {
+                    const [url] = await file.getSignedUrl({
+                        action: 'read',
+                        expires: '03-01-2500',
+                    });
+        
+                    // Save the URL with a reference in Firestore, you might want to adjust the structure
+                    await db.collection('FilledPDFs').doc(userId).set({ [outputFilename]: url }, { merge: true });
+        
+                    resolve(url);
                 });
-
-                res.status(200).json({ success: 'PDF generated and saved' });
+        
+                stream.end(pdfBytes);
             });
-
-            stream.end(modifiedPdfBytes);
-        } else {
-            console.log(`No data found for user ID: ${userId}`);
-            res.status(404).json({ error: 'User data not found' });
         }
+        
+        // Then, use this function as before to generate and upload both versions of the PDF
+        await createAndUploadPDF('./rentora_watermark.pdf', `${userId}_filled.pdf`);
+        await createAndUploadPDF('./rentora_nowatermark.pdf', `${userId}_official_filled.pdf`);
+        
+        res.status(200).json({ success: 'PDFs generated and saved' });
     } catch (error) {
-        console.error('Error generating and saving PDF:', error);
-        res.status(500).json({ error: 'Error generating and saving PDF' });
+        console.error('Error generating and saving PDFs:', error);
+        res.status(500).json({ error: 'Error generating and saving PDFs' });
     }
 });
 

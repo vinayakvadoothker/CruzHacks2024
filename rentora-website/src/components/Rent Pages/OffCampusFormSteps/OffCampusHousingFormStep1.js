@@ -21,7 +21,8 @@ const OffCampusHousingFormStep1 = () => {
                         const data = doc.data();
                         setFormData({
                             schoolName: data.schoolName || '',
-                            addToRoommateSearch: data.addToRoommateSearch !== undefined ? data.addToRoommateSearch : true
+                            addToRoommateSearch: data.addToRoommateSearch !== undefined ? data.addToRoommateSearch : true,
+                            dateSaved: data.dateSaved || ''
                         });
                     }
                 })
@@ -31,16 +32,26 @@ const OffCampusHousingFormStep1 = () => {
         }
     }, [user]);
 
+
+    const formatDate = (date) => {
+        const d = new Date(date),
+              month = '' + (d.getMonth() + 1),
+              day = '' + d.getDate(),
+              year = d.getFullYear();
+
+        return [month.padStart(2, '0'), day.padStart(2, '0'), year].join('/');
+    };
+
     const saveAnswer = (event) => {
         event.preventDefault();
     
         const newFormData = {
             ...formData,
             schoolName: event.target['school-name'].value,
+            dateSaved: formatDate(new Date()), // Format the date as MM/DD/YYYY
         };
     
         if (user) {
-    
             // Update or set the document in Firestore
             db.collection('SurveyResponses').doc(user.id).set(newFormData, { merge: true })
                 .then(() => {
@@ -54,7 +65,6 @@ const OffCampusHousingFormStep1 = () => {
             console.log("User not authenticated");
         }
     };
-    
 
     const handleCheckboxChange = (e) => {
         setFormData({ ...formData, addToRoommateSearch: e.target.checked });
