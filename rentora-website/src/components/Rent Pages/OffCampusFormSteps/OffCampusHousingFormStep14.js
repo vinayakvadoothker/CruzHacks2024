@@ -44,7 +44,6 @@ const OffCampusHousingFormStep14 = () => {
                             };
                         });
     
-                        console.log('Initial Form Data:', initialFormData);
     
                         setFormData(prevData => ({
                             ...prevData,
@@ -154,7 +153,6 @@ const OffCampusHousingFormStep14 = () => {
             })),
         };
 
-        console.log("Formatted Data:", formattedData);
 
         db.collection('SurveyResponses')
             .doc(user.id)

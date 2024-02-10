@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db } from "../../config";
@@ -20,10 +20,10 @@ const OffCampusHousingFormStep21 = () => {
 
     const [loading, setLoading] = useState(true);
 
-    const saveGuarantorInfo = async () => {
+    const saveGuarantorInfo = useCallback(async () => {
         if (user) {
             const formattedPhoneNumber = formatPhoneNumber(guarantorPhone);
-
+    
             if (
                 guarantorName.trim() !== '' &&
                 guarantorRelation !== 'Select Relation' &&
@@ -36,13 +36,15 @@ const OffCampusHousingFormStep21 = () => {
                     guarantorPhone: formattedPhoneNumber,
                     guarantorEmail,
                 };
-
-                await db.collection('SurveyResponses').doc(user.id).update({
+    
+                await db.collection('SurveyResponses').doc(user.id).set({
                     guarantor: guarantorData,
-                });
+                    guarantorFormFilled: false, // Reset the flag to false
+                }, { merge: true }); // Use merge to update only the provided fields
             }
         }
-    };
+    }, [user, guarantorName, guarantorRelation, guarantorPhone, guarantorEmail]);
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -73,9 +75,9 @@ const OffCampusHousingFormStep21 = () => {
 
     useEffect(() => {
         if (!loading) {
-            saveGuarantorInfo();
+          saveGuarantorInfo();
         }
-    }, [saveGuarantorInfo, loading]);
+      }, [loading, saveGuarantorInfo]);
 
     const validatePhoneNumber = (phoneNumber) => {
         return /^\d{3}-\d{3}-\d{4}$/.test(phoneNumber);
@@ -92,13 +94,14 @@ const OffCampusHousingFormStep21 = () => {
     };
 
     const handleNext = () => {
-        saveGuarantorInfo();
+        // Only save guarantor info if any field has been edited
+        if (isNameEditing || isRelationEditing || isPhoneEditing || isEmailEditing) {
+            saveGuarantorInfo();
+        }
     
         if (user) {
-            console.log('User:', user);
             if (user.id) {
                 console.log('User ID:', user.id);
-    
     
                 // Send email with updated HTML
                 sendEmailToGuarantor({
@@ -117,7 +120,7 @@ const OffCampusHousingFormStep21 = () => {
                               <h1 style="color: #333;">Dear ${guarantorName},</h1>
                               <p style="color: #666;">${user.firstName} requests you to fill out the Guarantor Form for their Rental Application.</p>
                               <p style="color: #666;">To access the form, click on the link below or copy and paste it into your browser:</p>
-<a href="localhost:3000/guarantor/${user.id}" style="color: #3498db; text-decoration: underline;">localhost:3000/guarantor/${user.id}</a>
+    <a href="localhost:3000/guarantor/${user.id}" style="color: #3498db; text-decoration: underline;">localhost:3000/guarantor/${user.id}</a>
                               <p>Thank You,<br> Rentora</p>
                             </div>
                           </div>
@@ -133,7 +136,7 @@ const OffCampusHousingFormStep21 = () => {
     
         // Navigate to the next step
         navigate('/rent/off-campus/step22');
-    };
+    };    
     
     
     

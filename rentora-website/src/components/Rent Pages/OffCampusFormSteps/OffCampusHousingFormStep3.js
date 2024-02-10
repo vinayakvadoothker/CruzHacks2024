@@ -47,8 +47,6 @@ const OffCampusHousingFormStep3 = () => {
     };
 
     if (user) {
-      const clerkUserID = user.id;
-      console.log("Clerk User ID:", clerkUserID);
 
       // Update the document with the new data for Step 3
       db.collection('SurveyResponses').doc(user.id).update(newFormData)

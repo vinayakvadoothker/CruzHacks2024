@@ -113,7 +113,6 @@ const OffCampusHousingFormStep12 = () => {
         });
     };
 
-    console.log("Form Data:", formData);
 
     return (
         <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>

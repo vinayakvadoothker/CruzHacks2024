@@ -47,11 +47,11 @@ const OffCampusHousingFormStep20 = () => {
         const fileName = `${user.firstName} ${user.lastName}-Rental_Certificate`;
         const fileExtension = file.name.split('.').pop(); // Extract the file extension
         const storageRef = storage.ref(`userCertificates/${userId}/${fileName}.${fileExtension}`);
-    
+
         try {
             // Check if the file already exists
             const fileSnapshot = await storageRef.getMetadata();
-            
+
             // If file exists, delete it before uploading the new one
             if (fileSnapshot.name) {
                 await storageRef.delete();
@@ -66,7 +66,7 @@ const OffCampusHousingFormStep20 = () => {
             // If file doesn't exist, proceed to upload
             console.log("No existing file. Proceeding to upload.");
         }
-    
+
         try {
             // Upload the new file
             const snapshot = await storageRef.put(file);
@@ -87,65 +87,57 @@ const OffCampusHousingFormStep20 = () => {
     const [modalUrl, setModalUrl] = useState("");  // Store the URL of the link to display in the modal
 
 
-  
+
     const closeModal = () => {
-      setModalUrl(""); // Clear the modal URL when closing
-      setShowModal(false);
+        setModalUrl(""); // Clear the modal URL when closing
+        setShowModal(false);
     };
-  
+
     const handleLinkClick = (newSrc) => {
         window.open(newSrc, '_blank');
-      };
-  
+    };
+
 
 
 
     return (
         <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
-          <h2 className="step-title">Rental Workshop Certificate</h2>
-          <p className="step-description">
-            Please Complete the Following Workshop and Upload Your Certificate
-          </p>
-    
-          <button onClick={() => handleLinkClick("https://canvas.ucsc.edu/enroll/7DWCHX")}>
-            Open Workshop
-          </button>
-    
-          {showModal && (
-            <div className="modal-background">
-              <div className="modal-content">
-                <iframe
-                  title="Workshop Content"
-                  src={modalUrl}
-                  width="100%"
-                  height="100%"
-                  frameBorder="0"
-                  allowFullScreen
-                />
-                <button onClick={closeModal} className="close-button">Close</button>
-              </div>
-            </div>
-          )}
+            <h2 className="step-title">Rental Workshop Certificate</h2>
+            <p className="step-description">
+                Please Complete the Following Workshop and Upload Your Certificate
+            </p>
+
+            <button onClick={() => handleLinkClick("https://canvas.ucsc.edu/enroll/7DWCHX")}>
+                Open Workshop
+            </button>
+
+            {showModal && (
+                <div className="modal-background">
+                    <div className="modal-content">
+                        <iframe
+                            title="Workshop Content"
+                            src={modalUrl}
+                            width="100%"
+                            height="100%"
+                            frameBorder="0"
+                            allowFullScreen
+                        />
+                        <button onClick={closeModal} className="close-button">Close</button>
+                    </div>
+                </div>
+            )}
 
             {certificateUrlFromDb && (
                 <div className="image-preview-container">
-                    <img
-                        src={certificateUrlFromDb}
-                        alt="Certificate Preview"
-                        className="image-preview"
-                    />
+                    <button
+                        onClick={() => window.open(certificateUrlFromDb, '_blank')}
+                        className="next-button"
+                    >
+                        View Certificate
+                    </button>
                 </div>
             )}
 
-            {certificateFile && (
-                <div className="image-preview-container">
-                    <img
-                        src={URL.createObjectURL(certificateFile)}
-                        alt="Certificate Preview"
-                        className="certificate-preview"
-                    />
-                </div>
-            )}
 
             <div className="file-input-container">
                 <input

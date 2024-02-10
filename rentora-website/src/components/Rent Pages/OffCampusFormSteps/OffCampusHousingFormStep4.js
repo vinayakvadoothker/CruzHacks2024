@@ -60,8 +60,6 @@ const OffCampusHousingFormStep4 = () => {
     };
 
     if (user) {
-      const clerkUserID = user.id;
-      console.log("Clerk User ID:", clerkUserID);
 
       db.collection('SurveyResponses').doc(user.id).update(newFormData)
         .then(() => {

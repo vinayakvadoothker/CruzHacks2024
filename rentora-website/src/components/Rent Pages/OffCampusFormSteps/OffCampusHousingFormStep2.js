@@ -1,79 +1,72 @@
-// OffCampusHousingFormStep2.js
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db } from "../../config";
-import './styles.css'; // Import the CSS file
+import './styles.css';
 
 const OffCampusHousingFormStep2 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
 
-  // Initialize state with default values
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
-    middleInitial: user?.middleName ? user.middleName.charAt(0).toUpperCase() : '',
-    dateOfBirth: user?.dateOfBirth || '', // Add the dateOfBirth field
+    firstName: '',
+    lastName: '',
+    middleInitial: '',
+    dateOfBirth: '',
   });
 
+  // Update formData when the user object changes
   useEffect(() => {
-    // Fetch and set the saved data when the component mounts
     if (user) {
       db.collection('SurveyResponses').doc(user.id).get()
         .then((doc) => {
           if (doc.exists) {
-            setFormData(doc.data());
+            const data = doc.data();
+            setFormData((currentFormData) => ({
+              ...currentFormData,
+              firstName: user.firstName || currentFormData.firstName,
+              lastName: user.lastName || currentFormData.lastName,
+              // Set middleInitial either from the database or from the user object, then fallback to current form data
+              middleInitial: data.middleInitial || (user.middleName ? user.middleName.charAt(0).toUpperCase() : currentFormData.middleInitial),
+              // Set dateOfBirth from the database, then fallback to current form data
+              dateOfBirth: data.dateOfBirth || currentFormData.dateOfBirth,
+            }));
           }
         })
         .catch((error) => {
           console.error('Error fetching data:', error);
         });
     }
-  }, [user]);
+  }, [user]);  
 
+  // Function to handle the navigation to the next step
   const handleNext = () => {
-    // Validate that First Name, Last Name, and Date of Birth are filled out
-    if (!formData.firstName || !formData.lastName || !formData.dateOfBirth) {
+    const { firstName, lastName, dateOfBirth } = formData;
+
+    if (!firstName.trim() || !lastName.trim() || !dateOfBirth.trim()) {
       alert("Please enter your First Name, Last Name, and Date of Birth.");
       return;
     }
 
-    // Save the answer for Step 2
-    const newFormData = {
-      firstName: formData.firstName !== undefined ? formData.firstName : '',
-      lastName: formData.lastName !== undefined ? formData.lastName : '',
-      middleInitial: formData.middleInitial !== undefined ? formData.middleInitial : '',
-      dateOfBirth: formData.dateOfBirth !== undefined ? formData.dateOfBirth : '', // Add the dateOfBirth field
-      // Add more fields as needed
-    };
-
     if (user) {
-      const clerkUserID = user.id;
-      console.log("Clerk User ID:", clerkUserID);
-
-      // Update the document with the new data for Step 2
-      db.collection('SurveyResponses').doc(user.id).update(newFormData)
-        .then(() => {
-          console.log("Document successfully updated!");
-        })
-        .catch((error) => {
-          console.error("Error updating document: ", error);
-        });
-    } else {
-      console.log("User not authenticated");
+      db.collection('SurveyResponses').doc(user.id).update({
+        ...formData,
+      })
+      .then(() => {
+        console.log("Document successfully updated!");
+        navigate('/rent/off-campus/step3');
+      })
+      .catch((error) => {
+        console.error("Error updating document: ", error);
+      });
     }
-
-    // Navigate to the next step
-    navigate('/rent/off-campus/step3');
   };
 
   return (
     <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
-    <h2 className="step-title">Name and Date of Birth</h2>
+      <h2 className="step-title">Name and Date of Birth</h2>
       <p className="step-description">Confirm This Is Your Legal Name and Enter Your Date of Birth*</p>
 
-      {/* Input fields for first name, middle initial, last name, and date of birth with default values */}
       <input
         type="text"
         placeholder="First Name"
@@ -96,11 +89,7 @@ const OffCampusHousingFormStep2 = () => {
         value={formData.lastName}
         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
       />
-
-      {/* Label for Date of Birth */}
       <label htmlFor="dateOfBirth">Enter Date of Birth:</label>
-
-      {/* Input field for Date of Birth */}
       <input
         type="date"
         id="dateOfBirth"
@@ -110,12 +99,9 @@ const OffCampusHousingFormStep2 = () => {
         onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
       />
 
-      {/* Back button to navigate to the previous step */}
       <Link to="/rent/off-campus/step1">
         <span className="back-button">{'<-'}</span>
       </Link>
-
-      {/* Button to navigate to the next step */}
       <button className="next-button" onClick={handleNext}>
         Next
       </button>

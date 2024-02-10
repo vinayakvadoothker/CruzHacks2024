@@ -36,7 +36,6 @@ app.get('/generate-pdf/:userId', async (req, res) => {
         const docSnapshot = await db.collection('SurveyResponses').doc(userId).get();
 
         if (!docSnapshot.exists) {
-            console.log(`No data found for user ID: ${userId}`);
             return res.status(404).json({ error: 'User data not found' });
         }
 
@@ -50,7 +49,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             // Fill in the form fields with data from formData
             form.getTextField("Applicant's First Name").setText(formData.firstName.toString());
             form.getTextField("Applicant's Last Name").setText(formData.lastName.toString());
-            form.getTextField('Middle initial').setText(formData.middleName.toString());
+            form.getTextField('Middle initial').setText(formData.middleInitial.toString());
             form.getTextField('Date of birth').setText(formData.dateOfBirth.toString());
             form.getTextField('Email Address').setText(formData.email.toString());
             form.getTextField('Contact number').setText(formData.phone.toString());
@@ -158,7 +157,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                         state: addressParts[2],
                         zipCode: formData.zipCode,
                         ownerManager: rental.ownerName,
-                        phoneRequired: formData.phoneRequired,
+                        phoneRequired: rental.ownerPhoneNumber,
                         rentAmount: rental.monthlyRent,
                         fromTo: `${rental.startDate} - ${rental.endDate}`,
                         reasonForLeaving: rental.reasonForLeaving,
@@ -170,7 +169,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                         state: addressParts[2],
                         zipCode: formData.zipCode,
                         ownerManager: rental.ownerName,
-                        phoneRequired: formData.phoneRequired,
+                        phoneRequired: rental.ownerPhoneNumber,
                         rentAmount: rental.monthlyRent,
                         fromTo: `${rental.startDate} - ${rental.endDate}`,
                         reasonForLeaving: rental.reasonForLeaving,
@@ -184,7 +183,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             form.getTextField('State').setText(presentAddresses[0].state.toString().toString());
             form.getTextField('Zip Code').setText(presentAddresses[0].zipCode);
             form.getTextField('OwnerManager').setText(presentAddresses[0].ownerManager.toString());
-            form.getTextField('Phone Required').setText(presentAddresses[0].ownerPhoneNumber);
+            form.getTextField('Phone Required').setText(presentAddresses[0].phoneRequired.toString());
             form.getTextField('Rent Amount').setText(presentAddresses[0].rentAmount.toString());
             form.getTextField('FromTo').setText(presentAddresses[0].fromTo.toString());
             form.getTextField('Reason for Leaving').setText(presentAddresses[0].reasonForLeaving.toString());
@@ -195,7 +194,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             form.getTextField('State_2').setText(previousAddresses[0].state.toString());
             form.getTextField('Zip Code_2').setText(previousAddresses[0].zipCode);
             form.getTextField('OwnerManager_2').setText(previousAddresses[0].ownerManager.toString());
-            form.getTextField('Phone Required_2').setText(previousAddresses[0].ownerPhoneNumber);
+            form.getTextField('Phone Required_2').setText(previousAddresses[0].phoneRequired.toString());
             form.getTextField('Rent Amount_2').setText(previousAddresses[0].rentAmount.toString());
             form.getTextField('FromTo_2').setText(previousAddresses[0].fromTo.toString());
             form.getTextField('Reason for Leaving_2').setText(previousAddresses[0].reasonForLeaving.toString());
@@ -264,7 +263,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
 
             // Drawing a line under the name
             const margin = 72; // One inch margin in points
-            
+
             page.drawLine({
                 start: { x: margin, y: yPos },
                 end: { x: pageWidth - margin, y: yPos },
@@ -458,19 +457,42 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             });
             yPos -= lineHeight * 2;
 
+            // Add the Government-Issued Photo ID and Letter of Reference to the end of the document
+            const appendDocumentToPdf = async (pdfDoc, userId, fileName, storageFolderPath) => {
+                const filePath = `${storageFolderPath}/${userId}/${fileName}`;
+                const fileBlob = await bucket.file(filePath).download();
+                const fileBytes = fileBlob[0];
 
-    // Add the rental workshop certificate to the end of the document
-    const certificateFileName = `${formData.firstName} ${formData.lastName}-Rental_Certificate.pdf`;
-    const certificatePath = `userCertificates/${userId}/${certificateFileName}`;
-    const certificateBlob = await bucket.file(certificatePath).download();
-    const certificateBytes = certificateBlob[0];
+                // Load the document as a PDFDocument
+                const documentPdf = await PDFDocument.load(fileBytes);
 
-    // Load the rental workshop certificate as a PDFDocument
-    const certificatePdf = await PDFDocument.load(certificateBytes);
+                // Copy the pages from the document PDF to the end of the original document
+                const copiedPages = await pdfDoc.copyPages(documentPdf, documentPdf.getPageIndices());
+                copiedPages.forEach((page) => pdfDoc.addPage(page));
+            };
 
-    // Copy the pages from the certificate PDF to the end of the original document
-    const copiedPages = await pdfDoc.copyPages(certificatePdf, certificatePdf.getPageIndices());
-    copiedPages.forEach((page) => pdfDoc.addPage(page));
+
+            // Append Letter of Reference
+            const letterRefFileName = `${formData.firstName} ${formData.lastName}-Letter_of_Reference.pdf`; // Update with your actual file naming convention
+            await appendDocumentToPdf(pdfDoc, userId, letterRefFileName, 'userLettersOfReference');
+            
+            // Inside the try block of the /generate-pdf/:userId route after creating the pdfDoc
+            // Append Government-Issued Photo ID
+            const photoIdFileName = `${formData.firstName} ${formData.lastName}-Photo_ID.pdf`; // Update with your actual file naming convention
+            await appendDocumentToPdf(pdfDoc, userId, photoIdFileName, 'userGovernmentIds');
+            
+            // Add the rental workshop certificate to the end of the document
+            const certificateFileName = `${formData.firstName} ${formData.lastName}-Rental_Certificate.pdf`;
+            const certificatePath = `userCertificates/${userId}/${certificateFileName}`;
+            const certificateBlob = await bucket.file(certificatePath).download();
+            const certificateBytes = certificateBlob[0];
+
+            // Load the rental workshop certificate as a PDFDocument
+            const certificatePdf = await PDFDocument.load(certificateBytes);
+
+            // Copy the pages from the certificate PDF to the end of the original document
+            const copiedPages = await pdfDoc.copyPages(certificatePdf, certificatePdf.getPageIndices());
+            copiedPages.forEach((page) => pdfDoc.addPage(page));
 
 
             // Continue adding other details from formData
@@ -479,44 +501,44 @@ app.get('/generate-pdf/:userId', async (req, res) => {
 
             // Flatten the form to prevent editing after filling
             const pdfBytes = await pdfDoc.save();
-        
+
             // Construct the folder path with user's first and last name
             const userFolderPath = `Rental Applications/${formData.firstName} ${formData.lastName}`;
             const filePath = `${userFolderPath}/${outputFilename}`;
-        
+
             const file = bucket.file(filePath);
             const stream = file.createWriteStream({
                 metadata: {
                     contentType: 'application/pdf',
                 },
             });
-        
+
             return new Promise((resolve, reject) => {
                 stream.on('error', (error) => {
                     console.error(`Error uploading ${filePath} to Firebase Storage:`, error);
                     reject(error);
                 });
-        
+
                 stream.on('finish', async () => {
                     const [url] = await file.getSignedUrl({
                         action: 'read',
                         expires: '03-01-2500',
                     });
-        
+
                     // Save the URL with a reference in Firestore, you might want to adjust the structure
                     await db.collection('FilledPDFs').doc(userId).set({ [outputFilename]: url }, { merge: true });
-        
+
                     resolve(url);
                 });
-        
+
                 stream.end(pdfBytes);
             });
         }
-        
+
         // Then, use this function as before to generate and upload both versions of the PDF
         await createAndUploadPDF('./rentora_watermark.pdf', `${userId}_filled.pdf`, userId, formData);
         await createAndUploadPDF('./rentora_nowatermark.pdf', `${userId}_official_filled.pdf`, userId, formData);
-        
+
         res.status(200).json({ success: 'PDFs generated and saved' });
     } catch (error) {
         console.error('Error generating and saving PDFs:', error);

@@ -34,7 +34,6 @@ const ChatBot = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
-          console.log('Chatbot Response:', data.choices[0].message.content); // Log chatbot's response
 
           // Display the chatbot's response
           addResponseMessage(data.choices[0].message.content);

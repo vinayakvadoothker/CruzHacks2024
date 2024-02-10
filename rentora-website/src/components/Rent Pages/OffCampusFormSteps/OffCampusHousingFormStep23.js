@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db } from "../../config";
-import axios from 'axios'; // Import Axios for making HTTP requests
+import axios from 'axios';
+import Spinner from './Spinner';
 import './styles.css';
 
 const OffCampusHousingFormStep23 = () => {
@@ -10,6 +11,7 @@ const OffCampusHousingFormStep23 = () => {
     const navigate = useNavigate();
 
     const [guarantorFormFilled, setGuarantorFormFilled] = useState(false);
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,30 +33,23 @@ const OffCampusHousingFormStep23 = () => {
     }, [user]);
 
     const handleSubmit = async () => {
+        setIsGeneratingPDF(true);
         try {
-            // Save the offcampusformdone boolean as true
             await db.collection('SurveyResponses').doc(user.id).update({
                 offcampusformdone: true,
             });
 
-            // Log the data being sent to the server
-            console.log('Data sent to server for PDF generation:', { userId: user.id });
-
-            // Make an HTTP request to generate the PDF
             const response = await axios.get(`http://localhost:3010/generate-pdf/${user.id}`, {
-                responseType: 'blob', // Specify that the response should be treated as a Blob
+                responseType: 'blob',
             });
 
-            // Log the response from the server
             console.log('Response from server:', response);
 
-            // Handle the response or further actions as needed
-
-            // Clean up and navigate to the next step or any other route
+            setIsGeneratingPDF(false);
             navigate('/onboarding');
         } catch (error) {
             console.error('Error saving form data:', error);
-            // Handle error (e.g., show an error message)
+            setIsGeneratingPDF(false);
             alert('Error submitting form. Please try again.');
         }
     };
@@ -65,10 +60,12 @@ const OffCampusHousingFormStep23 = () => {
             <p className="step-description">Status of the Guarantor Form:</p>
 
             <div className="status-indicator">
-                {guarantorFormFilled ? (
-                    <span className="check-mark">&#10004;</span> // Green check mark
+                {isGeneratingPDF ? (
+                    <Spinner />
+                ) : guarantorFormFilled ? (
+                    <span className="check-mark">&#10004;</span> // Display green check mark
                 ) : (
-                    <span className="red-x">&#10006;</span> // Red 'x'
+                    <span className="red-x">&#10006;</span> // Display red 'x'
                 )}
             </div>
 

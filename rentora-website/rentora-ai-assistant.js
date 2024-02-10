@@ -14,7 +14,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions)); // Use CORS middleware
 
-console.log("OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
 // Endpoint to handle chat messages
 app.post('/api/chat', async (req, res) => {
     const userMessage = req.body.message;

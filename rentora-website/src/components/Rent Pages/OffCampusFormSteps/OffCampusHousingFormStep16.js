@@ -79,7 +79,6 @@ const OffCampusHousingFormStep16 = () => {
             })),
         };
 
-        console.log("Formatted Data:", formattedData);
 
         db.collection('SurveyResponses')
             .doc(user.id)

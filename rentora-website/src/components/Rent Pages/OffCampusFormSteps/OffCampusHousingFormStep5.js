@@ -1,169 +1,105 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db, storage } from "../../config";
+import Spinner from './Spinner';
 import './styles.css';
 
 const OffCampusHousingFormStep5 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(user?.imageUrl || "url_to_default_image.jpg"); // Default to Clerk image or a default image
 
-  const [formData, setFormData] = useState({
-    profilePicture: user?.imageUrl ?? 'url_to_default_image.jpg',
-  });
+  const uploadFileToStorage = useCallback(async (userId, file) => {
+    const newFileName = `${user.firstName}_${user.lastName}_Profile_Picture`;
+    const fileExtension = file.name.split('.').pop();
+    const storageRef = storage.ref(`userProfilePictures/${userId}/${newFileName}.${fileExtension}`);
 
-  const [imagePreview, setImagePreview] = useState(null);
-  const imageSetRef = useRef(false);
-
-  useEffect(() => {
-    const userId = user?.id;
-
-    if (userId) {
-      console.log('Fetching data for user:', user);
-
-      db.collection('SurveyResponses')
-        .doc(userId)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            console.log('Document found in the database:', doc.data());
-
-            const storedFormData = doc.data();
-            if (storedFormData && storedFormData.profilePicture) {
-              console.log('Using profile picture from the stored form data:', storedFormData.profilePicture);
-              setFormData({
-                profilePicture: storedFormData.profilePicture,
-              });
-
-              if (imagePreview) {
-                setImagePreview(null);
-              }
-              
-              imageSetRef.current = true;
-            } else {
-              console.log('No profile picture found in the stored form data. Using Clerk image.');
-              setFormData({
-                profilePicture: user.imageUrl ?? 'url_to_default_image.jpg',
-              });
-            }
-          } else {
-            console.log('No document found in the database. Using Clerk image.');
-            setFormData({
-              profilePicture: user.imageUrl ?? 'url_to_default_image.jpg',
-            });
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching data:', error);
-          console.log('Using Clerk image due to an error.');
-          setFormData({
-            profilePicture: user.imageUrl ?? 'url_to_default_image.jpg',
-          });
-        });
-    }
-  }, [user, imagePreview]);
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-  
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      setImagePreview(reader.result);
-  
-      // Upload the file to storage immediately
-      const downloadURL = await uploadFileToStorage(user?.id, file);
-      setFormData({
-        ...formData,
-        profilePicture: downloadURL,
-        file: file,
-      });
-    };
-  
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleNext = async () => {
-    if (user) {
-      const clerkUserID = user.id;
-      console.log("Clerk User ID:", clerkUserID);
-
-      const newFormData = {
-        profilePicture: formData.file
-          ? await uploadFileToStorage(user.id, formData.file)
-          : user?.imageUrl ?? 'url_to_default_image.jpg',
-      };
-
-      await db.collection('SurveyResponses').doc(user.id).update(newFormData);
-      console.log("Document successfully updated!");
-    } else {
-      console.log("User not authenticated");
-    }
-
-    navigate('/rent/off-campus/step6');
-  };
-
-  const uploadFileToStorage = async (userId, file) => {
-    const storageRef = storage.ref(`userProfilePictures/${userId}/${file.name}`);
     try {
-      const snapshot = await storageRef.put(file);
-      console.log('File uploaded successfully!', snapshot);
-
+      await storageRef.put(file);
       const downloadURL = await storageRef.getDownloadURL();
       return downloadURL;
     } catch (error) {
       console.error("Error uploading file: ", error);
-      return 'url_to_default_image.jpg';
+      return ''; // Return an empty string in case of error
+    }
+  }, [user.firstName, user.lastName]);
+
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      if (user) {
+        const docRef = db.collection('SurveyResponses').doc(user.id);
+        const doc = await docRef.get();
+        if (doc.exists && doc.data().profilePicture) {
+          setImagePreview(doc.data().profilePicture);
+        } else if (user.imageUrl) { // Check if Clerk image is available
+          try {
+            const response = await fetch(user.imageUrl);
+            const blob = await response.blob();
+            const file = new File([blob], "clerkProfileImage.jpg", { type: "image/jpeg" });
+  
+            const downloadURL = await uploadFileToStorage(user.id, file);
+            setImagePreview(downloadURL);
+            await db.collection('SurveyResponses').doc(user.id).update({ profilePicture: downloadURL });
+            console.log("Clerk image successfully uploaded to storage and saved to database.");
+          } catch (error) {
+            console.error("Error fetching and uploading Clerk image:", error);
+          }
+        }
+      }
+    };
+  
+    fetchProfilePicture();
+  }, [user, uploadFileToStorage]);
+  
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file && user) {
+      setUploading(true);
+      const downloadURL = await uploadFileToStorage(user.id, file);
+      setImagePreview(downloadURL); // Update the image preview immediately
+      await db.collection('SurveyResponses').doc(user.id).update({ profilePicture: downloadURL });
+      setUploading(false);
     }
   };
 
-  return (
-    <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
-    <h2 className="step-title">Upload Profile Picture</h2>
-      <p className="step-description">Please Upload a Professional Picture For The Cover Of Your Application *</p>
+  const handleNext = () => {
+    navigate('/rent/off-campus/step6');
+  };
 
-      {imagePreview ? (
-        <img
-          src={imagePreview}
-          alt="Preview"
-          className="image-preview"
-        />
+  return (
+    <div className="form-container">
+      <h2 className="step-title">Upload Profile Picture</h2>
+      <p className="step-description">Please Upload a Professional Picture For The Cover Of Your Application *</p>
+      {uploading ? (
+        <Spinner />
       ) : (
         <img
-          src={formData.profilePicture}
+          src={imagePreview}
           alt="Profile"
-          style={styles.profileImage}
+          className="image-preview"
         />
       )}
-
       <div className="file-input-container">
         <input
           type="file"
           accept="image/*"
           onChange={handleFileChange}
           className="input-field file-input"
+          disabled={uploading}
         />
       </div>
 
       <Link to="/rent/off-campus/step4">
         <span className="back-button">{'<-'}</span>
       </Link>
-
-      <button className="next-button" onClick={handleNext}>
+      <button className="next-button" onClick={handleNext} disabled={uploading}>
         Next
       </button>
     </div>
   );
-};
-
-const styles = {
-  profileImage: {
-    width: '100px',
-    height: '100px',
-    borderRadius: '50%',
-    objectFit: 'cover',
-  },
 };
 
 export default OffCampusHousingFormStep5;

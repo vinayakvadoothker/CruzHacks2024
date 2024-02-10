@@ -58,7 +58,27 @@ const OffCampusHousingFormStep13 = () => {
 
         if (isInvalid) {
             // Display an error message
-            setErrorMessage("Please fill out all fields in the form before proceeding.");
+            alert("Please fill out all fields in the form before proceeding.");
+            return;
+        }
+
+        // Validate dates before updating the document
+        const datesAreValid = formData.rentalHistory.every(entry =>
+            validateDates(entry.startDate, entry.endDate, entry.present)
+        );
+
+        if (!datesAreValid) {
+            // Display an error message
+            alert("Please ensure that Start Date and End Date are provided and that End Date is after Start Date for all entries, or set it to 'Present' if you are still involved.");
+            return;
+        }
+
+        // Check if at least one entry is marked as present
+        const atLeastOnePresent = formData.rentalHistory.some(entry => entry.present);
+
+        if (!atLeastOnePresent) {
+            // Display an error message
+            alert("Please mark at least one address as 'Present'.");
             return;
         }
 
@@ -83,7 +103,6 @@ const OffCampusHousingFormStep13 = () => {
             };
 
 
-            console.log("Formatted Data:", formattedData);
 
             db.collection('SurveyResponses')
                 .doc(user.id)
@@ -148,45 +167,45 @@ const OffCampusHousingFormStep13 = () => {
     const formatCurrency = (value) => {
         // Convert value to a string in case it's not
         const strValue = value ? String(value) : '';
-    
+
         // Convert the string value to a number, removing non-numeric characters
         const numericValue = parseFloat(strValue.replace(/[^0-9.]/g, ''));
-    
+
         // Check if it's a valid number
         if (!isNaN(numericValue)) {
             // Format the number with commas
             return numericValue.toLocaleString('en-US');
         }
-    
+
         // If the value is not a valid number, return it as is
         return strValue;
     };
-    
+
     const formatPhoneNumber = (value) => {
         // Ensure the value is a string
         const strValue = String(value);
         // Remove any non-digit characters
         const cleaned = strValue.replace(/\D/g, '');
-    
+
         // Limit the cleaned value to a maximum of 10 digits
         const maxLength = 10;
         const truncatedValue = cleaned.slice(0, maxLength);
-    
+
         // Use regex to format it as XXX-XXX-XXXX
         const match = truncatedValue.match(/^(\d{3})(\d{3})(\d{4})$/);
         if (match) {
             return `${match[1]}-${match[2]}-${match[3]}`;
         }
-    
+
         return truncatedValue;
     };
-    
+
 
 
     return (
         <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
-            <h2 className="step-title">Previous Tenant Experience</h2>
-            <p className="step-description">Please Add Your Previous Rental History:</p>
+            <h2 className="step-title">Previous and Present Tenant Experience</h2>
+            <p className="step-description">Please Add Your Previous and Present Rental History:</p>
 
             {Array.isArray(formData.rentalHistory) && formData.rentalHistory.map((entry, index) => (
                 <div key={index} className="rental-history-entry">
