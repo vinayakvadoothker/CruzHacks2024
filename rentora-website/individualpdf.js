@@ -69,7 +69,29 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             form.getTextField('Relation').setText(formData.references[0].relation.toString());
             form.getTextField('Email').setText(formData.references[0].email.toString());
             form.getTextField('Photo ID Type').setText(formData.photoIdType.toString());
-            // Example of setting the vehicle information
+            form.getTextField('Name of Guarantor').setText(formData.guarantor.guarantorName.toString());
+            form.getTextField('Name of Student').setText((formData.firstName + " " + formData.lastName).toString());
+            form.getTextField('State Drivers Licenses').setText(formData.driversLicense.toString());
+            form.getTextField('Date of Birth').setText(formData.dateOfBirth.toString());
+            form.getTextField('Home Address Street').setText(formData.homeAddress.split(', ')[0].toString());
+            form.getTextField('Home Address  City').setText(formData.homeAddress.split(', ')[1].toString());
+            form.getTextField('Home Address  State').setText(formData.homeAddress.split(', ')[2].toString());
+            form.getTextField('Home Phone').setText(formData.guarantor.guarantorPhone.toString());
+            form.getTextField('Business Phone').setText('N/A');
+            form.getTextField('Email').setText(formData.guarantor.guarantorEmail.toString());
+            form.getTextField('Employer Name').setText(formData.guarantor.employerName.toString());
+            form.getTextField('Monthly Income').setText(formData.guarantor.monthlyIncome.toString());
+            form.getTextField('Business Address').setText(formData.guarantor.businessAddress.split(', ')[0].toString());
+            form.getTextField('Business Address  State').setText(formData.guarantor.businessAddress.split(', ')[1].toString());
+            form.getTextField('Business Address  City').setText(formData.guarantor.businessAddress.split(', ')[2].toString());
+            form.getTextField('Supervisor').setText(formData.guarantor.supervisorName.toString());
+            form.getTextField('Supervisor Phone').setText(formData.guarantor.supervisorPhone.toString());
+            form.getTextField('Position').setText(formData.guarantor.jobTitle.toString());
+            form.getTextField('Length of Employment').setText(formData.guarantor.employmentLength.toString());
+            form.getTextField('Print Name').setText(formData.guarantor.guarantorName.toString());
+            form.getTextField('Relationship').setText(formData.guarantor.guarantorRelation.toString());
+            form.getTextField('Date_af_date').setText(formData.dateSaved.toString());
+
             if (formData.vehicleInfo && formData.vehicleInfo.length > 0) {
                 const firstVehicle = formData.vehicleInfo[0];
                 const vehicleDetails = `${firstVehicle.make} / ${firstVehicle.year} / ${firstVehicle.licenseNumber}`;
@@ -177,7 +199,6 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             form.getTextField('Rent Amount_2').setText(previousAddresses[0].rentAmount.toString());
             form.getTextField('FromTo_2').setText(previousAddresses[0].fromTo.toString());
             form.getTextField('Reason for Leaving_2').setText(previousAddresses[0].reasonForLeaving.toString());
-
             // ... Continue for other fields as necessary ...
 
             // // Employment History - Assuming your form has fields for each employment history entry
@@ -438,6 +459,18 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             yPos -= lineHeight * 2;
 
 
+    // Add the rental workshop certificate to the end of the document
+    const certificateFileName = `${formData.firstName} ${formData.lastName}-Rental_Certificate.pdf`;
+    const certificatePath = `userCertificates/${userId}/${certificateFileName}`;
+    const certificateBlob = await bucket.file(certificatePath).download();
+    const certificateBytes = certificateBlob[0];
+
+    // Load the rental workshop certificate as a PDFDocument
+    const certificatePdf = await PDFDocument.load(certificateBytes);
+
+    // Copy the pages from the certificate PDF to the end of the original document
+    const copiedPages = await pdfDoc.copyPages(certificatePdf, certificatePdf.getPageIndices());
+    copiedPages.forEach((page) => pdfDoc.addPage(page));
 
 
             // Continue adding other details from formData
@@ -481,8 +514,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
         }
         
         // Then, use this function as before to generate and upload both versions of the PDF
-        await createAndUploadPDF('./rentora_watermark.pdf', `${userId}_filled.pdf`);
-        await createAndUploadPDF('./rentora_nowatermark.pdf', `${userId}_official_filled.pdf`);
+        await createAndUploadPDF('./rentora_watermark.pdf', `${userId}_filled.pdf`, userId, formData);
+        await createAndUploadPDF('./rentora_nowatermark.pdf', `${userId}_official_filled.pdf`, userId, formData);
         
         res.status(200).json({ success: 'PDFs generated and saved' });
     } catch (error) {

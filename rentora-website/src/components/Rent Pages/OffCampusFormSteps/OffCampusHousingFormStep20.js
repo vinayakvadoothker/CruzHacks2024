@@ -43,8 +43,32 @@ const OffCampusHousingFormStep20 = () => {
     };
 
     const uploadFileToStorage = async (userId, file) => {
-        const storageRef = storage.ref(`userCertificates/${userId}/${file.name}`);
+        // Create a reference to the storage location
+        const fileName = `${user.firstName} ${user.lastName}-Rental_Certificate`;
+        const fileExtension = file.name.split('.').pop(); // Extract the file extension
+        const storageRef = storage.ref(`userCertificates/${userId}/${fileName}.${fileExtension}`);
+    
         try {
+            // Check if the file already exists
+            const fileSnapshot = await storageRef.getMetadata();
+            
+            // If file exists, delete it before uploading the new one
+            if (fileSnapshot.name) {
+                await storageRef.delete();
+                console.log(`Existing file deleted: ${fileSnapshot.name}`);
+            }
+        } catch (error) {
+            if (error.code !== 'storage/object-not-found') {
+                // Handle any errors other than file not found
+                console.error("Error checking for existing file: ", error);
+                return '';
+            }
+            // If file doesn't exist, proceed to upload
+            console.log("No existing file. Proceeding to upload.");
+        }
+    
+        try {
+            // Upload the new file
             const snapshot = await storageRef.put(file);
             console.log('File uploaded successfully!', snapshot);
             const downloadURL = await storageRef.getDownloadURL();
