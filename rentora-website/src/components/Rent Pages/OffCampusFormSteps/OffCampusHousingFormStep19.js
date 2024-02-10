@@ -11,6 +11,8 @@ const OffCampusHousingFormStep19 = () => {
 
   const [fileUrl, setFileUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  // Add state to store user's first and last names
+  const [userName, setUserName] = useState({ firstName: '', lastName: '' });
 
   useEffect(() => {
     if (user) {
@@ -20,6 +22,9 @@ const OffCampusHousingFormStep19 = () => {
         .then((doc) => {
           if (doc.exists) {
             const formData = doc.data();
+            // Update userName state with first and last names
+            setUserName({ firstName: formData.firstName, lastName: formData.lastName });
+
             if (formData.letterOfReference) {
               setFileUrl(formData.letterOfReference);
             }
@@ -47,21 +52,40 @@ const OffCampusHousingFormStep19 = () => {
     setIsLoading(true); // Start loading
 
     try {
-      const fileName = `${user.firstName} ${user.lastName}-Letter_of_Reference.pdf`;
+      // Use userName state to construct the file name
+      const fileName = `${userName.firstName} ${userName.lastName}-Letter_of_Reference.pdf`;
       const storageRef = storage.ref(`userLettersOfReference/${user.id}/${fileName}`);
       await storageRef.put(file);
       const downloadURL = await storageRef.getDownloadURL();
 
       setFileUrl(downloadURL);
-      setIsLoading(false);
+      setIsLoading(false); // Stop loading after upload is complete
     } catch (error) {
       console.error("Error in handleFileChange:", error);
-      setIsLoading(false);
+      setIsLoading(false); // Ensure loading is stopped in case of an error
     }
   };
 
-  const handleRemoveFile = () => {
-    setFileUrl(null);
+  const handleRemoveFile = async () => {
+    // Logic to remove the file from storage and update Firestore
+    setIsLoading(true); // Start loading
+
+    try {
+      // Construct the file name using the userName state
+      const fileName = `${userName.firstName} ${userName.lastName}-Letter_of_Reference.pdf`;
+      const storageRef = storage.ref(`userLettersOfReference/${user.id}/${fileName}`);
+      await storageRef.delete(); // Delete the file from storage
+
+      await db.collection('SurveyResponses').doc(user.id).update({
+        letterOfReference: null, // Remove the reference from Firestore
+      });
+
+      setFileUrl(null); // Clear the file URL state
+      setIsLoading(false); // Stop loading after removal is complete
+    } catch (error) {
+      console.error("Error removing file:", error);
+      setIsLoading(false); // Ensure loading is stopped in case of an error
+    }
   };
 
   const handleNext = async () => {

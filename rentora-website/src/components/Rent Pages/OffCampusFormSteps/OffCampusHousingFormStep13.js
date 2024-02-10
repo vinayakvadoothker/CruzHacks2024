@@ -55,72 +55,60 @@ const OffCampusHousingFormStep13 = () => {
             entry.address === '' || entry.monthlyRent === '' || entry.startDate === '' ||
             (!entry.present && entry.endDate === '') || entry.ownerName === '' || entry.ownerPhoneNumber === '' || entry.reasonForLeaving === ''
         );
-
+    
         if (isInvalid) {
-            // Display an error message
             alert("Please fill out all fields in the form before proceeding.");
             return;
         }
-
+    
         // Validate dates before updating the document
         const datesAreValid = formData.rentalHistory.every(entry =>
             validateDates(entry.startDate, entry.endDate, entry.present)
         );
-
+    
         if (!datesAreValid) {
-            // Display an error message
-            alert("Please ensure that Start Date and End Date are provided and that End Date is after Start Date for all entries, or set it to 'Present' if you are still involved.");
+            alert("Please ensure that Start Date and End Date are provided and that End Date is after Start Date for all entries, or set it to 'Present' if you are still living there.");
             return;
         }
-
+    
         // Check if at least one entry is marked as present
         const atLeastOnePresent = formData.rentalHistory.some(entry => entry.present);
-
-        if (!atLeastOnePresent) {
-            // Display an error message
-            alert("Please mark at least one address as 'Present'.");
+    
+        // Check if at least one entry is marked as past
+        const atLeastOnePast = formData.rentalHistory.some(entry => !entry.present);
+    
+        if (!atLeastOnePresent || !atLeastOnePast) {
+            alert("Please include at least one current ('Present') and one past rental history entry.");
             return;
         }
-
-        // Validate dates before updating the document
-        const isValid = formData.rentalHistory.length === 0 ||
-            formData.rentalHistory.every(entry =>
-                validateDates(entry.startDate, entry.endDate, entry.present)
-            );
-
-        if (isValid) {
-            const formattedData = {
-                rentalHistory: formData.rentalHistory.map(entry => ({
-                    address: entry.address,
-                    monthlyRent: entry.monthlyRent ? parseFloat(String(entry.monthlyRent).replace(/[^0-9.]/g, '')) : 0,
-                    startDate: entry.startDate,
-                    endDate: entry.present ? 'Present' : entry.endDate,
-                    present: entry.present,
-                    ownerName: entry.ownerName,
-                    ownerPhoneNumber: entry.ownerPhoneNumber,
-                    reasonForLeaving: entry.reasonForLeaving,
-                })),
-            };
-
-
-
-            db.collection('SurveyResponses')
-                .doc(user.id)
-                .update(formattedData)
-                .then(() => {
-                    console.log("Document successfully updated!");
-                    // Navigate to the next step (Step 14 or any other step)
-                    navigate('/rent/off-campus/step14');
-                })
-                .catch((error) => {
-                    console.error("Error updating document: ", error);
-                });
-        } else {
-            // Display an error message
-            setErrorMessage("Please ensure that Start Date and End Date are provided and that End Date is after Start Date for all entries, or set it to 'Present' if you are still involved");
-        }
+    
+        // Proceed with updating the document in the database
+        const formattedData = {
+            rentalHistory: formData.rentalHistory.map(entry => ({
+                address: entry.address,
+                monthlyRent: entry.monthlyRent ? parseFloat(String(entry.monthlyRent).replace(/[^0-9.]/g, '')) : 0,
+                startDate: entry.startDate,
+                endDate: entry.present ? 'Present' : entry.endDate,
+                present: entry.present,
+                ownerName: entry.ownerName,
+                ownerPhoneNumber: entry.ownerPhoneNumber,
+                reasonForLeaving: entry.reasonForLeaving,
+            })),
+        };
+    
+        db.collection('SurveyResponses')
+            .doc(user.id)
+            .update(formattedData)
+            .then(() => {
+                console.log("Document successfully updated!");
+                navigate('/rent/off-campus/step14');
+            })
+            .catch((error) => {
+                console.error("Error updating document: ", error);
+                setErrorMessage("Error updating the document. Please try again.");
+            });
     };
-
+    
     const handleAddEntry = () => {
         setFormData((prevData) => ({
             ...prevData,

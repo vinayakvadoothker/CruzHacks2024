@@ -460,16 +460,22 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             // Add the Government-Issued Photo ID and Letter of Reference to the end of the document
             const appendDocumentToPdf = async (pdfDoc, userId, fileName, storageFolderPath) => {
                 const filePath = `${storageFolderPath}/${userId}/${fileName}`;
-                const fileBlob = await bucket.file(filePath).download();
-                const fileBytes = fileBlob[0];
-
-                // Load the document as a PDFDocument
-                const documentPdf = await PDFDocument.load(fileBytes);
-
-                // Copy the pages from the document PDF to the end of the original document
-                const copiedPages = await pdfDoc.copyPages(documentPdf, documentPdf.getPageIndices());
-                copiedPages.forEach((page) => pdfDoc.addPage(page));
-            };
+                const fileExists = await bucket.file(filePath).exists();
+            
+                if (fileExists[0]) {
+                    const fileBlob = await bucket.file(filePath).download();
+                    const fileBytes = fileBlob[0];
+            
+                    // Load the document as a PDFDocument
+                    const documentPdf = await PDFDocument.load(fileBytes);
+            
+                    // Copy the pages from the document PDF to the end of the original document
+                    const copiedPages = await pdfDoc.copyPages(documentPdf, documentPdf.getPageIndices());
+                    copiedPages.forEach((page) => pdfDoc.addPage(page));
+                } else {
+                    console.log(`File ${fileName} does not exist, skipping.`);
+                }
+            };            
 
 
             // Append Letter of Reference
@@ -483,16 +489,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             
             // Add the rental workshop certificate to the end of the document
             const certificateFileName = `${formData.firstName} ${formData.lastName}-Rental_Certificate.pdf`;
-            const certificatePath = `userCertificates/${userId}/${certificateFileName}`;
-            const certificateBlob = await bucket.file(certificatePath).download();
-            const certificateBytes = certificateBlob[0];
-
-            // Load the rental workshop certificate as a PDFDocument
-            const certificatePdf = await PDFDocument.load(certificateBytes);
-
-            // Copy the pages from the certificate PDF to the end of the original document
-            const copiedPages = await pdfDoc.copyPages(certificatePdf, certificatePdf.getPageIndices());
-            copiedPages.forEach((page) => pdfDoc.addPage(page));
+            await appendDocumentToPdf(pdfDoc, userId, certificateFileName, 'userCertificates');
 
 
             // Continue adding other details from formData

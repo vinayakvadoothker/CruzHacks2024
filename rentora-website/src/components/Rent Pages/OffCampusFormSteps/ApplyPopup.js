@@ -101,23 +101,23 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         // Check if all required fields are filled
         if (!applicationData.preferredMoveInDate ||
-            applicationData.numberOfPets < 0 || // Assuming 0 is a valid number of pets
+            applicationData.numberOfPets < 0 ||
             applicationData.signature.trim() === '') {
             alert('Please fill out all required fields before submitting the application.');
             return;
         }
-
+    
         if (!listing || !listing.address) {
             console.error('Listing data is not available or address is undefined');
             return;
         }
-
+    
         const formattedAddress = listing.address.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
         const clerkUserId = user.id;
-
+    
         // Extract selected roommates' information
         const selectedRoommatesData = selectedRoommates.map(userId => {
             const roommate = userDetails.find(user => user.id === userId);
@@ -127,50 +127,68 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 email: roommate.email
             };
         });
-
+    
         const dataToSave = {
             ...applicationData,
-            address: listing.address, // Saving the original address
+            address: listing.address,
             selectedRoommatesData: selectedRoommatesData
         };
-
+    
         try {
-            // Save the application data
+            // Save the application data to Firestore
             await db.collection('SurveyResponses')
                 .doc(clerkUserId)
                 .collection('offcampusapplications')
                 .doc(formattedAddress)
                 .set(dataToSave, { merge: true });
-            
-            selectedRoommatesData.forEach(roommate => {
-                sendEmailToRoommate({
-                    to: roommate.email,
-                    subject: 'Application Submission',
-                    html: `
-                        <html lang="en">
-                        <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Rentora Roommate Invitation</title>
-                        </head>
-                        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f8f8;">
-                        <div style="max-width: 600px; margin: 0 auto; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; background-color: #fff;">
-                            <p style="color: #333; margin-bottom: 15px; font-size: 1.2em; font-weight: bold;">Dear ${roommate.name},</p>
-                            <p style="color: #333; margin-bottom: 15px;">${user.firstName} ${user.lastName} has chosen you as a roommate and submitted an application for ${listing.address}.</p>
-                            <p style="color: #333; margin-bottom: 15px;">Thank you for choosing to rent with Rentora!</p>
-                            <p style="color: #333; margin-bottom: 15px; margin-top: 20px; font-style: italic;">Best regards,<br />Rentora</p>
-                        </div>
-                        </body>
-                        </html>
-                    `,
+    
+                selectedRoommatesData.forEach(async (roommate) => {
+                    await sendEmailToRoommate({
+                        to: roommate.email,
+                        subject: 'Application Submission',
+                        html: `
+                            <html lang="en">
+                            <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Rentora Roommate Invitation</title>
+                            </head>
+                            <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f8f8;">
+                            <div style="max-width: 600px; margin: 0 auto; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; background-color: #fff;">
+                                <p style="color: #333; margin-bottom: 15px; font-size: 1.2em; font-weight: bold;">Dear ${roommate.name},</p>
+                                <p style="color: #333; margin-bottom: 15px;">${user.firstName} ${user.lastName} has chosen you as a roommate and submitted an application for ${listing.address}.</p>
+                                <p style="color: #333; margin-bottom: 15px;">Thank you for choosing to rent with Rentora!</p>
+                                <p style="color: #333; margin-bottom: 15px; margin-top: 20px; font-style: italic;">Best regards,<br />Rentora</p>
+                            </div>
+                            </body>
+                            </html>
+                        `,
+                    });
                 });
-            });
 
-            closePopup();
-        } catch (error) {
-            console.error('Error submitting application:', error);
+        const roommateUserIds = selectedRoommatesData.map(r => r.id); // Get the IDs of the selected roommates
+        const response = await fetch('http://localhost:3200/combine-roommate-applications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userIds: [clerkUserId, ...roommateUserIds] }), // Include the primary applicant's userId as well
+        });
+
+        if (response.ok) {
+            const { url } = await response.json(); // Assuming the server responds with the URL of the combined PDF
+            console.log('Combined application created:', url);
+            // You might want to do something with the combined PDF URL here (e.g., show it to the user or save it in Firestore)
+        } else {
+            console.error('Failed to combine roommate applications');
         }
-    };
+
+        // Close the popup or navigate to a success page
+        closePopup();
+    } catch (error) {
+        console.error('Error submitting application, combining PDFs, or sending emails:', error);
+    }
+};
 
     const sendEmailToRoommate = async (emailData) => {
         try {

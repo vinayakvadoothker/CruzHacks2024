@@ -160,6 +160,7 @@ const OffCampusHousingFormStep6 = () => {
           setErrorMessage(''); // Clear error message when the user makes a selection
         }}
       >
+        <option value="Select A College">Select A College</option>
         <option value="Cowell College">Cowell College</option>
         <option value="Stevenson College">Stevenson College</option>
         <option value="Merrill College">Merrill College</option>

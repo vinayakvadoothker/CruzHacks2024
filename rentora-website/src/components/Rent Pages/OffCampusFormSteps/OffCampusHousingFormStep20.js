@@ -1,5 +1,3 @@
-// OffCampusHousingFormStep20.js
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
@@ -10,9 +8,19 @@ const OffCampusHousingFormStep20 = () => {
     const { user } = useUser();
     const navigate = useNavigate();
 
-    const [certificateFile] = useState(null);
     const [certificateUrlFromDb, setCertificateUrlFromDb] = useState(null);
+    const [modalUrl, setModalUrl] = useState(""); 
     const [showModal, setShowModal] = useState(false);
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        rentalWorkshopCertificate: '',
+    });
+
+    const closeModal = () => {
+        setModalUrl(""); // Clear the modal URL when closing
+        setShowModal(false);
+    };
 
     useEffect(() => {
         if (user) {
@@ -21,8 +29,14 @@ const OffCampusHousingFormStep20 = () => {
                 .get()
                 .then((doc) => {
                     if (doc.exists) {
-                        const formData = doc.data();
-                        setCertificateUrlFromDb(formData.rentalWorkshopCertificate);
+                        const userData = doc.data();
+                        setFormData(currentFormData => ({
+                            ...currentFormData,
+                            ...userData,
+                        }));
+                        if (userData.rentalWorkshopCertificate) {
+                            setCertificateUrlFromDb(userData.rentalWorkshopCertificate);
+                        }
                     }
                 })
                 .catch((error) => {
@@ -30,74 +44,53 @@ const OffCampusHousingFormStep20 = () => {
                 });
         }
     }, [user]);
-
+    
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
-            const certificateURL = await uploadFileToStorage(user.id, file);
-            await db.collection('SurveyResponses').doc(user.id).update({
-                rentalWorkshopCertificate: certificateURL,
-            });
-            setCertificateUrlFromDb(certificateURL);
+            if (formData.firstName && formData.lastName) { // Check if firstName and lastName are defined
+                const certificateURL = await uploadFileToStorage(user.id, file);
+                await db.collection('SurveyResponses').doc(user.id).update({
+                    rentalWorkshopCertificate: certificateURL,
+                });
+                setCertificateUrlFromDb(certificateURL);
+            } else {
+                console.error('User first name or last name is undefined.'); // Debug: Log an error if names are undefined
+            }
         }
     };
 
     const uploadFileToStorage = async (userId, file) => {
-        // Create a reference to the storage location
-        const fileName = `${user.firstName} ${user.lastName}-Rental_Certificate`;
+        // Use formData for fileName construction to include user's first and last name
+        const fileName = `${formData.firstName} ${formData.lastName}-Rental_Certificate`;
         const fileExtension = file.name.split('.').pop(); // Extract the file extension
         const storageRef = storage.ref(`userCertificates/${userId}/${fileName}.${fileExtension}`);
 
         try {
             // Check if the file already exists
             const fileSnapshot = await storageRef.getMetadata();
-
             // If file exists, delete it before uploading the new one
             if (fileSnapshot.name) {
                 await storageRef.delete();
-                console.log(`Existing file deleted: ${fileSnapshot.name}`);
             }
         } catch (error) {
-            if (error.code !== 'storage/object-not-found') {
-                // Handle any errors other than file not found
-                console.error("Error checking for existing file: ", error);
-                return '';
-            }
-            // If file doesn't exist, proceed to upload
-            console.log("No existing file. Proceeding to upload.");
+            // Proceed to upload if the file doesn't exist
         }
 
-        try {
-            // Upload the new file
-            const snapshot = await storageRef.put(file);
-            console.log('File uploaded successfully!', snapshot);
-            const downloadURL = await storageRef.getDownloadURL();
-            return downloadURL;
-        } catch (error) {
-            console.error("Error uploading file: ", error);
-            return '';
-        }
+        // Upload the new file
+        const snapshot = await storageRef.put(file);
+        const downloadURL = await storageRef.getDownloadURL();
+        return downloadURL;
     };
 
     const handleNext = () => {
-        console.log('Navigating to the next step');
         navigate('/rent/off-campus/step21');
     };
 
-    const [modalUrl, setModalUrl] = useState("");  // Store the URL of the link to display in the modal
-
-
-
-    const closeModal = () => {
-        setModalUrl(""); // Clear the modal URL when closing
-        setShowModal(false);
-    };
-
     const handleLinkClick = (newSrc) => {
-        window.open(newSrc, '_blank');
+        setModalUrl(newSrc); // Set the URL for the modal
+        setShowModal(true); // Open the modal
     };
-
-
 
 
     return (
@@ -119,7 +112,6 @@ const OffCampusHousingFormStep20 = () => {
                             src={modalUrl}
                             width="100%"
                             height="100%"
-                            frameBorder="0"
                             allowFullScreen
                         />
                         <button onClick={closeModal} className="close-button">Close</button>
@@ -142,7 +134,7 @@ const OffCampusHousingFormStep20 = () => {
             <div className="file-input-container">
                 <input
                     type="file"
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                    accept=".pdf"
                     onChange={handleFileChange}
                     className="input-field file-input"
                 />
