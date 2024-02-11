@@ -497,7 +497,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             // Example: Address, Phone, Email, Education, Employment History, etc.
 
             // Flatten the form to prevent editing after filling
-            const pdfBytes = await pdfDoc.save();
+            const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
 
             // Construct the folder path with user's first and last name
             const userFolderPath = `Rental Applications/${formData.firstName} ${formData.lastName}`;
