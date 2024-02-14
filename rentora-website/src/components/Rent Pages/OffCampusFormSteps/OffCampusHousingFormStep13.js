@@ -237,7 +237,7 @@ const OffCampusHousingFormStep13 = () => {
                             onChange={(e) => handleInputChange(index, 'monthlyRent', e.target.value)}
                         />
 
-                        <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
+                        
                     </div>
                     <div className="form-row">
                         <label>Start Date:</label>
@@ -298,6 +298,7 @@ const OffCampusHousingFormStep13 = () => {
                             value={entry.reasonForLeaving}
                             onChange={(e) => handleInputChange(index, 'reasonForLeaving', e.target.value)}
                         />
+                        <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
                     </div>
                 </div>
             ))}
@@ -305,6 +306,7 @@ const OffCampusHousingFormStep13 = () => {
             <div className="add-another-container">
                 <button onClick={handleAddEntry}>+ Add Another</button>
             </div>
+
 
             <Link to="/rent/off-campus/step12">
                 <span className="back-button">{'<-'}</span>

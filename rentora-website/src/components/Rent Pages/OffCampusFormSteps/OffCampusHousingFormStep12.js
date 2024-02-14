@@ -134,7 +134,7 @@ const OffCampusHousingFormStep12 = () => {
                             value={entry.title}
                             onChange={(e) => handleInputChange(index, 'title', e.target.value)}
                         />
-                        <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
+                        {/* <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button> */}
                     </div>
                     <div className="form-row">
                         <label>Start:</label>
@@ -171,6 +171,7 @@ const OffCampusHousingFormStep12 = () => {
                             </React.Fragment>
                         )}
                     </div>
+                    <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
                 </div>
             ))}
 

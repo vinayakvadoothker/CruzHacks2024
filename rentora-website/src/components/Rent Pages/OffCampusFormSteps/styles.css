@@ -40,6 +40,8 @@
   margin-bottom: 20px;
   font-weight: bold;
   font-family: monospace;
+  text-align: left; 
+  box-sizing: border-box;
 }
 
 /* Styles for the next and back button */
@@ -71,6 +73,7 @@
   align-items: center;
   transform: translate(30%, 10%);
 }
+
 
 .image-preview {
   width: 100px; /* Set the desired width */
@@ -163,7 +166,7 @@ label {
 }
 
 .add-another-container {
-  text-align: left;
+  text-align: center;
   margin-bottom: 10px; /* Adjust as needed */
   margin-top: 10px; /* Adjust as needed */
 }
@@ -251,6 +254,7 @@ label {
   text-decoration: none;
   cursor: pointer;
   transition: background 0.3s ease; /* Add a smooth background transition on hover */
+  margin: 10px; /* added margin to separate buttons for cleaner appearance */
 }
 
 .reference-form-button:hover,
@@ -375,4 +379,10 @@ label {
 /* Style for the close button */
 .close-button:hover {
   color: rgb(151, 151, 151); /* Change button color on hover */
+}
+
+.rental-history-entry, .employment-entry, .activities-entry {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  margin: 10px;
 }

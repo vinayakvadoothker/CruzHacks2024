@@ -32,5 +32,6 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 0px; /* Adjusted margin-bottom */
+    flex-direction: column;
   }
   
