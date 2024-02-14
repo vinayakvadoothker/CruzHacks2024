@@ -49,7 +49,6 @@ const Header = () => {
       dropdown.style.display = 'none';
     }
   };
-<Router></Router>
   return (
     <nav>
       <ul>
@@ -149,7 +148,7 @@ const Home = () => {
 };
 
 const App = () => {
-  
+
   return (
     <div className="app-container">
       <ClerkProvider publishableKey={clerkPubKey} googleMapsApiKey={googleMapsApiKey}>
@@ -186,7 +185,7 @@ const App = () => {
           />
         </Routes>
         <Routes>
-        <Route
+          <Route
             path="*"
             element={
               <SignedOut>
