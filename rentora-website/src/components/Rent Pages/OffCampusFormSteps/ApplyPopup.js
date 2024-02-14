@@ -32,7 +32,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await fetch('http://34.133.173.78:3002/fetch_user_details');
+                const response = await fetch('https://34.133.173.78:3002/fetch_user_details');
                 const data = await response.json();
 
                 const filteredData = data.filter(user => {
@@ -136,7 +136,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
     const sendEmailToRoommate = async (emailData) => {
         try {
             // Make a request to your server-side endpoint to send the email
-            const response = await fetch('http://34.133.173.78:3001/send-email', {
+            const response = await fetch('https://34.133.173.78:3001/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -217,7 +217,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
 
         try {
             // Sending POST request with application data to the combine-roommate-applications endpoint
-            const response = await fetch('http://34.133.173.78:3200/combine-roommate-applications', {
+            const response = await fetch('https://34.133.173.78:3200/combine-roommate-applications', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -259,7 +259,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
 
     const sendEmail = async (emailData) => {
         try {
-            const response = await fetch('http://34.133.173.78:3001/send-email', {
+            const response = await fetch('https://34.133.173.78:3001/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
