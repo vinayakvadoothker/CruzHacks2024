@@ -120,7 +120,7 @@ const OffCampusHousingFormStep21 = () => {
                               <h1 style="color: #333;">Dear ${guarantorName},</h1>
                               <p style="color: #666;">${user.firstName} requests you to fill out the Guarantor Form for their Rental Application.</p>
                               <p style="color: #666;">To access the form, click on the link below or copy and paste it into your browser:</p>
-    <a href="localhost:3000/guarantor/${user.id}" style="color: #3498db; text-decoration: underline;">localhost:3000/guarantor/${user.id}</a>
+    <a href="rentora.net/guarantor/${user.id}" style="color: #3498db; text-decoration: underline;">rentora.net/guarantor/${user.id}</a>
                               <p>Thank You,<br> Rentora</p>
                             </div>
                           </div>
@@ -144,7 +144,7 @@ const OffCampusHousingFormStep21 = () => {
     const sendEmailToGuarantor = async (emailData) => {
         try {
             // Make a request to your server-side endpoint to send the email
-            const response = await fetch('http://localhost:3001/send-email', {
+            const response = await fetch('http://34.133.173.78:3001/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
