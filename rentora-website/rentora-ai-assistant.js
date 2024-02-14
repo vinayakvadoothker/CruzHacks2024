@@ -4,6 +4,7 @@ const cors = require('cors'); // Import the cors middleware
 const app = express();
 
 app.use(express.json());
+const port = 3010; // You can change the port number as needed
 
 // CORS configuration
 const corsOptions = {
@@ -74,5 +75,6 @@ app.post('/api/chat', async (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 3005;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server is running on port ${port}`);
+});
