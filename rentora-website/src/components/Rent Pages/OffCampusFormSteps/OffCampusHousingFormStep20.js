@@ -100,7 +100,7 @@ const OffCampusHousingFormStep20 = () => {
                 Please Complete the Following Workshop and Upload Your Certificate
             </p>
 
-            <button onClick={() => handleLinkClick("https://canvas.ucsc.edu/enroll/7DWCHX")}>
+            <button onClick={() => handleLinkClick("http://canvas.ucsc.edu/enroll/7DWCHX")}>
                 Open Workshop
             </button>
 
