@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db, storage } from "../../config";
 import Spinner from './Spinner';
+import Stepper from './Stepper';
 import './styles.css';
 
 const OffCampusHousingFormStep19 = () => {
@@ -102,6 +103,7 @@ const OffCampusHousingFormStep19 = () => {
 
   return (
     <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+      <Stepper currentStep={18} />
       <h2 className="step-title">Letter of Reference</h2>
       <p className="step-description">Please Upload a Letter of Reference (Optional) - Limit 1</p>
 

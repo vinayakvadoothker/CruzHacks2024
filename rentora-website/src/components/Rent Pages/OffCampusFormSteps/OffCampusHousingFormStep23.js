@@ -4,6 +4,7 @@ import { useUser } from "@clerk/clerk-react";
 import { db } from "../../config";
 import axios from 'axios';
 import Spinner from './Spinner';
+import Stepper from './Stepper';
 import './styles.css';
 
 const OffCampusHousingFormStep23 = () => {
@@ -56,6 +57,7 @@ const OffCampusHousingFormStep23 = () => {
 
     return (
         <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '70vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+            <Stepper currentStep={22} />
             <h2 className="step-title">Guarantor Confirmation</h2>
             <p className="step-description">Status of the Guarantor Form:</p>
 

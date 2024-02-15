@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db, storage } from "../../config";
+import Stepper from './Stepper';
 import './styles.css';
 
 const OffCampusHousingFormStep20 = () => {
@@ -95,6 +96,7 @@ const OffCampusHousingFormStep20 = () => {
 
     return (
         <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+            <Stepper currentStep={19} />
             <h2 className="step-title">Rental Workshop Certificate</h2>
             <p className="step-description">
                 Please Complete the Following Workshop and Upload Your Certificate

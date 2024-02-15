@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db } from "../../config";
+import Stepper from './Stepper';
 import './styles.css';
 
 const OffCampusHousingFormStep21 = () => {
@@ -164,6 +165,7 @@ const OffCampusHousingFormStep21 = () => {
 
     return (
         <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+            <Stepper currentStep={20} />
             <h2 className="step-title">Letter of Guarantor</h2>
             <p className="step-description">Please Add A Guarantor Who Will Fill Out the Guarantor Form</p>
 
