@@ -19,6 +19,8 @@
     font-weight: 300; /* Adjust font weight to make it thinner */
     color: #fff; /* Text color */
     align-self: flex-start; /* Align title to the start (left) of the container */
+    margin-top: 70px; /* Add margin to move the title down */
+    margin-right: auto; /* Push the title to the leftmost side */
   }
   
   .container {
@@ -35,7 +37,7 @@
     border-radius: 5px;
     text-decoration: none;
     cursor: pointer;
-    margin-top: 25px; /* Add margin to move the buttons down */
+    margin-top: 80px; /* Add margin to move the buttons down */
     margin-right: 20px;
   }
   
