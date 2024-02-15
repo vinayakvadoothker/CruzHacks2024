@@ -65,7 +65,7 @@ const OffCampusHousingFormStep6 = () => {
   };
 
   const saveAnswer = () => {
-    if (user && formData.college && isReferenceFormCompleted) {
+    if (user && formData.college !== '' && formData.college !== 'Select A College' && isReferenceFormCompleted) {
       const collegeInfo = getCollegeInfo(formData.college);
       
       db.collection('SurveyResponses')
@@ -88,7 +88,7 @@ const OffCampusHousingFormStep6 = () => {
     } else {
       setErrorMessage("Please select a valid college and complete the UCSC Reference Release Form");
     }
-  };
+  };  
 
   const getCollegeInfo = (college) => {
     // Define the campus address and phone number for each college
@@ -203,7 +203,7 @@ const OffCampusHousingFormStep6 = () => {
       <button
         className="next-button"
         onClick={saveAnswer}
-        disabled={isNextButtonDisabled}
+        // disabled={isNextButtonDisabled}
       >
         Next
       </button>
