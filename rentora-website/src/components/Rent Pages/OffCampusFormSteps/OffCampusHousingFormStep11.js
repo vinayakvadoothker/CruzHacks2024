@@ -144,7 +144,7 @@ const OffCampusHousingFormStep11 = () => {
                             value={entry.title}
                             onChange={(e) => handleInputChange(index, 'title', e.target.value)}
                         />
-                        <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
+                        
                     </div>
                     <div className="form-row">
                         <label>Start:</label>
@@ -192,6 +192,7 @@ const OffCampusHousingFormStep11 = () => {
                             onChange={(e) => handleInputChange(index, 'cityOfEmployment', e.target.value)}
                         />
                     </div>
+                    <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
                 </div>
             ))}
             <div className="add-another-container">
