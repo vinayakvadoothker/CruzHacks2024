@@ -1,7 +1,7 @@
 // ProfilePage.js
 import React, { useRef, useEffect, useState } from 'react';
 import { useClerk } from '@clerk/clerk-react';
-import { db } from "../config";
+import { db } from "./config.js";
 
 
 
@@ -40,12 +40,12 @@ const ProfilePage = () => {
 
   // Dummy data for demonstration, replace with actual user data
   const userProfile = {
-    firstName: user?.firstName ?? 'John',
-    lastName: user?.lastName ?? 'Doe',
-    email: user?.primaryEmailAddress?.email ?? 'john.doe@example.com',
-    phoneNumber: user?.primaryPhoneNumber?.phoneNumber ?? '123-456-7890',
+    firstName: user?.firstName ?? '',
+    lastName: user?.lastName ?? '',
+    email: user?.primaryEmailAddress?.email ?? '',
+    phoneNumber: user?.primaryPhoneNumber?.phoneNumber ?? '',
     profileImage: user?.imageUrl ?? 'url_to_default_image.jpg',
-    housingPreferences: user?.housingPreferences ?? 'Your housing preferences here',
+    housingPreferences: user?.housingPreferences ?? '',
   };
 
   // Function to handle editing the profile image
@@ -74,9 +74,9 @@ const ProfilePage = () => {
   };
 
   return (
-    <div style={styles.container} className="form-container">
+    <div style={{ ...styles.container, maxWidth: '290px' }} className="form-container">
       {/* Profile Image with Edit Button */}
-      <div style={styles.imageContainer}>
+      <div style={{ ...styles.imageContainer, marginBottom: '20px' }}>
         <img src={userProfile.profileImage} alt="Profile" style={styles.profileImage} />
         <div style={styles.editImageButtonContainer}>
           <button onClick={handleEditProfileImage} style={styles.editImageButton}>
@@ -92,48 +92,49 @@ const ProfilePage = () => {
           onChange={handleFileChange}
         />
       </div>
-
+  
       {/* User Name */}
-      <div style={styles.nameContainer}>
+      <div style={{ ...styles.nameContainer, marginBottom: '20px' }}>
         <h2 style={styles.userName}>
           <strong>{userProfile.firstName} {userProfile.lastName}</strong>
         </h2>
         <p style={styles.username}>{user?.username && <em>{user.username}</em>}</p>
       </div>
-
+  
       {/* Contact Info */}
-      <div style={styles.contactContainer}>
+      <div style={{ ...styles.contactContainer, marginBottom: '20px' }}>
+        {/* Add your contact info elements here */}
       </div>
-
+  
       {/* Preferences for Housing Types */}
-      <div style={styles.preferencesContainer}>
+      <div style={{ ...styles.preferencesContainer, marginBottom: '20px' }}>
         <h3 style={styles.preferencesHeading}>Rental Application Packet</h3>
       </div>
       {/* Display the PDF URL */}
       {pdfUrl && (
-  <div style={{ marginTop: '20px' }}>
-    <h3 style={{ marginBottom: '10px' }}>Your Rental Application:</h3>
-    <button
-      style={{
-        backgroundColor: '#3498db',
-        color: '#fff',
-        border: 'none',
-        padding: '10px 20px',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontWeight: 'bold',
-        fontFamily: 'monospace',
-        fontSize: '16px',
-      }}
-      onClick={() => window.open(pdfUrl, '_blank')}
-    >
-      View PDF
-    </button>
-  </div>
-)}
-
+        <div style={{ marginBottom: '20px' }}>
+          <h3 style={{ marginBottom: '10px' }}>Your Rental Application:</h3>
+          <button
+            style={{
+              backgroundColor: '#3498db',
+              color: '#fff',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontFamily: 'monospace',
+              fontSize: '16px',
+            }}
+            onClick={() => window.open(pdfUrl, '_blank')}
+          >
+            View PDF
+          </button>
+        </div>
+      )}
     </div>
   );
+  
 };
 
 export default ProfilePage;
@@ -163,7 +164,7 @@ const styles = {
   editImageButton: {
     position: 'absolute',
     bottom: '0',
-    right: '0',
+    right: '-110px',
     transform: 'translate(-520%, 50%)', // Center the button
     backgroundColor: '#3498db',
     color: '#fff',

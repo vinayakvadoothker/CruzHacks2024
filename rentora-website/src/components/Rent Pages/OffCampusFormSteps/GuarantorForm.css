@@ -1,17 +1,29 @@
 /* Global styles for the form container */
-.form-container {
-    max-width: 1400px; /* Adjust the max-width as needed */
-    margin: auto;
-    padding: 30px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    overflow: hidden; /* Add this line to prevent overflow */
+@media (max-width: 768px) {
+  .form-container {
+      max-width: 1400px; /* Adjust the max-width as needed */
+      margin: auto;
+      padding: 30px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      overflow: hidden; /* Add this line to prevent overflow */
+  }
+}
+
+  @media (max-width: 767px) {
+    .form-container {
+      width: 90%;
+      margin: 75px auto;
+      max-height: 83vh;
+      overflow-Y: auto;
+      padding: 20px 
+    }
   }
   
   /* Styles for input fields */

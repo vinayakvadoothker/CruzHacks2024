@@ -2,19 +2,21 @@
 
 /* Global styles for the form container */
 .form-container {
-  max-width: 1000px;
-  margin: auto;
-  padding: 50px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  overflow-y: auto; /* Add overflow-y property to enable scrolling */
-  max-height: 80vh; /* Set a maximum height to limit the container size */
+    width: 50%;
+    margin: 75px auto;
+    max-height: 70vh;
+    overflow-Y: auto;
+    text-align: center;
+    max-width: 1400px; /* Adjust the max-width as needed */
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px 
 }
 
 /* Styles for step titles */
@@ -35,7 +37,7 @@
 
 /* Styles for input fields */
 .input-field {
-  width: 100%;
+  width: 95%;
   padding: 10px;
   margin-bottom: 20px;
   font-weight: bold;
@@ -98,6 +100,9 @@ label {
   width: 100%;
 }
 
+.apply-button {
+  background-color: #787cff2a;
+}
 .react-datepicker {
   font-family: monospace;
   font-weight: bold;
@@ -196,6 +201,9 @@ label {
   display: flex;
   flex-direction: column;
   gap: 15px; /* Adjust the gap as needed */
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
 }
 
 .name-relation-group,
@@ -254,7 +262,7 @@ label {
   text-decoration: none;
   cursor: pointer;
   transition: background 0.3s ease; /* Add a smooth background transition on hover */
-  margin: 10px; /* added margin to separate buttons for cleaner appearance */
+  margin: 10px;
 }
 
 .reference-form-button:hover,
@@ -270,9 +278,12 @@ label {
 
 /* Listings */
 .listing-item {
-  background-color: #ffffff;
+  background-color: #d4d4ff44;
+  width: 98%;
+  overflow: auto;
+  margin: -8px;
   border-radius: 10px;
-  padding: 20px;
+  padding: 10px;
   margin-bottom: 20px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -294,8 +305,8 @@ label {
 
 .listing-item p {
   margin: 5px 0;
-  max-width: 100%;
-  white-space: nowrap;
+  max-width: 110%;
+  white-space: wrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
@@ -319,6 +330,7 @@ label {
 .thumbnail-container {
   width: 100px; /* Adjust the width as needed */
   margin: 0 auto;
+  cursor: pointer;
 }
 
 .modal-overlay {
@@ -381,8 +393,9 @@ label {
   color: rgb(151, 151, 151); /* Change button color on hover */
 }
 
-.rental-history-entry, .employment-entry, .activities-entry {
-  background-color: rgba(0, 0, 0, 0.3);
+.rental-history-entry, .employment-entry, .activities-entry, .car-entry, .income-entry, .reference-entry {
+  background-color: rgba(155, 180, 255, 0.348);
   border-radius: 10px;
   margin: 10px;
+  padding: 10px;
 }

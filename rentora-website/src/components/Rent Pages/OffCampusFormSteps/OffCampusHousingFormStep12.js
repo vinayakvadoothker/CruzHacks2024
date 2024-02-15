@@ -116,7 +116,7 @@ const OffCampusHousingFormStep12 = () => {
 
 
     return (
-        <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+        <div className="form-container" /*style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}*/>
         <Stepper currentStep={11} />
         <h2 className="step-title">Extracurricular Activities</h2>
             <p className="step-description">Please Add Your Extracurricular Activities:</p>
@@ -179,6 +179,9 @@ const OffCampusHousingFormStep12 = () => {
 
             <div className="add-another-container">
                 <button onClick={handleAddEntry}>+ Add Another</button>
+                {formData.activitiesHistory.length > 0 && (
+            <button onClick={() => handleDeleteEntry(formData.activitiesHistory.length - 1)}>- Delete Entry</button>
+        )}
             </div>
 
             <Link to="/rent/off-campus/step11">

@@ -169,14 +169,14 @@ const OffCampusHousingFormStep14 = () => {
     };
 
     return (
-        <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+        <div className="form-container" style={{ overflowY: 'auto', overflowX: 'auto' }}/*style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}*/>
         <Stepper currentStep={13} />
         <h2 className="step-title">Monthly Income</h2>
             <p className="step-description">Please Add Your Monthly Income:</p>
 
             {Array.isArray(formData.monthlyIncome2) && formData.monthlyIncome2.map((entry, index) => (
                 <div key={index} className="monthly-income-entry">
-                    <div className="form-row">
+                    <div className="form-row income-entry">
                         <label>Source:</label>
                         <select
                             value={entry.source}

@@ -71,7 +71,7 @@ const OffCampusHousingFormStep8 = () => {
   ];
 
   return (
-    <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+    <div className="form-container">
     <Stepper currentStep={7} />
     <h2 className="step-title">What State or Country Are You From?</h2>
       <p className="step-description">Choose the most recent State/Country of Residence:</p>

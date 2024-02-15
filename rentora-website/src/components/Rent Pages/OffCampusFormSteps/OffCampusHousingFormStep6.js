@@ -153,7 +153,7 @@ const OffCampusHousingFormStep6 = () => {
   const isNextButtonDisabled = formData.college === '' || formData.college === 'Select a College' || !isReferenceFormCompleted;
 
   return (
-    <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+    <div className="form-container">
     <Stepper currentStep={5} />
     <h2 className="step-title">College Affiliation</h2>
       <p className="step-description">Select your college:</p>

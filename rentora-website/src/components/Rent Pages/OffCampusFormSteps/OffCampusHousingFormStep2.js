@@ -64,7 +64,7 @@ const OffCampusHousingFormStep2 = () => {
   };
 
   return (
-    <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+    <div className="form-container">
       <Stepper currentStep={1} />
       <h2 className="step-title">Name and Date of Birth</h2>
       <p className="step-description">Confirm This Is Your Legal Name and Enter Your Date of Birth*</p>

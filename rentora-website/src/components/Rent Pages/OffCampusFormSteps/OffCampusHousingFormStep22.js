@@ -125,7 +125,7 @@ const OffCampusHousingFormStep22 = () => {
     };
 
     return (
-        <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+        <div className="form-container" >
             <Stepper currentStep={21} />
             <h2 className="step-title">Vehicle Information</h2>
             <p className="step-description">Please Provide Information About Your Vehicles</p>
@@ -156,13 +156,16 @@ const OffCampusHousingFormStep22 = () => {
                             onChange={(e) => handleInputChange(index, 'licenseNumber', e.target.value.toUpperCase())}
                             autoCapitalize="characters"
                         />
-                        <button onClick={() => handleDeleteCar(index)}> - </button>
+                        {/* <button onClick={() => handleDeleteCar(index)}> - </button> */}
                     </div>
                 </div>
             ))}
 
             <div className="add-another-container">
                 <button onClick={handleAddCar}>+ Add Another Car</button>
+                {formData.vehicleInfo.length > 0 && ( // Only show the delete button if there are car entries
+        <button onClick={() => handleDeleteCar(formData.vehicleInfo.length - 1)}> - Remove Last Car</button>
+    )}
             </div>
 
             <Link to="/rent/off-campus/step21">

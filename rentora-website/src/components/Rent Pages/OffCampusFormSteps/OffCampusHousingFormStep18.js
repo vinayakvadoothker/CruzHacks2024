@@ -213,7 +213,7 @@ const OffCampusHousingFormStep18 = () => {
   ];
 
   return (
-    <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '60vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+    <div className="form-container">
       <Stepper currentStep={17} />
       <h2 className="step-title">Photo ID</h2>
       <p className="step-description">Please Upload a Government-Issued Photo ID*</p>

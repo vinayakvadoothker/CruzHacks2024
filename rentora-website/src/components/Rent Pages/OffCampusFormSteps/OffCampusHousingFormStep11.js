@@ -124,7 +124,7 @@ const OffCampusHousingFormStep11 = () => {
     };
 
     return (
-        <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+        <div className="form-container"  /*style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}*/>
         <Stepper currentStep={10} />
         <h2 className="step-title">Employment History</h2>
             <p className="step-description">Please Add Your Previous and Current Employment History</p>
@@ -144,7 +144,7 @@ const OffCampusHousingFormStep11 = () => {
                             value={entry.title}
                             onChange={(e) => handleInputChange(index, 'title', e.target.value)}
                         />
-                        
+                        {/*  */}
                     </div>
                     <div className="form-row">
                         <label>Start:</label>
@@ -197,6 +197,9 @@ const OffCampusHousingFormStep11 = () => {
             ))}
             <div className="add-another-container">
                 <button onClick={handleAddEntry}>+ Add Another</button>
+                {formData.employmentHistory.length > 0 && (
+            <button onClick={() => handleDeleteEntry(formData.employmentHistory.length - 1)}>- Delete Entry</button>
+        )}
             </div>
 
             <Link to="/rent/off-campus/step10">
