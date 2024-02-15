@@ -1,6 +1,26 @@
 /* Your existing styles */
 
 /* Global styles for the form container */
+@media (max-width: 600px) {
+  .form-container {
+    width: 50%;
+    margin: 75px auto;
+    max-height: 10vh;
+    overflow-Y: auto;
+    text-align: center;
+    max-width: 20; /* Adjust the max-width as needed */
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+}
+}
+
 .form-container {
     width: 50%;
     margin: 75px auto;
@@ -18,6 +38,8 @@
     transform: translate(-50%, -50%);
     padding: 20px 
 }
+
+
 
 /* Styles for step titles */
 .step-title {
