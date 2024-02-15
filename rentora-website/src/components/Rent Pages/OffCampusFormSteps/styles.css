@@ -195,6 +195,10 @@ label {
   display: flex;
   flex-direction: column;
   gap: 15px; /* Adjust the gap as needed */
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
 }
 
 .name-relation-group,
@@ -253,6 +257,7 @@ label {
   text-decoration: none;
   cursor: pointer;
   transition: background 0.3s ease; /* Add a smooth background transition on hover */
+  margin: 10px;
 }
 
 .reference-form-button:hover,
@@ -296,7 +301,7 @@ label {
 .listing-item p {
   margin: 5px 0;
   max-width: 110%;
-  white-space: nowrap;
+  white-space: wrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
@@ -380,4 +385,11 @@ label {
 /* Style for the close button */
 .close-button:hover {
   color: rgb(151, 151, 151); /* Change button color on hover */
+}
+
+.rental-history-entry, .employment-entry, .activities-entry, .car-entry, .income-entry {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
 }

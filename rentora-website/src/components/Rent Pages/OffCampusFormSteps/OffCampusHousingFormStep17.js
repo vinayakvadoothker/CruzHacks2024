@@ -152,7 +152,7 @@ const OffCampusHousingFormStep17 = () => {
     };
 
     return (
-        <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+        <div className="form-container">
         <h2 className="step-title">References</h2>
             <p className="step-description">Please Add All Your References (At Least 2, Up To 3)</p>
             <p className="step-description">First Contact will Also Be Used as Emergency Contact</p>

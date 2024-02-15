@@ -174,7 +174,7 @@ const OffCampusHousingFormStep14 = () => {
 
             {Array.isArray(formData.monthlyIncome2) && formData.monthlyIncome2.map((entry, index) => (
                 <div key={index} className="monthly-income-entry">
-                    <div className="form-row">
+                    <div className="form-row income-entry">
                         <label>Source:</label>
                         <select
                             value={entry.source}

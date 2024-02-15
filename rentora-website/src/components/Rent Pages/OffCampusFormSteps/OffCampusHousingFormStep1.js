@@ -71,7 +71,7 @@ const OffCampusHousingFormStep1 = () => {
     };
 
     return (
-        <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+        <div className="form-container" >
             <h2 className="step-title">Start By Getting Pre-Qualified (~20 Minutes)</h2>
             <p className="step-description">Select Your School</p>
             <form onSubmit={saveAnswer}>

@@ -1,7 +1,7 @@
 // ProfilePage.js
 import React, { useRef, useEffect, useState } from 'react';
 import { useClerk } from '@clerk/clerk-react';
-import { db } from "../config";
+import { db } from "./config.js";
 
 
 
@@ -40,12 +40,12 @@ const ProfilePage = () => {
 
   // Dummy data for demonstration, replace with actual user data
   const userProfile = {
-    firstName: user?.firstName ?? 'John',
-    lastName: user?.lastName ?? 'Doe',
-    email: user?.primaryEmailAddress?.email ?? 'john.doe@example.com',
-    phoneNumber: user?.primaryPhoneNumber?.phoneNumber ?? '123-456-7890',
+    firstName: user?.firstName ?? '',
+    lastName: user?.lastName ?? '',
+    email: user?.primaryEmailAddress?.email ?? '',
+    phoneNumber: user?.primaryPhoneNumber?.phoneNumber ?? '',
     profileImage: user?.imageUrl ?? 'url_to_default_image.jpg',
-    housingPreferences: user?.housingPreferences ?? 'Your housing preferences here',
+    housingPreferences: user?.housingPreferences ?? '',
   };
 
   // Function to handle editing the profile image

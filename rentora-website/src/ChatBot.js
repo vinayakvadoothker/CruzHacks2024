@@ -58,8 +58,7 @@ const ChatBot = () => {
   return (
     <div>
       <button onClick={toggleChat} className="open-chat-button">
-        <Widget 
-          style={{ innerWidth: 100 }}
+        <Widget
           handleNewUserMessage={handleNewUserMessage}
           title="Rentora"
           subtitle="Ask Your Rental Questions"
