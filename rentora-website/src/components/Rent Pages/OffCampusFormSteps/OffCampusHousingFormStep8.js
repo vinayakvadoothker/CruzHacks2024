@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { db } from "../../config";
 import { useUser } from "@clerk/clerk-react";
+import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
 const OffCampusHousingFormStep8 = () => {
@@ -71,6 +72,7 @@ const OffCampusHousingFormStep8 = () => {
 
   return (
     <div className="form-container">
+    <Stepper currentStep={7} />
     <h2 className="step-title">What State or Country Are You From?</h2>
       <p className="step-description">Choose the most recent State/Country of Residence:</p>
 

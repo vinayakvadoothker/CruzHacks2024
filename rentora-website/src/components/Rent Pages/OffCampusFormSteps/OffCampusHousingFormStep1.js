@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from "../../config";
 import { useUser } from "@clerk/clerk-react";
+import Stepper from './Stepper';
 import './styles.css';
 
 const OffCampusHousingFormStep1 = () => {
@@ -70,8 +71,10 @@ const OffCampusHousingFormStep1 = () => {
         setFormData({ ...formData, addToRoommateSearch: e.target.checked });
     };
 
+    const totalSteps = 23;
     return (
         <div className="form-container" >
+            <Stepper currentStep={0}/> {/* For Step 1, the currentStep is 0 */}
             <h2 className="step-title">Start By Getting Pre-Qualified (~20 Minutes)</h2>
             <p className="step-description">Select Your School</p>
             <form onSubmit={saveAnswer}>

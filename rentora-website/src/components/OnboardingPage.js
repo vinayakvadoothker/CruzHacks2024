@@ -1,31 +1,46 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import SignupSignInPopup from './SignUpSignInPopup';
+import SignUp from './SignUp';
+import SignIn from './SignIn';
 import '../App.css';
+import './OnboardingPage.css'
 
 const OnboardingPage = () => {
-  const [isPopupOpen, setPopupOpen] = useState(false);
+  const [isSignUpPopupOpen, setSignUpPopupOpen] = useState(false);
+  const [isSignInPopupOpen, setSignInPopupOpen] = useState(false);
   const navigate = useNavigate(); // useNavigate hook
 
-  const handleGetStartedClick = () => {
-    setPopupOpen(true);
+  const handleSignUpClick = () => {
+    setSignUpPopupOpen(true);
+    setSignInPopupOpen(false);
+  };
+
+  const handleSignInClick = () => {
+    setSignInPopupOpen(true);
+    setSignUpPopupOpen(false);
   };
 
   const handleClosePopup = () => {
-    setPopupOpen(false);
-    // Redirect to the dashboard page after signing in
+    setSignUpPopupOpen(false);
+    setSignInPopupOpen(false);
     navigate('/onboarding');
   };
 
   return (
-    <div>
+    <div className="onboarding-page">
       <header>
-        <h1 className="header-title">Rentora</h1>
       </header>
-      <Link to="#" className="get-started-btn" onClick={handleGetStartedClick}>
-        Get Started
+      <h1 className="title">Rentora</h1>
+      <Link to="#" className="sign-up-btn" onClick={handleSignUpClick}>
+        Sign Up
       </Link>
-      {isPopupOpen && <SignupSignInPopup onClose={handleClosePopup} />}
+      <Link to="#" className="sign-in-btn" onClick={handleSignInClick}>
+        Sign In
+      </Link>
+      {isSignUpPopupOpen && <SignUp onClose={handleClosePopup} />}
+      {isSignInPopupOpen && <SignIn onClose={handleClosePopup} />}
+
+
     </div>
   );
 };

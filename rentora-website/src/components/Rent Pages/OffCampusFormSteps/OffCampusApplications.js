@@ -17,7 +17,7 @@ const OffCampusApplications = () => {
                     .doc(user.id)
                     .collection('offcampusapplications')
                     .get();
-                
+
                 const userApplications = applicationsResponse.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
@@ -54,6 +54,14 @@ const OffCampusApplications = () => {
         return address.replace(/_/g, ' ');
     }
 
+    const handleViewApplication = (combinedPdfUrl) => {
+        if (combinedPdfUrl) {
+            window.open(combinedPdfUrl, '_blank');
+        } else {
+            alert('Combined application PDF is not available.');
+        }
+    };
+
     return (
         <div className="scrollable-container" style={{ width: '50%', margin: '60px auto', maxHeight: '60vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
             <div className="offcampus-applications-container">
@@ -65,14 +73,15 @@ const OffCampusApplications = () => {
                         <p>Number of Pets: {application.numberOfPets}</p>
                         <p>Any Smokers? {application.anySmokers ? 'Yes' : 'No'}</p>
                         <h4>Roommates</h4>
-                        {application.selectedRoommatesData.map(roommate => (
+                        {application.selectedRoommatesData?.map(roommate => ( 
                             <div key={roommate.id}>
                                 <p>{roommate.name}</p>
                             </div>
-                        ))}
-                        <button onClick={() => handleEdit(application.id)}>Edit</button>
+                        )) ?? []}
+                        <button onClick={() => handleViewApplication(application.combinedPdfUrl)}>View Application</button>
                     </div>
                 ))}
+
 
                 {editApplication && (
                     <ApplyPopup

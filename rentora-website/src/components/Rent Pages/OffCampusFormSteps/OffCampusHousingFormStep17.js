@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { db } from "../../config";
 import { useUser } from "@clerk/clerk-react";
+import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
 const OffCampusHousingFormStep17 = () => {
@@ -153,6 +154,7 @@ const OffCampusHousingFormStep17 = () => {
 
     return (
         <div className="form-container">
+        <Stepper currentStep={16} />
         <h2 className="step-title">References</h2>
             <p className="step-description">Please Add All Your References (At Least 2, Up To 3)</p>
             <p className="step-description">First Contact will Also Be Used as Emergency Contact</p>

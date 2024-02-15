@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { db } from "../../config";
 import { useUser } from "@clerk/clerk-react";
+import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
 const OffCampusHousingFormStep7 = () => {
@@ -67,6 +68,7 @@ const OffCampusHousingFormStep7 = () => {
 
   return (
     <div className="form-container">
+    <Stepper currentStep={6} />
     <h2 className="step-title">What Is Your {formData.schoolName} ID #</h2>
       <p className="step-description">Please input your college ID:</p>
 

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db, storage } from "../../config";
 import Spinner from './Spinner';
+import Stepper from './Stepper';
 import './styles.css';
 
 const OffCampusHousingFormStep5 = () => {
@@ -71,6 +72,7 @@ const OffCampusHousingFormStep5 = () => {
 
   return (
     <div className="form-container">
+      <Stepper currentStep={4} />
       <h2 className="step-title">Upload Profile Picture</h2>
       <p className="step-description">Please Upload a Professional Picture For The Cover Of Your Application *</p>
       {uploading ? (

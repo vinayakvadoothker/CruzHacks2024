@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db, storage } from "../../config";
+import Stepper from './Stepper';
 import './styles.css';
 
 const OffCampusHousingFormStep20 = () => {
@@ -95,12 +96,13 @@ const OffCampusHousingFormStep20 = () => {
 
     return (
         <div className="form-container">
+            <Stepper currentStep={19} />
             <h2 className="step-title">Rental Workshop Certificate</h2>
             <p className="step-description">
                 Please Complete the Following Workshop and Upload Your Certificate
             </p>
 
-            <button onClick={() => handleLinkClick("https://canvas.ucsc.edu/enroll/7DWCHX")}>
+            <button onClick={() => handleLinkClick("http://canvas.ucsc.edu/enroll/7DWCHX")}>
                 Open Workshop
             </button>
 

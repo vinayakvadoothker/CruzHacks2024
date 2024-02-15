@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import {SignedOut, SignUp, useClerk } from "@clerk/clerk-react";
+import {SignedOut, SignIn, useClerk } from "@clerk/clerk-react";
 import { useNavigate } from 'react-router-dom';
 
-const SignupSignInPopup = ({ onClose }) => {
+const SignInPopup = ({ onClose }) => {
   const navigate = useNavigate();
   const { session } = useClerk();
 
@@ -29,8 +29,8 @@ const SignupSignInPopup = ({ onClose }) => {
           X
         </button>
           <div className="clerk-signin-container">
-              <SignUp>
-              </SignUp>
+              <SignIn>
+              </SignIn>
           </div>
       </div>
     </div>
@@ -49,4 +49,4 @@ const popupStyles = {
   overflow: 'hidden',
 };
 
-export default SignupSignInPopup;
+export default SignInPopup;

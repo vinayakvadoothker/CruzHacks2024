@@ -4,6 +4,7 @@ import { useUser } from "@clerk/clerk-react";
 import { db } from "../../config";
 import axios from 'axios';
 import Spinner from './Spinner';
+import Stepper from './Stepper';
 import './styles.css';
 
 const OffCampusHousingFormStep23 = () => {
@@ -39,7 +40,7 @@ const OffCampusHousingFormStep23 = () => {
                 offcampusformdone: true,
             });
 
-            const response = await axios.get(`http://localhost:3010/generate-pdf/${user.id}`, {
+            const response = await axios.get(`http://35.239.196.142:3010/generate-pdf/${user.id}`, {
                 responseType: 'blob',
             });
 
@@ -56,6 +57,7 @@ const OffCampusHousingFormStep23 = () => {
 
     return (
         <div className="form-container" >
+            <Stepper currentStep={22} />
             <h2 className="step-title">Guarantor Confirmation</h2>
             <p className="step-description">Status of the Guarantor Form:</p>
 

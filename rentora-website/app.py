@@ -38,4 +38,4 @@ def fetch_user_details_route():
 
 if __name__ == "__main__":
     # Run Flask app on port 3000
-    app.run(debug=True, port=3002)
+    app.run(host='0.0.0.0', port=3002, debug=True)

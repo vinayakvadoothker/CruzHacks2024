@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { db } from "../../config";
 import { useUser } from "@clerk/clerk-react";
+import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
 const OffCampusHousingFormStep10 = () => {
@@ -71,6 +72,7 @@ const OffCampusHousingFormStep10 = () => {
 
   return (
     <div className="form-container">
+    <Stepper currentStep={9} />
     <h2 className="step-title">Time At {formData.schoolName}</h2>
       <p className="step-description">Start Date - Proposed End Date</p>
 

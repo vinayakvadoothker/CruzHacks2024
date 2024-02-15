@@ -24,7 +24,7 @@ const ChatBot = () => {
     setIsLoading(true);
 
     // Send the user's message to your server and receive a response
-    fetch('http://localhost:3005/api/chat', {
+    fetch('https://34.133.173.78:3005/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

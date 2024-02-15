@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { db } from "../../config";
 import { useUser } from "@clerk/clerk-react";
+import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
 const OffCampusHousingFormStep16 = () => {
@@ -95,6 +96,7 @@ const OffCampusHousingFormStep16 = () => {
 
     return (
         <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+        <Stepper currentStep={15} />
         <h2 className="step-title">Credit Cards</h2>
             <p className="step-description">Please List All Your Credit Cards</p>
 

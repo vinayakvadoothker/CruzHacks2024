@@ -42,6 +42,8 @@
   margin-bottom: 20px;
   font-weight: bold;
   font-family: monospace;
+  text-align: left; 
+  box-sizing: border-box;
 }
 
 /* Styles for the next and back button */
@@ -74,6 +76,7 @@
   transform: translate(30%, 10%);
 }
 
+
 .image-preview {
   width: 100px; /* Set the desired width */
   height: 100px; /* Set the desired height */
@@ -97,6 +100,9 @@ label {
   width: 100%;
 }
 
+.apply-button {
+  background-color: #787cff2a;
+}
 .react-datepicker {
   font-family: monospace;
   font-weight: bold;
@@ -165,7 +171,7 @@ label {
 }
 
 .add-another-container {
-  text-align: left;
+  text-align: center;
   margin-bottom: 10px; /* Adjust as needed */
   margin-top: 10px; /* Adjust as needed */
 }
@@ -195,7 +201,6 @@ label {
   display: flex;
   flex-direction: column;
   gap: 15px; /* Adjust the gap as needed */
-  background-color: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   margin: 10px;
   padding: 10px;
@@ -273,7 +278,7 @@ label {
 
 /* Listings */
 .listing-item {
-  background-color: #ffffff;
+  background-color: #d4d4ff44;
   width: 98%;
   overflow: auto;
   margin: -8px;
@@ -325,6 +330,7 @@ label {
 .thumbnail-container {
   width: 100px; /* Adjust the width as needed */
   margin: 0 auto;
+  cursor: pointer;
 }
 
 .modal-overlay {
@@ -387,8 +393,8 @@ label {
   color: rgb(151, 151, 151); /* Change button color on hover */
 }
 
-.rental-history-entry, .employment-entry, .activities-entry, .car-entry, .income-entry {
-  background-color: rgba(0, 0, 0, 0.3);
+.rental-history-entry, .employment-entry, .activities-entry, .car-entry, .income-entry, .reference-entry {
+  background-color: rgba(155, 180, 255, 0.348);
   border-radius: 10px;
   margin: 10px;
   padding: 10px;

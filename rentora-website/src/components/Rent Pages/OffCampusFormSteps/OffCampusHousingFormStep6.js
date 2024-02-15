@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { db } from "../../config";
 import { useUser } from "@clerk/clerk-react";
+import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
 const OffCampusHousingFormStep6 = () => {
@@ -53,19 +54,28 @@ const OffCampusHousingFormStep6 = () => {
     }
   }, [formData.schoolName, navigate]);
 
+  useEffect(() => {
+    // Check if the reference form has been completed in localStorage
+    const isCompleted = localStorage.getItem('referenceFormCompleted');
+    if (isCompleted) {
+      setIsReferenceFormCompleted(true);
+    }
+  }, []);
+
   const handleReferenceFormClick = () => {
     // Open the reference form link in a new tab or window
     window.open("http://studenthousing.ucsc.edu/");
 
     // Mark the reference form as completed
     setIsReferenceFormCompleted(true);
+    localStorage.setItem('referenceFormCompleted', 'true');
 
     // Show an alert to notify the user
     alert("UCSC Reference Release Form Completed!");
   };
 
   const saveAnswer = () => {
-    if (user && formData.college && isReferenceFormCompleted) {
+    if (user && formData.college !== '' && formData.college !== 'Select A College' && isReferenceFormCompleted) {
       const collegeInfo = getCollegeInfo(formData.college);
       
       db.collection('SurveyResponses')
@@ -88,7 +98,7 @@ const OffCampusHousingFormStep6 = () => {
     } else {
       setErrorMessage("Please select a valid college and complete the UCSC Reference Release Form");
     }
-  };
+  };  
 
   const getCollegeInfo = (college) => {
     // Define the campus address and phone number for each college
@@ -144,6 +154,7 @@ const OffCampusHousingFormStep6 = () => {
 
   return (
     <div className="form-container">
+    <Stepper currentStep={5} />
     <h2 className="step-title">College Affiliation</h2>
       <p className="step-description">Select your college:</p>
 
@@ -197,13 +208,13 @@ const OffCampusHousingFormStep6 = () => {
       </Link>
 
       {/* Display error message if any */}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
       {/* Button to submit the form and navigate to the next step */}
       <button
         className="next-button"
         onClick={saveAnswer}
-        disabled={isNextButtonDisabled}
+        // disabled={isNextButtonDisabled}
       >
         Next
       </button>

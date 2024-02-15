@@ -19,6 +19,7 @@ const AddOffCampusListing = () => {
         bathrooms: '',
         squareFootage: '',
         monthlyPrice: '',
+        depositAmount: '',
         location: '',
         agentEmail: '', // New field for listing agent email
         agentPhone: '', // New field for listing agent phone number
@@ -40,13 +41,13 @@ const AddOffCampusListing = () => {
     const handleChange = (e) => {
         if (e.target.name === 'images') {
             const selectedFiles = Array.from(e.target.files);
-            const validFiles = selectedFiles.filter(file => 
+            const validFiles = selectedFiles.filter(file =>
                 file.type === "image/png" || file.type === "image/jpeg");
-    
+
             if (selectedFiles.length !== validFiles.length) {
                 alert('Only PNG and JPG images are allowed.');
             }
-    
+
             setImageFiles(validFiles);
         } else {
             setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -73,29 +74,29 @@ const AddOffCampusListing = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Check if all fields in the form are filled
         const isFormComplete = Object.values(formData).every(value => value) && address && imageFiles.length > 0;
-    
+
         if (!isFormComplete) {
             alert('Please make sure the entire form is complete.');
             return;
         }
-    
+
         try {
             const imageUrls = await uploadImages();
             const newListing = { ...formData, address, images: imageUrls };
-            
+
             // Use the address as the document name, replacing any characters that are not allowed in Firestore document names
             const formattedAddress = address.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
-            
+
             await db.collection('OffCampusListings').doc(formattedAddress).set(newListing);
             navigate('/rent/off-campus');
         } catch (error) {
             console.error('Error adding listing:', error);
         }
     };
-    
+
 
 
 
@@ -109,7 +110,13 @@ const AddOffCampusListing = () => {
             <button onClick={handleBack} className="back-button">Back</button>
             <form onSubmit={handleSubmit}>
                 <h3>Upload Listing Images (First one will be the Thumbnail)</h3>
-                <input type="file" name="images" onChange={handleChange} multiple />
+                <input
+                    type="file"
+                    name="images"
+                    onChange={handleChange}
+                    multiple
+                    accept="image/jpeg, image/png" // This restricts file selection to JPG and PNG images only
+                />
                 <div style={{ marginTop: '20px' }}> {/* Add this div for spacing */}
                     <input className="input-field" type="text" name="title" placeholder="Title" onChange={handleChange} value={formData.title} required />
                     <PlacesAutocomplete value={address} onChange={setAddress} onSelect={handleSelectAddress}>
@@ -150,25 +157,29 @@ const AddOffCampusListing = () => {
                     <input className="input-field" type="number" name="bathrooms" placeholder="Bathrooms" onChange={handleChange} value={formData.bathrooms} required />
                     <input className="input-field" type="number" name="squareFootage" placeholder="Square Footage" onChange={handleChange} value={formData.squareFootage} required />
                     <input className="input-field" type="number" name="monthlyPrice" placeholder="Monthly Price" onChange={handleChange} value={formData.monthlyPrice} required />
+                    <input className="input-field" type="number" name="depositAmount" placeholder="Deposit Amount" onChange={handleChange} value={formData.depositAmount} required />
                     <select className="input-field" name="location" onChange={handleChange} value={formData.location} required>
                         <option value="">Select Proximity to Campus</option>
                         <option value="Close">Close</option>
                         <option value="Moderate">Moderate</option>
                         <option value="Far">Far</option>
-                    </select>     
+                    </select>
                     <select className="input-field" name="housingType" onChange={handleChange} value={formData.housingType} required>
                         <option value="">Select Type of Housing</option>
                         <option value="Apartment">Apartment</option>
                         <option value="Townhome">Townhome</option>
                         <option value="Single-Family Home">Single-Family Home</option>
                         <option value="Large Home">Large Home</option>
-                    </select>           
-                    </div>                
-                    <div style={{ marginTop: '20px' }}> {/* Add this div for spacing */}
+                    </select>
+                </div>
+                <div style={{ marginTop: '20px' }}> {/* Add this div for spacing */}
                     <input className="input-field" type="email" name="agentEmail" placeholder="Listing Agent Email" onChange={handleChange} value={formData.agentEmail} required />
                     <input className="input-field" type="tel" name="agentPhone" placeholder="Listing Agent Phone Number" onChange={handleChange} value={formData.agentPhone} required />
-                    <input className="input-field" type="text" name="schoolName" placeholder="Campus Listing School Name" onChange={handleChange} value={formData.schoolName} required />
-                </div>
+                    <select className="input-field" name="schoolName" onChange={handleChange} value={formData.schoolName} required>
+                        <option value="">Select School</option>
+                        <option value="UC Santa Cruz">UC Santa Cruz</option>
+                        {/* Add more options here */}
+                    </select>                </div>
                 <button className="submit-button" type="submit">Add Listing</button>
             </form>
         </div>

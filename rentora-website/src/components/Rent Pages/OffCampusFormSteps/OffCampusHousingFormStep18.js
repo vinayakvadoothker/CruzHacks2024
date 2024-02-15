@@ -4,6 +4,7 @@ import { useUser } from "@clerk/clerk-react";
 import { db, storage } from "../../config";
 import { PDFDocument } from 'pdf-lib';
 import Spinner from './Spinner';
+import Stepper from './Stepper';
 import './styles.css';
 
 const OffCampusHousingFormStep18 = () => {
@@ -213,6 +214,7 @@ const OffCampusHousingFormStep18 = () => {
 
   return (
     <div className="form-container">
+      <Stepper currentStep={17} />
       <h2 className="step-title">Photo ID</h2>
       <p className="step-description">Please Upload a Government-Issued Photo ID*</p>
   

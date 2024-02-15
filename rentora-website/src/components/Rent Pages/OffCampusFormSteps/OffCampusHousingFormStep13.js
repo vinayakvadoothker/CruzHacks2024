@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { db } from "../../config";
 import { useUser } from "@clerk/clerk-react";
 import PlacesAutocomplete from 'react-places-autocomplete';
+import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
 const OffCampusHousingFormStep13 = () => {
@@ -192,6 +193,7 @@ const OffCampusHousingFormStep13 = () => {
 
     return (
         <div className="form-container" /*style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}*/>
+            <Stepper currentStep={12} />
             <h2 className="step-title">Previous and Present Tenant Experience</h2>
             <p className="step-description">Please Add Your Previous and Present Rental History:</p>
 
@@ -237,7 +239,7 @@ const OffCampusHousingFormStep13 = () => {
                             onChange={(e) => handleInputChange(index, 'monthlyRent', e.target.value)}
                         />
 
-                        {/* <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button> */}
+                        {/*  */}
                     </div>
                     <div className="form-row">
                         <label>Start Date:</label>
@@ -298,6 +300,7 @@ const OffCampusHousingFormStep13 = () => {
                             value={entry.reasonForLeaving}
                             onChange={(e) => handleInputChange(index, 'reasonForLeaving', e.target.value)}
                         />
+                        <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
                     </div>
                 </div>
             ))}
@@ -308,6 +311,7 @@ const OffCampusHousingFormStep13 = () => {
             <button onClick={() => handleDeleteEntry(formData.rentalHistory.length - 1)}>- Delete Entry</button>
         )}
             </div>
+
 
             <Link to="/rent/off-campus/step12">
                 <span className="back-button">{'<-'}</span>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { db } from "../../config";
 import { useUser } from "@clerk/clerk-react";
+import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
 const OffCampusHousingFormStep9 = () => {
@@ -210,6 +211,7 @@ const OffCampusHousingFormStep9 = () => {
 
   return (
     <div className="form-container">
+    <Stepper currentStep={8} />
     <h2 className="step-title">Major/Area Of Study</h2>
       <p className="step-description">
         Select your major or proposed major if you haven't declared yet:
