@@ -1,0 +1,51 @@
+.onboarding-page {
+    background-image: url('./images/onboading_background.jpeg'); /* Update with your image path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh; /* Ensure it covers the full viewport height */
+    width: 100%; /* Ensure it covers the full width */
+    display: flex;
+    flex-direction: row; /* Display buttons in a row */
+    justify-content: flex-end; /* Align buttons to the right */
+    align-items: flex-start; /* Align buttons to the top */
+    gap: 10px; /* Adjust the gap between elements as needed */
+  }
+  
+  .title {
+    margin: 0; /* Remove default margin */
+    font-size: 45px; /* Adjust font size */
+    font-family: monospace;
+    font-weight: 300; /* Adjust font weight to make it thinner */
+    color: #fff; /* Text color */
+    align-self: flex-start; /* Align title to the start (left) of the container */
+    margin-top: 20px; /* Add margin to move the title down */
+    margin-right: auto; /* Push the title to the leftmost side */
+  }
+  
+  .container {
+    flex-grow: 1; /* Expand container to fill remaining space */
+    overflow-y: auto; /* Enable vertical scroll if content overflows */
+  }
+  
+  .sign-up-btn, .sign-in-btn {
+    padding: 8px 16px; /* Adjust padding to make buttons smaller */
+    font-size: 14px; /* Adjust font size to make buttons smaller */
+    color: #000000;
+    background-color: #007bff; /* A shade of blue for visibility */
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    margin-top: 25px; /* Add margin to move the buttons down */
+    margin-right: 20px;
+  }
+  
+  .sign-up-btn {
+    background-color: #ffffff; /* A green background for the Sign Up button */
+  }
+  
+  .sign-in-btn {
+    background-color: #8ea7ff; /* A teal background for the Sign In button */
+  }
+  
