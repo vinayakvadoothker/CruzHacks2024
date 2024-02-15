@@ -24,11 +24,9 @@ const createRoot = ReactDOM.createRoot(root);
 
 // Wrap your app component in createRoot().render()
 createRoot.render(
-  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <React.StrictMode>
     <Router>
       <App openaikey={openaikey} clerkPubKey={clerkPubKey} googleMapsApiKey={googleMapsApiKey} email={email} password={password} />
     </Router>
   </React.StrictMode>
-  </meta>
 );
