@@ -32,7 +32,7 @@ const VenturePage = () => {
   };
 
   return (
-    <div style={pageContainerStyle}>
+    <div style={ pageContainerStyle }>
       <div style={contentStyle}>
         <h1>Venture Options - Coming Soon!</h1>
         <p>
