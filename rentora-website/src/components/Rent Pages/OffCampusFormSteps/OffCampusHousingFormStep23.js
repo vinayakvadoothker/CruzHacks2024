@@ -39,7 +39,7 @@ const OffCampusHousingFormStep23 = () => {
                 offcampusformdone: true,
             });
 
-            const response = await axios.get(`http://34.133.173.78:3010/generate-pdf/${user.id}`, {
+            const response = await axios.get(`http://35.188.76.1:3010/generate-pdf/${user.id}`, {
                 responseType: 'blob',
             });
 

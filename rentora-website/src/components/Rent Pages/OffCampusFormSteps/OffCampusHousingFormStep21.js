@@ -144,7 +144,7 @@ const OffCampusHousingFormStep21 = () => {
     const sendEmailToGuarantor = async (emailData) => {
         try {
             // Make a request to your server-side endpoint to send the email
-            const response = await fetch('http://34.133.173.78:3001/send-email', {
+            const response = await fetch('http://35.188.76.1:3001/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
