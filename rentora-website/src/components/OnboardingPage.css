@@ -19,8 +19,6 @@
     font-weight: 300; /* Adjust font weight to make it thinner */
     color: #fff; /* Text color */
     align-self: flex-start; /* Align title to the start (left) of the container */
-    margin-top: 20px; /* Add margin to move the title down */
-    margin-right: auto; /* Push the title to the leftmost side */
   }
   
   .container {
