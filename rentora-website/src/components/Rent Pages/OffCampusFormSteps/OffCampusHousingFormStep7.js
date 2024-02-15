@@ -66,7 +66,7 @@ const OffCampusHousingFormStep7 = () => {
   const isNextButtonDisabled = formData.studentId === '';
 
   return (
-    <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+    <div className="form-container">
     <h2 className="step-title">What Is Your {formData.schoolName} ID #</h2>
       <p className="step-description">Please input your college ID:</p>
 

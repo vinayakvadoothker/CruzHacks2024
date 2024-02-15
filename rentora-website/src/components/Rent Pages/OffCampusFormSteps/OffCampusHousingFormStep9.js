@@ -209,7 +209,7 @@ const OffCampusHousingFormStep9 = () => {
   const isNextButtonDisabled = formData.major === ''; // Disable if no major is selected
 
   return (
-    <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
+    <div className="form-container">
     <h2 className="step-title">Major/Area Of Study</h2>
       <p className="step-description">
         Select your major or proposed major if you haven't declared yet:

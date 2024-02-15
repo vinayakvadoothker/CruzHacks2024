@@ -9,8 +9,8 @@
   }
 
   nav {
-    background-color: #ffffff;
-    padding: px; /* Decrease padding for smaller screens */
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 1px; /* Decrease padding for smaller screens */
   }
   .no-background {
     background-color: none; /* Remove background */
@@ -30,6 +30,7 @@
     text-decoration: none;
     color: #000;
     font-size: 20px; /* Decrease font size for smaller screens */
+    white-space: nowrap;
   }
 
   .sign-out-button {
