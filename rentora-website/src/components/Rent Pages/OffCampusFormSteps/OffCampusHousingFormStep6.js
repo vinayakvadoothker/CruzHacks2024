@@ -53,12 +53,21 @@ const OffCampusHousingFormStep6 = () => {
     }
   }, [formData.schoolName, navigate]);
 
+  useEffect(() => {
+    // Check if the reference form has been completed in localStorage
+    const isCompleted = localStorage.getItem('referenceFormCompleted');
+    if (isCompleted) {
+      setIsReferenceFormCompleted(true);
+    }
+  }, []);
+
   const handleReferenceFormClick = () => {
     // Open the reference form link in a new tab or window
     window.open("http://studenthousing.ucsc.edu/");
 
     // Mark the reference form as completed
     setIsReferenceFormCompleted(true);
+    localStorage.setItem('referenceFormCompleted', 'true');
 
     // Show an alert to notify the user
     alert("UCSC Reference Release Form Completed!");
@@ -197,7 +206,7 @@ const OffCampusHousingFormStep6 = () => {
       </Link>
 
       {/* Display error message if any */}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
       {/* Button to submit the form and navigate to the next step */}
       <button
