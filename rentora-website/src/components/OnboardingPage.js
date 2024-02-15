@@ -4,6 +4,7 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import '../App.css';
 import './OnboardingPage.css'
+import logo from "./images/Rentora_Logo.png"
 
 const OnboardingPage = () => {
   const [isSignUpPopupOpen, setSignUpPopupOpen] = useState(false);
@@ -30,7 +31,7 @@ const OnboardingPage = () => {
     <div className="onboarding-page">
       <header>
       </header>
-      <h1 className="title">Rentora</h1>
+      <img src={logo} alt="Company Logo" className="logo" /> {/* Use an img tag here */}
       <Link to="#" className="sign-up-btn" onClick={handleSignUpClick}>
         Sign Up
       </Link>

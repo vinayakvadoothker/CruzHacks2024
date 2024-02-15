@@ -1,51 +1,123 @@
 .onboarding-page {
-    background-image: url('./images/onboading_background.jpeg'); /* Update with your image path */
+    background-image: url('./images/background.jpg'); /* Update with your image path */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     height: 100vh; /* Ensure it covers the full viewport height */
     width: 100%; /* Ensure it covers the full width */
     display: flex;
-    flex-direction: row; /* Display buttons in a row */
-    justify-content: flex-end; /* Align buttons to the right */
-    align-items: flex-start; /* Align buttons to the top */
-    gap: 10px; /* Adjust the gap between elements as needed */
+    flex-direction: column; /* Vertical stacking by default */
+    justify-content: center; /* Center items vertically */
+    align-items: center; /* Center items horizontally */
+    position: relative; /* Position relative for absolute positioning inside */
+}
+
+@keyframes popIn {
+    0% {
+      transform: scale(0.5) ;
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1) ;
+      opacity: 1;
+    }
   }
-  
-  .title {
-    margin: 0; /* Remove default margin */
-    font-size: 45px; /* Adjust font size */
-    font-family: monospace;
-    font-weight: 300; /* Adjust font weight to make it thinner */
-    color: #fff; /* Text color */
-    align-self: flex-start; /* Align title to the start (left) of the container */
-    margin-top: 70px; /* Add margin to move the title down */
-    margin-right: auto; /* Push the title to the leftmost side */
+  @keyframes fadeInAndRise {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  
-  .container {
-    flex-grow: 1; /* Expand container to fill remaining space */
-    overflow-y: auto; /* Enable vertical scroll if content overflows */
-  }
-  
-  .sign-up-btn, .sign-in-btn {
-    padding: 8px 16px; /* Adjust padding to make buttons smaller */
-    font-size: 14px; /* Adjust font size to make buttons smaller */
-    color: #000000;
-    background-color: #007bff; /* A shade of blue for visibility */
+  .logo {
+    animation: fadeInAndRise 2s ease-out alternate;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 60px; /* Adjust as needed for your logo */
+    height: auto; /* Keeps the aspect ratio of the logo */
+    border-radius: 50%; /* Makes the image round */
+    object-fit: cover; /* Ensures the image covers the area without losing aspect ratio */
+}
+
+.sign-up-btn, .sign-in-btn {
+    animation: popIn 1.5s ease-out forwards;
+    padding: 10px 20px; /* Padding inside the buttons */
+    font-size: 16px; /* Font size inside the buttons */
+    color: #000; /* Text color */
+    background-color: #fff; /* Background color */
     border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    cursor: pointer;
-    margin-top: 80px; /* Add margin to move the buttons down */
-    margin-right: 20px;
-  }
-  
-  .sign-up-btn {
-    background-color: #ffffff; /* A green background for the Sign Up button */
-  }
-  
-  .sign-in-btn {
-    background-color: #8ea7ff; /* A teal background for the Sign In button */
-  }
-  
+    border-radius: 5px; /* Rounded corners */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Pointer cursor on hover */
+    position: absolute; /* Absolute positioning */
+    top: 30px; /* Position from the top */
+    right: 20px; /* Position from the right */
+}
+
+.sign-up-btn {
+    background-color: #ffffff; /* White color background */
+}
+
+.sign-in-btn {
+    right: 140px; /* Position next to the sign-up button */
+    background-color: #8ea7ff; /* Light blue background */
+}
+
+/* Media query for smaller screens (phones) */
+@media (max-width: 600px) {
+    @keyframes popIn {
+        0% {
+          transform: scale(0.5) ;
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1) ;
+          opacity: 1;
+        }
+      }
+      @keyframes fadeInAndRise {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .logo {
+        animation: fadeInAndRise 2s ease-out alternate;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 50px; /* Adjust as needed for your logo */
+        height: auto; /* Keeps the aspect ratio of the logo */
+        border-radius: 50%; /* Makes the image round */
+        object-fit: cover; /* Ensures the image covers the area without losing aspect ratio */
+    }
+
+    .sign-up-btn, .sign-in-btn {
+        animation: popIn 1.5s ease-out forwards;
+        font-size: 14px; /* Smaller font size for buttons on small screens */
+        padding: 6px 5px; /* Reduced padding for less width */
+        top: 20px; /* Position from the top */
+        display: flex; /* Enables flexbox */
+        justify-content: center; /* Centers content horizontally */
+        align-items: center; /* Centers content vertically */
+        right: 20px; /* Align to the right edge */
+        width: 90px; /* Set a fixed width for both buttons */
+    }
+
+    .sign-up-btn {
+        right: 20px; /* Align to the right edge */
+    }
+
+    .sign-in-btn {
+        right: 20px; /* Align to the right edge */
+        top: 60px; /* Position below the sign-up button */
+    }
+}
