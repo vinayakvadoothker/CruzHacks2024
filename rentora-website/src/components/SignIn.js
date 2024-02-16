@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import {SignedOut, SignIn, useClerk } from "@clerk/clerk-react";
 import { useNavigate } from 'react-router-dom';
+import './OnboardingPage.css'
 
 const SignInPopup = ({ onClose }) => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const SignInPopup = ({ onClose }) => {
     <SignedOut>
     <div className="popup-overlay">
       <div className="popup-content" style={popupStyles}>
-        <button className="close-button" onClick={handleCloseClick}>
+        <button className="x-button" onClick={handleCloseClick}>
           X
         </button>
           <div className="clerk-signin-container">
