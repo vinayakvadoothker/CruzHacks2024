@@ -62,9 +62,10 @@
     "dev:openai": "node rentora-ai-assistant.js",
     "dev:pdf-individual": "node individualpdf.js",
     "dev:apply-to-listing": "node applyToListing.js",
+    "dev:fetch-user-details": "node user-details.js",
     "dev:client": "npm start",
     "dev:server": "/usr/local/bin/python3 /Users/vinv/Documents/Rentora.ai/rentora-website/app.py",
-    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\" \"npm run dev:api\" \"npm run dev:openai\" \"npm run dev:pdf-individual\" \"npm run dev:apply-to-listing\""
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\" \"npm run dev:api\" \"npm run dev:openai\" \"npm run dev:pdf-individual\" \"npm run dev:apply-to-listing\" \"npm run dev:fetch-user-details\""
   },
   "eslintConfig": {
     "extends": [

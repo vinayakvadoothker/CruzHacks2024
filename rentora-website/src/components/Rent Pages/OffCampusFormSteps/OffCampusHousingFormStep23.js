@@ -40,7 +40,7 @@ const OffCampusHousingFormStep23 = () => {
                 offcampusformdone: true,
             });
 
-            const response = await axios.get(`http://35.239.196.142:3010/generate-pdf/${user.id}`, {
+            const response = await axios.get(`http://rentora-servers.net:3010/generate-pdf/${user.id}`, {
                 responseType: 'blob',
             });
 
