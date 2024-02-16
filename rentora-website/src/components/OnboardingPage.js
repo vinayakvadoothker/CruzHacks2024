@@ -103,7 +103,7 @@ const OnboardingPage = () => {
   return (
     <div className="onboarding-page">
       <nav className="top-nav">
-        <a href="http://rentora.net" rel="noopener noreferrer">
+        <a href="http://www.rentora.net" rel="noopener noreferrer">
           <img src={logo} alt="Rentora Logo" className="logo" />
         </a>
         <div className="nav-links">
