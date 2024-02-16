@@ -321,7 +321,7 @@ const OnboardingPage = () => {
                   <img src={raghav_image} alt="Member Name" class="member-photo" />
                 </a>
 
-                <h4 class="member-name">Raghav Dewangany</h4>
+                <h4 class="member-name">Raghav Dewangan</h4>
                 
                 <p class="member-title">Frontend</p>
                 
