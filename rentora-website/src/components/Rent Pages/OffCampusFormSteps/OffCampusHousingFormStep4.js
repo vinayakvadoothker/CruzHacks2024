@@ -5,9 +5,21 @@ import { db } from "../../config";
 import Stepper from './Stepper';
 import './styles.css';
 
+
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep4 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 3; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
 
   const [formData, setFormData] = useState({
     phone: user?.phoneNumber || '',
@@ -73,14 +85,19 @@ const OffCampusHousingFormStep4 = () => {
       console.log("User not authenticated");
     }
 
+    // After saving to Firestore, mark the step as completed
+    completeStep(currentStep);
+
     navigate('/rent/off-campus/step5');
   };
 
   return (
-    <div className="form-container" >
-    <Stepper currentStep={3} />
-    <h2 className="step-title">Confirm Phone Number</h2>
-      <p className="step-description">Confirm This Is Your Phone Number*</p>
+    <>
+      <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+      <div className="form-container" >
+        <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+        <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+      <p className="step-description">Please Enter Your Phone Number*</p>
 
       <input
         type="text"
@@ -98,6 +115,7 @@ const OffCampusHousingFormStep4 = () => {
         Next
       </button>
     </div>
+    </>
   );
 };
 

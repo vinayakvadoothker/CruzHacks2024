@@ -5,9 +5,20 @@ import { db } from "../../config";
 import Stepper from './Stepper';
 import './styles.css';
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep21 = () => {
-    const { user } = useUser();
-    const navigate = useNavigate();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 20; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
 
     const [guarantorName, setGuarantorName] = useState('');
     const [guarantorRelation, setGuarantorRelation] = useState('');
@@ -135,7 +146,7 @@ const OffCampusHousingFormStep21 = () => {
             console.error('Error: User is undefined');
         }
     
-        // Navigate to the next step
+        completeStep(currentStep);
         navigate('/rent/off-campus/step22');
     };    
     
@@ -145,7 +156,7 @@ const OffCampusHousingFormStep21 = () => {
     const sendEmailToGuarantor = async (emailData) => {
         try {
             // Make a request to your server-side endpoint to send the email
-            const response = await fetch('http://rentora-servers.net:3001/send-email', {
+            const response = await fetch('http://localhost:3001/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -164,10 +175,12 @@ const OffCampusHousingFormStep21 = () => {
     };
 
     return (
-        <div className="form-container">
-            <Stepper currentStep={20} />
-            <h2 className="step-title">Letter of Guarantor</h2>
-            <p className="step-description">Please Add A Guarantor Who Will Fill Out the Guarantor Form</p>
+        <>
+        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+        <div className="form-container" >
+          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+            <p className="step-description">Please Add A Guarantor Who Will Co-Sign On Your Home With You</p>
 
             <div className="input-group">
                 <div className="name-relation-group">
@@ -191,7 +204,7 @@ const OffCampusHousingFormStep21 = () => {
                         }}
                         onBlur={() => setIsRelationEditing(false)}
                     >
-                        <option value="Select Relation" disabled hidden>Select Relation</option>
+                        <option value="Select Relation">Select Relation</option>
                         <option value="Parent">Parent</option>
                         <option value="Legal Guardian">Legal Guardian</option>
                         <option value="Family Member">Family Member</option>
@@ -234,6 +247,7 @@ const OffCampusHousingFormStep21 = () => {
                 Next
             </button>
         </div>
+        </>
     );
 };
 

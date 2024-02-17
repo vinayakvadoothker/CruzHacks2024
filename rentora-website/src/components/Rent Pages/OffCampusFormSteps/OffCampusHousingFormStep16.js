@@ -5,9 +5,22 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep16 = () => {
-    const { user } = useUser();
-    const navigate = useNavigate();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 15; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
+
     const [errorMessage] = useState('');
     const [formData, setFormData] = useState({
         creditCards: [],
@@ -86,7 +99,7 @@ const OffCampusHousingFormStep16 = () => {
             .update({ creditCards: formattedData.creditCards })
             .then(() => {
                 console.log("Document successfully updated!");
-                // Navigate to the next step or any other step
+                completeStep(currentStep);
                 navigate('/rent/off-campus/step17');
             })
             .catch((error) => {
@@ -95,10 +108,12 @@ const OffCampusHousingFormStep16 = () => {
     };
 
     return (
-        <div className="form-container" style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}>
-        <Stepper currentStep={15} />
-        <h2 className="step-title">Credit Cards</h2>
-            <p className="step-description">Please List All Your Credit Cards</p>
+        <>
+        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+        <div className="form-container" >
+          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+            <p className="step-description">(Optional) Please List All Your Credit Cards</p>
 
             {formData.creditCards.map((card, index) => (
                 <div key={index} className="card-entry">
@@ -125,6 +140,7 @@ const OffCampusHousingFormStep16 = () => {
                 Next
             </button>
         </div>
+        </>
     );
 };
 

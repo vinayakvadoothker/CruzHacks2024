@@ -18,32 +18,42 @@
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
+    z-index: 10;
 }
 }
 
 .form-container {
-    width: 50%;
-    margin: 75px auto;
-    max-height: 70vh;
-    overflow-Y: auto;
-    text-align: center;
-    max-width: 1400px; /* Adjust the max-width as needed */
-    padding: 30px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px 
+  width: 90%;
+  margin: 5vh; /* Maintain top and bottom margin for spacing */
+  min-height: auto;
+  max-height: 63vh;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  /* Set a maximum height with more flexibility for content */
+  overflow-y: auto; /* Keep vertical scrolling within the container */
+
+  /* Centering content */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center children horizontally */
+  justify-content: flex-start; /* Start children from the top */
+
+  position: relative; /* Keep positioning relative for layout adjustments */
 }
+
+
+
+
+
 
 
 
 /* Styles for step titles */
 .step-title {
-  font-size: 24px;
+  font-size: 30px;
   margin-bottom: 10px;
   font-weight: bold;
   font-family: monospace;
@@ -51,10 +61,10 @@
 
 /* Styles for step descriptions */
 .step-description {
-  font-size: 16px;
+  font-size: 18px;
   margin-bottom: 20px;
-  font-weight: bold;
   font-family: monospace;
+  font-style: italic; 
 }
 
 /* Styles for input fields */
@@ -66,6 +76,7 @@
   font-family: monospace;
   text-align: left; 
   box-sizing: border-box;
+  font-size: large;
 }
 
 /* Styles for the next and back button */
@@ -420,4 +431,47 @@ label {
   border-radius: 10px;
   margin: 10px;
   padding: 10px;
+}
+
+
+.reload-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px; /* Adjust size as needed */
+  display: inline-block;
+  line-height: 1; /* Remove extra space around the icon */
+  color: #2E2F5B; /* Adjust color as needed */
+  margin-left: 20px; /* Increased space out from the red 'x' */
+}
+
+.reload-button:hover {
+  color: #3a3d92; /* Slightly darker color on hover for feedback */
+}
+
+
+/* Welcome Description Styles */
+.welcome-description {
+  margin-bottom: 30px; /* Adds some space between the welcome message and the form */
+  padding: 15px;
+  background-color: #f7f7f7; /* A light grey background to make the section stand out */
+  border-left: 5px solid #2E2F5B; /* A colored border for a touch of design */
+  color: #0f0f37; /* Darker text for contrast */
+  border-radius: 5px; /* Soften the corners */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* A subtle shadow for depth */
+  text-align: center; /* Aligns text to the left */
+}
+
+.welcome-description h3 {
+  margin-top: 0;
+  color: #1a1b5a; /* Matches the primary color theme of the buttons and headers */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
+  font-weight: bold; /* Emphasizes the section heading */
+}
+
+.welcome-description p {
+  font-size: 16px; /* Slightly larger font for readability */
+  line-height: 1.6; /* Improves readability */
+  margin: 10px 0; /* Adds spacing between paragraphs */
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Keeps the font consistent */
 }

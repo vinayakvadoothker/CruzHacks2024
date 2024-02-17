@@ -5,9 +5,21 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css';
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep22 = () => {
-    const { user } = useUser();
-    const navigate = useNavigate();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 21; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
     const [formData, setFormData] = useState({
         vehicleInfo: [],
     });
@@ -116,7 +128,7 @@ const OffCampusHousingFormStep22 = () => {
             .update({ vehicleInfo: formattedData.vehicleInfo })
             .then(() => {
                 console.log("Document successfully updated!");
-                // Navigate to the next step or any other step
+                completeStep(currentStep);
                 navigate('/rent/off-campus/step23');
             })
             .catch((error) => {
@@ -125,10 +137,12 @@ const OffCampusHousingFormStep22 = () => {
     };
 
     return (
+        <>
+        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
         <div className="form-container" >
-            <Stepper currentStep={21} />
-            <h2 className="step-title">Vehicle Information</h2>
-            <p className="step-description">Please Provide Information About Your Vehicles</p>
+          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+            <p className="step-description">(Optional) Please Provide Information About Any Vehicles You Will Be Parking At The Residence</p>
 
             {formData.vehicleInfo.map((car, index) => (
                 <div key={index} className="car-entry" style={{ marginBottom: '15px' }}>
@@ -176,6 +190,7 @@ const OffCampusHousingFormStep22 = () => {
                 Next
             </button>
         </div>
+        </>
     );
 };
 

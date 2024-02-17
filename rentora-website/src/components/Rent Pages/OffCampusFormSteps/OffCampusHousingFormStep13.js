@@ -6,9 +6,21 @@ import PlacesAutocomplete from 'react-places-autocomplete';
 import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep13 = () => {
-    const { user } = useUser();
-    const navigate = useNavigate();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 12; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
     const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         rentalHistory: [],
@@ -72,17 +84,6 @@ const OffCampusHousingFormStep13 = () => {
             return;
         }
     
-        // Check if at least one entry is marked as present
-        const atLeastOnePresent = formData.rentalHistory.some(entry => entry.present);
-    
-        // Check if at least one entry is marked as past
-        const atLeastOnePast = formData.rentalHistory.some(entry => !entry.present);
-    
-        if (!atLeastOnePresent || !atLeastOnePast) {
-            alert("Please include at least one current ('Present') and one past rental history entry.");
-            return;
-        }
-    
         // Proceed with updating the document in the database
         const formattedData = {
             rentalHistory: formData.rentalHistory.map(entry => ({
@@ -102,6 +103,7 @@ const OffCampusHousingFormStep13 = () => {
             .update(formattedData)
             .then(() => {
                 console.log("Document successfully updated!");
+                completeStep(currentStep);
                 navigate('/rent/off-campus/step14');
             })
             .catch((error) => {
@@ -192,10 +194,12 @@ const OffCampusHousingFormStep13 = () => {
 
 
     return (
-        <div className="form-container" /*style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}*/>
-            <Stepper currentStep={12} />
-            <h2 className="step-title">Previous and Present Tenant Experience</h2>
-            <p className="step-description">Please Add Your Previous and Present Rental History:</p>
+        <>
+        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+        <div className="form-container" >
+          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+            <p className="step-description">Please Add Any Previous and Present Rental History:</p>
 
             {Array.isArray(formData.rentalHistory) && formData.rentalHistory.map((entry, index) => (
                 <div key={index} className="rental-history-entry">
@@ -326,6 +330,7 @@ const OffCampusHousingFormStep13 = () => {
                 Next
             </button>
         </div>
+        </>
     );
 };
 

@@ -5,9 +5,21 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep9 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 8; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
   const [errorMessage, setErrorMessage] = useState('');
 
   // Initialize state with default values
@@ -196,7 +208,8 @@ const OffCampusHousingFormStep9 = () => {
         .update({ major: formData.major })
         .then(() => {
           console.log("Document successfully updated!");
-          // Navigate to the next step (Step 10 or any other step)
+
+          completeStep(currentStep);
           navigate('/rent/off-campus/step10');
         })
         .catch((error) => {
@@ -210,9 +223,11 @@ const OffCampusHousingFormStep9 = () => {
   const isNextButtonDisabled = formData.major === ''; // Disable if no major is selected
 
   return (
-    <div className="form-container">
-    <Stepper currentStep={8} />
-    <h2 className="step-title">Major/Area Of Study</h2>
+    <>
+      <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+      <div className="form-container" >
+        <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+        <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
       <p className="step-description">
         Select your major or proposed major if you haven't declared yet:
       </p>
@@ -255,6 +270,7 @@ const OffCampusHousingFormStep9 = () => {
         Next
       </button>
     </div>
+    </>
   );
 };
 

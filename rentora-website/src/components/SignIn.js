@@ -16,7 +16,7 @@ const SignInPopup = ({ onClose }) => {
     // Check if there is an active session and the user is signed in
     if (session && session.user) {
       // Redirect immediately after sign-in
-      navigate('/dashboard');
+      navigate('/rent/off-campus');
     }
   }, [session, navigate]);
 

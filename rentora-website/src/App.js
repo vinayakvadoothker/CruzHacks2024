@@ -3,6 +3,7 @@ import React from 'react';
 import { ClerkProvider, SignedIn, SignedOut, useClerk } from '@clerk/clerk-react';
 import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import ChatBot from './ChatBot'; // Import your ChatBot component
+import { StepProvider } from './components/Rent Pages/OffCampusFormSteps/StepContext';
 import Dashboard from './components/Dashboard'; // Import Dashboard component
 import OnboardingPage from './components/OnboardingPage'; // Import OnboardingPage component
 import BuyPage from './components/BuyPage'; // Import BuyPage component
@@ -14,7 +15,7 @@ import ProfilePage from './components/ProfilePage'; // Import ProfilePage compon
 import GuarantorForm from './components/Rent Pages/OffCampusFormSteps/GuarantorForm'; // Import GuarantorForm component
 import AddOffCampusListing from './components/Rent Pages/OffCampusFormSteps/AddOffCampusListing'; // Import AddOffCampusListing component
 import OffCampusApplications from './components/Rent Pages/OffCampusFormSteps/OffCampusApplications';
-
+import logo from './components/images/Rentora_Logo.png'
 import './App.css';
 
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
@@ -49,37 +50,33 @@ const Header = () => {
       dropdown.style.display = 'none';
     }
   };
+
   return (
-    <nav>
-      <ul>
+    <nav style={{ width: '100%' }}>
+      <ul style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', listStyle: 'none', margin: 0, padding: '10px 0' }}>
+        {/* Logo at the far left */}
         <li>
-          <Link to="/buy">Buy</Link>
+        <a href="http://www.rentora.net" rel="noopener noreferrer">
+            <img src={logo} alt="Rentora Logo" className="logo-circle" />
+          </a>
+        </li>
+        <li style={{ marginRight: 'auto' }}>
+          <Link to="/rent/off-campus" style={styles.navLink}>Listings</Link>
         </li>
         <li>
-          <Link to="/rent/off-campus">Rent</Link>
+          <Link to="/rent/off-campus/myapplications" style={styles.navLink}>My Applications</Link>
         </li>
-        <li>
-          <Link to="/venture">Venture</Link>
-        </li>
+
         <SignedIn>
-          <li
-            style={styles.profileContainer}
-            onMouseEnter={showDropdown}
-            onMouseLeave={hideDropdown}
-          >
-            {/* Profile tab */}
+          <li style={styles.profileContainer} onMouseEnter={showDropdown} onMouseLeave={hideDropdown}>
             <Link to="/profile">
               <img src={user?.imageUrl} alt="Profile" style={styles.profileImage} />
-              <span style={styles.profileText}></span>
             </Link>
-            {/* Profile picture dropdown */}
             <div id="profileDropdown" style={styles.dropdownContent}>
-              {/* Profile tab */}
-              <div style={styles.dropdownItem} onClick={() => { window.location.href = '/profile'; }}>
+              <div style={styles.dropdownItem} onClick={() => window.location.href = '/profile'}>
                 <span style={styles.cursorPointer}>Profile</span>
               </div>
-              {/* Sign Out option */}
-              <div style={styles.dropdownItem} onClick={() => { handleSignOut(); window.location.href = '/onboarding'; }}>
+              <div style={styles.dropdownItem} onClick={handleSignOut}>
                 <span style={styles.cursorPointer}>Sign Out</span>
               </div>
             </div>
@@ -93,55 +90,30 @@ const Header = () => {
 
 
 const RentHeader = () => {
-  const showOffCampusDropdown = () => {
-    const offCampusDropdown = document.getElementById('offCampusDropdown');
-    if (offCampusDropdown) {
-      offCampusDropdown.style.display = 'block';
-    }
-  };
-
-  const hideOffCampusDropdown = () => {
-    const offCampusDropdown = document.getElementById('offCampusDropdown');
-    if (offCampusDropdown) {
-      offCampusDropdown.style.display = 'none';
-    }
-  };
-
   return (
     <nav style={{ backgroundColor: 'transparent', padding: '0' }}>
-      <ul style={styles.list}>
-        <li style={styles.offCampusContainer} onMouseEnter={showOffCampusDropdown} onMouseLeave={hideOffCampusDropdown}>
-          <div className="dropdown">
-            <Link to="/rent/off-campus">Off-Campus</Link>
-            <div id="offCampusDropdown" style={styles.dropdownContent}>
-              <span style={styles.icon}>🏠</span>
-              <Link to="/rent/off-campus" style={styles.myApplicationsLink}>
-                Listings
-              </Link>
-              <div>
-              </div>
-              <span style={styles.icon}>📄</span>
-              <Link to="/rent/off-campus/myapplications" style={styles.myApplicationsLink}>
-                My Applications
-              </Link>
-            </div>
-          </div>
+      <ul style={{ ...styles.list, display: 'flex', justifyContent: 'center' }}> {/* Centering items */}
+        {/* Listings Link */}
+        <li style={styles.navItemContainer}>
+          <Link to="/rent/off-campus" style={styles.navLink}></Link>
         </li>
-        <li>
-          <Link to="/rent/for-all">For-All</Link>
+
+        {/* My Applications Link */}
+        <li style={styles.navItemContainer}>
+          <Link to="/rent/off-campus/myapplications" style={styles.navLink}></Link>
         </li>
       </ul>
     </nav>
-
   );
 };
+
 
 const Home = () => {
   const { session } = useClerk();
 
   // Redirect to the dashboard if the user is signed in
   if (session && session.user) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/rent/off-campus" />;
   }
 
   return <OnboardingPage />;
@@ -151,60 +123,63 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <ClerkProvider publishableKey={clerkPubKey} googleMapsApiKey={googleMapsApiKey}>
-        <SignedIn>
-          <Header />
-          <ChatBot openaikey={openaikey} />
-        </SignedIn>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/onboarding" element={<OnboardingPage />} />
-          <Route path="/buy" element={<BuyPage />} />
-          <Route path="/guarantor/:userid" element={<GuarantorForm />} />
-          <Route path="/addoffcampuslisting" element={<AddOffCampusListing />} />
-          <Route
-            path="/rent/*"
-            element={
-              <div>
-                <RentHeader />
-                <Routes>
-                  <Route index element={<RentPage />} />
-                  <Route path="/off-campus/*" element={<OffCampusPage />} />
-                  <Route path="/off-campus/myapplications" element={<OffCampusApplications />} />
-                  <Route path="/for-all" element={<ForAllPage />} />
-                </Routes>
-              </div>
-            }
-          />
-          <Route path="/venture" element={<VenturePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route
-            path="*"
-            element={<SignedIn><Navigate to="/dashboard" replace /></SignedIn>}
-          />
-        </Routes>
-        <Routes>
-          <Route
-            path="*"
-            element={
-              <SignedOut>
-                {({ location }) =>
-                  location.pathname.startsWith("/guarantor/") || location.pathname.startsWith("/onboarding") ? null : (
-                    <Navigate to="/onboarding" replace />
-                  )
-                }
-              </SignedOut>
-            }
-          />
-        </Routes>
-        <Routes>
-          <Route
-            path="/onboarding"
-            element={<SignedIn><Navigate to="/dashboard" replace /></SignedIn>}
-          />
-        </Routes>
-      </ClerkProvider>
+      <div className="content-container"> {/* Content container */}
+        <ClerkProvider publishableKey={clerkPubKey} googleMapsApiKey={googleMapsApiKey}>
+        <StepProvider>
+          <SignedIn>
+            <Header />
+          </SignedIn>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/onboarding" element={<OnboardingPage />} />
+            <Route path="/buy" element={<BuyPage />} />
+            <Route path="/guarantor/:userid" element={<GuarantorForm />} />
+            <Route path="/addoffcampuslisting" element={<AddOffCampusListing />} />
+            <Route
+              path="/rent/*"
+              element={
+                <div>
+                  <RentHeader />
+                  <Routes>
+                    <Route index element={<RentPage />} />
+                    <Route path="/off-campus/*" element={<OffCampusPage />} />
+                    <Route path="/off-campus/myapplications" element={<OffCampusApplications />} />
+                    <Route path="/for-all" element={<ForAllPage />} />
+                  </Routes>
+                </div>
+              }
+            />
+            <Route path="/venture" element={<VenturePage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route
+              path="*"
+              element={<SignedIn><Navigate to="/rent/off-campus" replace /></SignedIn>}
+            />
+          </Routes>
+          <Routes>
+            <Route
+              path="*"
+              element={
+                <SignedOut>
+                  {({ location }) =>
+                    location.pathname.startsWith("/guarantor/") || location.pathname.startsWith("/onboarding") ? null : (
+                      <Navigate to="/onboarding" replace />
+                    )
+                  }
+                </SignedOut>
+              }
+            />
+          </Routes>
+          <Routes>
+            <Route
+              path="/onboarding"
+              element={<SignedIn><Navigate to="/rent/off-campus" replace /></SignedIn>}
+            />
+          </Routes>
+          </StepProvider>
+        </ClerkProvider>
+      </div>
     </div>
   );
 };
@@ -218,12 +193,14 @@ const styles = {
   profileContainer: {
     position: 'relative',
     display: 'inline-block',
+    zIndex: '10',
   },
   profileImage: {
-    width: '30px',
-    height: '30px',
+    width: '50px',
+    height: '50px',
     borderRadius: '50%',
   },
+
   dropdownContent: {
     display: 'none',
     position: 'absolute',
@@ -232,7 +209,7 @@ const styles = {
     boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
     zIndex: 1,
     right: 0,
-    top: '30px',
+    top: '100%',
     borderRadius: '8px',
     opacity: 0.9,
   },
@@ -244,19 +221,41 @@ const styles = {
     fontFamily: 'monospace',
   },
 
-  offCampusContainer: {
+  offCampusButtonContainer: {
     position: 'relative',
     display: 'inline-block',
-    width: '200px', // Adjust the width as needed
+    margin: '0 10px', // Optional: Add margin for spacing between elements
+    zIndex: '10',
   },
+  offCampusButton: {
+    background: '#007bff', // Example: Bootstrap primary color
+    color: 'white',
+    padding: '10px 15px',
+    borderRadius: '5px',
+    textDecoration: 'none', // Remove underline from link
+    transition: 'background-color 0.3s', // Smooth transition for hover effect
+    fontFamily: 'monospace',
+    fontSize: '10px',
+    zIndex: '10',
+  },
+  // Hover effect for the button
+  ':hover': {
+    background: '#0056b3', // Darken button color on hover
+  },
+
+
+
   dropdown: {
-    position: 'relative',
+    position: 'center',
   },
+
+
 
   myApplicationsLink: {
     fontSize: '18px', // Adjust the font size as needed
     padding: '5px 10px', // Adjust the padding as needed
     display: 'block',
+    zIndex: '10',
   },
 
 };

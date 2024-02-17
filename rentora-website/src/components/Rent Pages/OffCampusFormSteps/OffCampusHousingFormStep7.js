@@ -5,9 +5,20 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep7 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 6; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
 
   // Initialize state with default values
   const [formData, setFormData] = useState({
@@ -42,6 +53,7 @@ const OffCampusHousingFormStep7 = () => {
           console.log("Document successfully updated!");
           // Navigate to the next step based on schoolName
           if (formData.schoolName === 'UC Santa Cruz') {
+            completeStep(currentStep);
             navigate('/rent/off-campus/step8'); // Redirect to Step 8
           } else {
             navigate('/rent/off-campus/step5'); // Redirect to Step 5
@@ -67,10 +79,12 @@ const OffCampusHousingFormStep7 = () => {
   const isNextButtonDisabled = formData.studentId === '';
 
   return (
-    <div className="form-container">
-    <Stepper currentStep={6} />
-    <h2 className="step-title">What Is Your {formData.schoolName} ID #</h2>
-      <p className="step-description">Please input your college ID:</p>
+    <>
+    <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+    <div className="form-container" >
+      <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+      <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+      <p className="step-description">Please input your {formData.schoolName} ID:</p>
 
       {/* Input field for entering the student ID */}
       <input
@@ -95,6 +109,7 @@ const OffCampusHousingFormStep7 = () => {
         Next
       </button>
     </div>
+    </>
   );
 };
 

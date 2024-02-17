@@ -5,9 +5,21 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep6 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 5; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
   const [errorMessage, setErrorMessage] = useState('');
   const [isReferenceFormCompleted, setIsReferenceFormCompleted] = useState(false);
 
@@ -49,10 +61,12 @@ const OffCampusHousingFormStep6 = () => {
 
   useEffect(() => {
     // Check if the schoolName is not UC Santa Cruz, then navigate to the next step
-    if (formData.schoolName !== 'UC Santa Cruz' && formData.schoolName !== '') {
-      navigate('/rent/off-campus/step7'); // Navigate to the next step
+    if (formData.schoolName && formData.schoolName !== 'UC Santa Cruz') {
+      completeStep(currentStep); // Mark the current step as completed
+      navigate('/rent/off-campus/step7'); // Navigate to the next step or the desired page
     }
-  }, [formData.schoolName, navigate]);
+  }, [formData.schoolName, completeStep, currentStep, navigate]);
+
 
   useEffect(() => {
     // Check if the reference form has been completed in localStorage
@@ -89,7 +103,7 @@ const OffCampusHousingFormStep6 = () => {
         })
         .then(() => {
           console.log("Document successfully updated!");
-          // Navigate to the next step (Step 7)
+          completeStep(currentStep);
           navigate('/rent/off-campus/step7');
         })
         .catch((error) => {
@@ -150,12 +164,13 @@ const OffCampusHousingFormStep6 = () => {
     return collegeInfo[college] || {};
   };
 
-  const isNextButtonDisabled = formData.college === '' || formData.college === 'Select a College' || !isReferenceFormCompleted;
 
   return (
-    <div className="form-container">
-    <Stepper currentStep={5} />
-    <h2 className="step-title">College Affiliation</h2>
+    <>
+      <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+      <div className="form-container" >
+        <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+        <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
       <p className="step-description">Select your college:</p>
 
       {/* Dropdown for selecting the college */}
@@ -219,6 +234,7 @@ const OffCampusHousingFormStep6 = () => {
         Next
       </button>
     </div>
+    </>
   );
 };
 

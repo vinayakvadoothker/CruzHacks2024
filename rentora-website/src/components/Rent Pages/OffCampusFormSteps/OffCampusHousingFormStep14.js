@@ -5,9 +5,22 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep14 = () => {
-    const { user } = useUser();
-    const navigate = useNavigate();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 13; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
+
     const [errorMessage] = useState('');
     const [formData, setFormData] = useState({
         monthlyIncome2: [],
@@ -160,7 +173,7 @@ const OffCampusHousingFormStep14 = () => {
             .update(formattedData)
             .then(() => {
                 console.log("Document successfully updated!");
-                // Navigate to the next step (Step 15 or any other step)
+                completeStep(currentStep);
                 navigate('/rent/off-campus/step15');
             })
             .catch((error) => {
@@ -169,10 +182,12 @@ const OffCampusHousingFormStep14 = () => {
     };
 
     return (
-        <div className="form-container" style={{ overflowY: 'auto', overflowX: 'auto' }}/*style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}*/>
-        <Stepper currentStep={13} />
-        <h2 className="step-title">Monthly Income</h2>
-            <p className="step-description">Please Add Your Monthly Income:</p>
+        <>
+        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+        <div className="form-container" >
+          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+            <p className="step-description">Please Add Any Monthly Income ($ Per Month):</p>
 
             {Array.isArray(formData.monthlyIncome2) && formData.monthlyIncome2.map((entry, index) => (
                 <div key={index} className="monthly-income-entry">
@@ -226,6 +241,7 @@ const OffCampusHousingFormStep14 = () => {
                 Next
             </button>
         </div>
+        </>
     );
 };
 

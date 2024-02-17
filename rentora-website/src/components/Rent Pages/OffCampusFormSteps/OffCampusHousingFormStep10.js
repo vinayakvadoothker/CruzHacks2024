@@ -5,9 +5,21 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep10 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 9; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
   const [formData, setFormData] = useState({
     startDate: '',
     endDate: '',
@@ -43,7 +55,8 @@ const OffCampusHousingFormStep10 = () => {
         })
         .then(() => {
           console.log("Document successfully updated!");
-          // Navigate to the next step (Step 11 or any other step)
+
+          completeStep(currentStep);
           navigate('/rent/off-campus/step11');
         })
         .catch((error) => {
@@ -71,14 +84,16 @@ const OffCampusHousingFormStep10 = () => {
   };
 
   return (
-    <div className="form-container">
-    <Stepper currentStep={9} />
-    <h2 className="step-title">Time At {formData.schoolName}</h2>
-      <p className="step-description">Start Date - Proposed End Date</p>
+    <>
+      <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+      <div className="form-container" >
+        <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+        <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+      <p className="step-description">Please Enter When You Enrolled and Plan To Graduate from {formData.schoolName}</p>
 
       {/* Date picker for start date */}
       <div className="date-picker-container">
-        <label htmlFor="startDate">Start Date:</label>
+        <label htmlFor="startDate">Enrollment Date:</label>
         <input
           type="date"
           id="startDate"
@@ -90,7 +105,7 @@ const OffCampusHousingFormStep10 = () => {
 
       {/* Date picker for end date */}
       <div className="date-picker-container">
-        <label htmlFor="endDate">End Date:</label>
+        <label htmlFor="endDate">Graduation Date:</label>
         <input
           type="date"
           id="endDate"
@@ -113,6 +128,7 @@ const OffCampusHousingFormStep10 = () => {
         Next
       </button>
     </div>
+    </>
   );
 };
 

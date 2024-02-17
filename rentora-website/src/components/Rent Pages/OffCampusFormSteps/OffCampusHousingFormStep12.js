@@ -5,9 +5,21 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep12 = () => {
-    const { user } = useUser();
-    const navigate = useNavigate();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 11; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
     const [errorMessage] = useState('');
     const [formData, setFormData] = useState({
         activitiesHistory: [],
@@ -62,6 +74,7 @@ const OffCampusHousingFormStep12 = () => {
                 .update(formattedData)
                 .then(() => {
                     console.log("Document successfully updated!");
+                    completeStep(currentStep);
                     navigate('/rent/off-campus/step13');
                 })
                 .catch((error) => {
@@ -116,10 +129,12 @@ const OffCampusHousingFormStep12 = () => {
 
 
     return (
-        <div className="form-container" /*style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}*/>
-        <Stepper currentStep={11} />
-        <h2 className="step-title">Extracurricular Activities</h2>
-            <p className="step-description">Please Add Your Extracurricular Activities:</p>
+        <>
+        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+        <div className="form-container" >
+          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+            <p className="step-description">(Optional) Please Add Any Extracurricular Activities:</p>
 
             {Array.isArray(formData.activitiesHistory) && formData.activitiesHistory.map((entry, index) => (
                 <div key={index} className="activities-entry">
@@ -197,6 +212,7 @@ const OffCampusHousingFormStep12 = () => {
                 Next
             </button>
         </div>
+        </>
     );
 };
 

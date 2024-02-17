@@ -5,9 +5,20 @@ import { db, storage } from "../../config";
 import Stepper from './Stepper';
 import './styles.css';
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep20 = () => {
-    const { user } = useUser();
-    const navigate = useNavigate();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 19; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
 
     const [certificateUrlFromDb, setCertificateUrlFromDb] = useState(null);
     const [modalUrl, setModalUrl] = useState(""); 
@@ -25,26 +36,28 @@ const OffCampusHousingFormStep20 = () => {
 
     useEffect(() => {
         if (user) {
-            db.collection('SurveyResponses')
-                .doc(user.id)
-                .get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        setFormData(currentFormData => ({
-                            ...currentFormData,
-                            ...userData,
-                        }));
-                        if (userData.rentalWorkshopCertificate) {
-                            setCertificateUrlFromDb(userData.rentalWorkshopCertificate);
-                        }
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error fetching data:', error);
+          db.collection('SurveyResponses').doc(user.id).get()
+            .then(doc => {
+              if (doc.exists) {
+                const userData = doc.data();
+                setFormData({
+                  schoolName: userData.schoolName,
+                  // Set other form data fields from userData if necessary
                 });
+    
+                // Check if the school name is not UC Santa Cruz
+                if (userData.schoolName !== 'UC Santa Cruz') {
+                  completeStep(currentStep); // Mark this step as complete
+                  navigate('/rent/off-campus/step21'); // Navigate to the next step
+                }
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching data:', error);
+            });
         }
-    }, [user]);
+      }, [user, completeStep, currentStep, navigate]);
+    
     
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
@@ -85,6 +98,7 @@ const OffCampusHousingFormStep20 = () => {
     };
 
     const handleNext = () => {
+        completeStep(currentStep);
         navigate('/rent/off-campus/step21');
     };
 
@@ -95,11 +109,13 @@ const OffCampusHousingFormStep20 = () => {
 
 
     return (
-        <div className="form-container">
-            <Stepper currentStep={19} />
-            <h2 className="step-title">Rental Workshop Certificate</h2>
+        <>
+        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+        <div className="form-container" >
+          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
             <p className="step-description">
-                Please Complete the Following Workshop and Upload Your Certificate
+                (Optional) Please Complete the Following Workshop and Upload Your Certificate
             </p>
 
             <button onClick={() => handleLinkClick("http://canvas.ucsc.edu/enroll/7DWCHX")}>
@@ -153,6 +169,7 @@ const OffCampusHousingFormStep20 = () => {
                 Next
             </button>
         </div>
+        </>
     );
 };
 

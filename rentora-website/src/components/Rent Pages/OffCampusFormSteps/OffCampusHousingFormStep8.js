@@ -5,9 +5,22 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep8 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 7; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
+
   const [errorMessage, setErrorMessage] = useState('');
 
   // Initialize state with default values
@@ -40,7 +53,7 @@ const OffCampusHousingFormStep8 = () => {
         .update({ residence: formData.residence })
         .then(() => {
           console.log("Document successfully updated!");
-          // Navigate to the next step (Step 9 or any other step)
+          completeStep(currentStep);
           navigate('/rent/off-campus/step9');
         })
         .catch((error) => {
@@ -71,9 +84,11 @@ const OffCampusHousingFormStep8 = () => {
   ];
 
   return (
-    <div className="form-container">
-    <Stepper currentStep={7} />
-    <h2 className="step-title">What State or Country Are You From?</h2>
+    <>
+      <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+      <div className="form-container" >
+        <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+        <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
       <p className="step-description">Choose the most recent State/Country of Residence:</p>
 
       {/* Dropdown for selecting the residence */}
@@ -121,6 +136,7 @@ const OffCampusHousingFormStep8 = () => {
         Next
       </button>
     </div>
+    </>
   );
 };
 

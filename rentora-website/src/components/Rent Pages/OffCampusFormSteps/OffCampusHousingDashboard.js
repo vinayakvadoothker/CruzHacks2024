@@ -97,7 +97,7 @@ const OffCampusHousingDashboard = () => {
 
     return (
         <>
-            <div className="form-container">
+            <div className="form-container" style={{ maxHeight: '70vh' }}>
                 <h2 className="step-title">Off-Campus Housing</h2>
                 {isClerkAuthorized && (
                     <button onClick={handleAddOffCampusClick} style={{ position: 'absolute', top: '20px', right: '20px' }}>

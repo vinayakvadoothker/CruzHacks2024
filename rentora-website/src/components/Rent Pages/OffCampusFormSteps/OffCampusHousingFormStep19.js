@@ -6,9 +6,20 @@ import Spinner from './Spinner';
 import Stepper from './Stepper';
 import './styles.css';
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep19 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 18; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
 
   const [fileUrl, setFileUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -98,13 +109,16 @@ const OffCampusHousingFormStep19 = () => {
       await db.collection('SurveyResponses').doc(user.id).update(newFormData);
     }
 
+    completeStep(currentStep);
     navigate('/rent/off-campus/step20');
   };
 
   return (
-    <div className="form-container">
-      <Stepper currentStep={18} />
-      <h2 className="step-title">Letter of Reference</h2>
+    <>
+      <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+      <div className="form-container" >
+        <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+        <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
       <p className="step-description">Please Upload a Letter of Reference (Optional) - Limit 1</p>
 
       {isLoading ? (
@@ -145,6 +159,7 @@ const OffCampusHousingFormStep19 = () => {
         Next
       </button>
     </div>
+    </>
   );
 };
 

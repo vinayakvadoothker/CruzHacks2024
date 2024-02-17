@@ -1,16 +1,23 @@
 /* App.css */
 
 @media only screen and (max-width: 767px) {
+  
   /* App.css */
+
 
   body {
     margin: 0;
     padding: 0;
   }
+  
+
 
   nav {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0);
     padding: 1px; /* Decrease padding for smaller screens */
+    font-family: monospace;
+    gap: 2px;
+
   }
   .no-background {
     background-color: none; /* Remove background */
@@ -49,12 +56,33 @@
   }
 
   .app-container {
+    position: relative; /* Needed for the absolute positioning of the pseudo-element */
     background-image: url('./components/images/background.jpg'); /* Adjust the path accordingly */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     height: 100vh;
-    /* Add any additional styles if necessary */
+    overflow: hidden; /* Prevent any overflow from the pseudo-element */
+  }
+  
+  .app-container::before {
+    content: ''; /* Required for pseudo-elements */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.076); /* Semi-transparent black overlay */
+    z-index: 2; /* Ensure it's above the background but below the content */
+    pointer-events: none; /* Allow clicks to pass through */
+  }
+
+
+  .content-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* Ensure content-container doesn't have a background that could block the view of the dimmed background */
   }
 
   .header-title {
@@ -144,11 +172,13 @@
   body {
     margin: 0;
     padding: 0;
-    
+
   }
+  
 
   nav ul li a.active {
     text-decoration: underline;
+
   }
   nav {
     background-color: #33333300;
@@ -161,6 +191,7 @@
     display: flex;
     align-items: center; /* Center vertically */
     justify-content: center; /* Center horizontally */
+    
   }
 
   li {
@@ -197,12 +228,32 @@
   }
 
   .app-container {
+    position: relative; /* Needed for the absolute positioning of the pseudo-element */
     background-image: url('./components/images/background.jpg'); /* Adjust the path accordingly */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     height: 100vh;
-    /* Add any additional styles if necessary */
+    overflow: hidden; /* Prevent any overflow from the pseudo-element */
+  }
+  
+  .app-container::before {
+    content: ''; /* Required for pseudo-elements */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.076); /* Semi-transparent black overlay */
+    z-index: 1; /* Ensure it's above the background but below the content */
+    pointer-events: none; /* Allow clicks to pass through */
+  }
+
+  .content-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* Ensure content-container doesn't have a background that could block the view of the dimmed background */
   }
 
   .header-title {
@@ -291,3 +342,9 @@
   }
 }
 
+.logo-circle {
+  width: 50px; /* Adjust based on your logo size */
+  height: 50px; /* Adjust to maintain aspect ratio */
+  border-radius: 50%; /* This creates the circular shape */
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+}

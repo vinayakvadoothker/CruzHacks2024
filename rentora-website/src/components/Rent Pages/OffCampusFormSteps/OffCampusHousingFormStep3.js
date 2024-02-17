@@ -4,19 +4,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db } from "../../config";
 import Stepper from './Stepper';
+
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 import './styles.css'; // Import the CSS file
 
 const OffCampusHousingFormStep3 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 2; // Step index starts from 0, so step 3 is index 2
 
-  // Initialize state with default value from Clerk
   const [formData, setFormData] = useState({
-    email: user?.email || '',
+    email: user?.emailAddress || '', // Make sure to use the correct property from Clerk for the user's email
   });
 
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
   useEffect(() => {
-    // Fetch and set the saved data when the component mounts
     if (user) {
       db.collection('SurveyResponses').doc(user.id).get()
         .then((doc) => {
@@ -61,35 +70,41 @@ const OffCampusHousingFormStep3 = () => {
       console.log("User not authenticated");
     }
 
+    // After saving to Firestore, mark the step as completed
+    completeStep(currentStep);
+
     // Navigate to the next step
     navigate('/rent/off-campus/step4');
   };
 
   return (
-    <div className="form-container" >
-    <Stepper currentStep={2} />
-    <h2 className="step-title">Confirm Email</h2>
-      <p className="step-description">Confirm This Is Your Email*</p>
+    <>
+      <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+      <div className="form-container" >
+        <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+        <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+        <p className="step-description">Please Enter Your Email</p>
 
-      {/* Input field for email with default value and validation */}
-      <input
-        type="text"
-        placeholder="Email"
-        className="input-field"
-        value={formData.email}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-      />
+        {/* Input field for email with default value and validation */}
+        <input
+          type="text"
+          placeholder="Email"
+          className="input-field"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        />
 
-      {/* Back button to navigate to the previous step */}
-      <Link to="/rent/off-campus/step2">
-        <span className="back-button">{'<-'}</span>
-      </Link>
+        {/* Back button to navigate to the previous step */}
+        <Link to="/rent/off-campus/step2">
+          <span className="back-button">{'<-'}</span>
+        </Link>
 
-      {/* Button to navigate to the next step */}
-      <button className="next-button" onClick={handleNext}>
-        Next
-      </button>
-    </div>
+        {/* Button to navigate to the next step */}
+        <button className="next-button" onClick={handleNext}>
+          Next
+        </button>
+      </div>
+    </>
   );
 };
 

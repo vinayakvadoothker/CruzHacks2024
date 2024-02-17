@@ -5,9 +5,21 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css';
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep11 = () => {
-    const { user } = useUser();
-    const navigate = useNavigate();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 10; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
     const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         employmentHistory: [],
@@ -60,6 +72,7 @@ const OffCampusHousingFormStep11 = () => {
                 .update(updatedFormData)
                 .then(() => {
                     console.log("Document successfully updated!");
+                    completeStep(currentStep);
                     navigate('/rent/off-campus/step12');
                 })
                 .catch((error) => {
@@ -124,10 +137,12 @@ const OffCampusHousingFormStep11 = () => {
     };
 
     return (
-        <div className="form-container"  /*style={{ width: '50%', margin: '60px auto', maxHeight: '80vh', overflowY: 'auto', overflowX: 'auto', padding: '20px' }}*/>
-        <Stepper currentStep={10} />
-        <h2 className="step-title">Employment History</h2>
-            <p className="step-description">Please Add Your Previous and Current Employment History</p>
+        <>
+        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+        <div className="form-container" >
+          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+            <p className="step-description">(Optional) Please Add Any Previous or Current Employment History</p>
 
             {Array.isArray(formData.employmentHistory) && formData.employmentHistory.map((entry, index) => (
                 <div key={index} className="employment-entry">
@@ -215,6 +230,7 @@ const OffCampusHousingFormStep11 = () => {
                 Next
             </button>
         </div>
+        </>
     );
 };
 

@@ -5,9 +5,21 @@ import { useUser } from "@clerk/clerk-react";
 import Stepper from './Stepper';
 import './styles.css'; // Import the CSS file
 
+import { useSteps } from './StepContext';
+import ProgressBar from './ProgressBar';
+
+
 const OffCampusHousingFormStep17 = () => {
-    const { user } = useUser();
-    const navigate = useNavigate();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+
+  const { steps, completeStep } = useSteps(); // Use the useSteps hook
+  const currentStep = 16; // Step index starts from 0, so step 3 is index 2
+  const onStepChange = (stepIndex) => {
+    navigate(`/rent/off-campus/step${stepIndex + 1}`);
+  };
+
     const [errorMessage] = useState('');
     const [formData, setFormData] = useState({
         references: [],
@@ -144,7 +156,7 @@ const OffCampusHousingFormStep17 = () => {
             .update({ references: formattedData.references })
             .then(() => {
                 console.log("Document successfully updated!");
-                // Navigate to the next step or any other step
+                completeStep(currentStep);
                 navigate('/rent/off-campus/step18');
             })
             .catch((error) => {
@@ -153,11 +165,12 @@ const OffCampusHousingFormStep17 = () => {
     };
 
     return (
-        <div className="form-container">
-        <Stepper currentStep={16} />
-        <h2 className="step-title">References</h2>
-            <p className="step-description">Please Add All Your References (At Least 2, Up To 3)</p>
-            <p className="step-description">First Contact will Also Be Used as Emergency Contact</p>
+        <>
+        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+        <div className="form-container" >
+          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+            <p className="step-description">(Min: 2, Max: 3) First Contact will Also Be Used as Emergency Contact</p>
 
             {formData.references.slice(0, MAX_REFERENCES).map((reference, index) => (
                 <div key={index} className="reference-entry" style={{ marginBottom: '15px' }}>
@@ -235,6 +248,7 @@ const OffCampusHousingFormStep17 = () => {
                 Next
             </button>
         </div>
+        </>
     );
 };
 
