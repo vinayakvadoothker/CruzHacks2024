@@ -217,6 +217,7 @@ html, body {
   padding: 20px; /* Add padding to the container */
   overflow-y: auto; /* Enable vertical scrolling */
   z-index: 10;
+  min-width: auto;
 }
 
 /* Styles for the About Us section */

@@ -1,7 +1,8 @@
-// App.js
+// Import the necessary components and functions
 import React from 'react';
 import { ClerkProvider, SignedIn, SignedOut, useClerk } from '@clerk/clerk-react';
 import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 import ChatBot from './ChatBot'; // Import your ChatBot component
 import { StepProvider } from './components/Rent Pages/OffCampusFormSteps/StepContext';
 import Dashboard from './components/Dashboard'; // Import Dashboard component
@@ -18,20 +19,25 @@ import OffCampusApplications from './components/Rent Pages/OffCampusFormSteps/Of
 import logo from './components/images/Rentora_Logo.png'
 import './App.css';
 
+// Check for missing publishable key
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
 
+// Extract environment variables
 const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 const openaikey = process.env.OPENAI_API_KEY;
 
+// Define Header component
 const Header = () => {
   const { user, signOut } = useClerk();
+  const navigate = useNavigate(); // Access navigate function
 
   const handleSignOut = async () => {
     try {
       await signOut();
+      navigate('/onboarding'); // Redirect to '/onboarding' after successful sign-out
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -56,7 +62,7 @@ const Header = () => {
       <ul style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', listStyle: 'none', margin: 0, padding: '10px 0' }}>
         {/* Logo at the far left */}
         <li>
-        <a href="http://www.rentora.net" rel="noopener noreferrer">
+          <a href="http://www.rentora.net" rel="noopener noreferrer">
             <img src={logo} alt="Rentora Logo" className="logo-circle" />
           </a>
         </li>
@@ -87,8 +93,7 @@ const Header = () => {
   );
 };
 
-
-
+// Define RentHeader component
 const RentHeader = () => {
   return (
     <nav style={{ backgroundColor: 'transparent', padding: '0' }}>
@@ -107,7 +112,7 @@ const RentHeader = () => {
   );
 };
 
-
+// Define Home component
 const Home = () => {
   const { session } = useClerk();
 
@@ -119,64 +124,44 @@ const Home = () => {
   return <OnboardingPage />;
 };
 
+// Define App component
 const App = () => {
-
   return (
     <div className="app-container">
       <div className="content-container"> {/* Content container */}
         <ClerkProvider publishableKey={clerkPubKey} googleMapsApiKey={googleMapsApiKey}>
-        <StepProvider>
-          <SignedIn>
-            <Header />
-          </SignedIn>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/onboarding" element={<OnboardingPage />} />
-            <Route path="/buy" element={<BuyPage />} />
-            <Route path="/guarantor/:userid" element={<GuarantorForm />} />
-            <Route path="/addoffcampuslisting" element={<AddOffCampusListing />} />
-            <Route
-              path="/rent/*"
-              element={
-                <div>
-                  <RentHeader />
-                  <Routes>
-                    <Route index element={<RentPage />} />
-                    <Route path="/off-campus/*" element={<OffCampusPage />} />
-                    <Route path="/off-campus/myapplications" element={<OffCampusApplications />} />
-                    <Route path="/for-all" element={<ForAllPage />} />
-                  </Routes>
-                </div>
-              }
-            />
-            <Route path="/venture" element={<VenturePage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route
-              path="*"
-              element={<SignedIn><Navigate to="/rent/off-campus" replace /></SignedIn>}
-            />
-          </Routes>
-          <Routes>
-            <Route
-              path="*"
-              element={
-                <SignedOut>
-                  {({ location }) =>
-                    location.pathname.startsWith("/guarantor/") || location.pathname.startsWith("/onboarding") ? null : (
-                      <Navigate to="/onboarding" replace />
-                    )
-                  }
-                </SignedOut>
-              }
-            />
-          </Routes>
-          <Routes>
-            <Route
-              path="/onboarding"
-              element={<SignedIn><Navigate to="/rent/off-campus" replace /></SignedIn>}
-            />
-          </Routes>
+          <StepProvider>
+            <SignedIn>
+              <Header />
+            </SignedIn>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/onboarding" element={<OnboardingPage />} />
+              <Route path="/buy" element={<BuyPage />} />
+              <Route path="/guarantor/:userid" element={<GuarantorForm />} />
+              <Route path="/addoffcampuslisting" element={<AddOffCampusListing />} />
+              <Route
+                path="/rent/*"
+                element={
+                  <div>
+                    <RentHeader />
+                    <Routes>
+                      <Route index element={<RentPage />} />
+                      <Route path="/off-campus/*" element={<OffCampusPage />} />
+                      <Route path="/off-campus/myapplications" element={<OffCampusApplications />} />
+                      <Route path="/for-all" element={<ForAllPage />} />
+                    </Routes>
+                  </div>
+                }
+              />
+              <Route path="/venture" element={<VenturePage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route
+                path="*"
+                element={<Navigate to="/onboarding" replace />} // Redirect to '/onboarding' for any unmatched routes
+              />
+            </Routes>
           </StepProvider>
         </ClerkProvider>
       </div>
