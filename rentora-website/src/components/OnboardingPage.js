@@ -323,7 +323,7 @@ const OnboardingPage = () => {
 
                 <h4 class="member-name">Raghav Dewangan</h4>
                 
-                <p class="member-title">VP Of Engineering</p>
+                <p class="member-title">VP, Engineering</p>
                 
                 <div class="logos">
 
