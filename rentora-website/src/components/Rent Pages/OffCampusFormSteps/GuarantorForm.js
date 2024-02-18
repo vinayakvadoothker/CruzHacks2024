@@ -53,13 +53,6 @@ const GuarantorForm = () => {
             driversLicense: '',
             dateOfBirth: '',
             homeAddress: '',
-            employerName: '',
-            jobTitle: '',
-            employmentLength: '',
-            businessAddress: '',
-            monthlyIncome: '',
-            supervisorName: '',
-            supervisorPhone: '',
         },
         guarantorFormFilled: false, // Add the boolean field
     });
@@ -122,13 +115,6 @@ const GuarantorForm = () => {
             'driversLicense',
             'dateOfBirth',
             'homeAddress',
-            'employerName',
-            'jobTitle',
-            'employmentLength',
-            'businessAddress',
-            'monthlyIncome',
-            'supervisorName',
-            'supervisorPhone',
         ];
 
         const isAnyFieldEmpty = requiredFields.some((field) => !formData.guarantor[field]);
@@ -274,106 +260,6 @@ const GuarantorForm = () => {
                         </PlacesAutocomplete>
                     </div>
 
-                </div>
-
-                <div className="form-row">
-                    <div className="input-group">
-                        <label>Employer Name:</label>
-                        <input
-                            type="text"
-                            value={formData.guarantor?.employerName || ''}
-                            onChange={(e) => handleGuarantorInputChange('employerName', e.target.value)}
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Job Title:</label>
-                        <input
-                            type="text"
-                            value={formData.guarantor?.jobTitle || ''}
-                            onChange={(e) => handleGuarantorInputChange('jobTitle', e.target.value)}
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Length of Employment:</label>
-                        <input
-                            type="text"
-                            value={formData.guarantor?.employmentLength || ''}
-                            onChange={(e) => handleGuarantorInputChange('employmentLength', e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                <div className="form-row">
-                    <div className="input-group">
-                        <label>Business Address:</label>
-                        <PlacesAutocomplete
-                            value={formData.guarantor?.businessAddress || ''}
-                            onChange={(value) => handleGuarantorInputChange('businessAddress', value)}
-                            onSelect={(value) => handleGuarantorInputChange('businessAddress', value)}
-                            searchOptions={{
-                                types: ['geocode'],
-                            }}
-                            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-                        >
-                            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-                                <div>
-                                    <input
-                                        {...getInputProps({
-                                            placeholder: 'Type your business address...',
-                                            className: 'location-search-input',
-                                        })}
-                                    />
-                                    <div className="autocomplete-dropdown-container">
-                                        {loading && <div></div>}
-                                        {suggestions.map((suggestion) => (
-                                            <div
-                                                {...getSuggestionItemProps(suggestion, {
-                                                    style: {
-                                                        backgroundColor: suggestion.active ? '#a7a9ff' : '#fff',
-                                                    },
-                                                })}
-                                            >
-                                                {suggestion.description}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </PlacesAutocomplete>
-                    </div>
-
-                    <div className="input-group">
-                        <label>Monthly Income:</label>
-                        <input
-                            type="text"
-                            value={formData.guarantor?.monthlyIncome || ''}
-                            onChange={(e) => handleGuarantorInputChange('monthlyIncome', e.target.value)}
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Supervisor's Name:</label>
-                        <input
-                            type="text"
-                            value={formData.guarantor?.supervisorName || ''}
-                            onChange={(e) => handleGuarantorInputChange('supervisorName', e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                <div className="form-row">
-                    <div className="input-group">
-                        <label>Supervisor's Phone:</label>
-                        <input
-                            type="tel"
-                            value={formData.guarantor?.supervisorPhone || ''}
-                            onChange={(e) => handleGuarantorInputChange('supervisorPhone', e.target.value)}
-                            maxLength="12"
-                        />
-                    </div>
-                    {/* Add additional form fields as needed */}
                 </div>
             </div>
 

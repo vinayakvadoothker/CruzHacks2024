@@ -21,4 +21,4 @@ async function listPdfFieldNames(pdfPath) {
 }
 
 // Call the function with the path to your PDF
-listPdfFieldNames('./user_2af93RBP9kZsSM2t3Vzlhnghfnl_official_filled.pdf');
+listPdfFieldNames('./rentora-application.pdf');

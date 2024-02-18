@@ -21,10 +21,10 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
     const handleInitialSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent the default form submission behavior
         const userConfirmed = window.confirm('Are you sure you want to submit your application?');
         if (userConfirmed) {
-            handleSubmit();
+            handleSubmit(e); // Pass the event object to handleSubmit
         }
     };
     
@@ -155,52 +155,52 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
     };
 
     const handleSubmit = async (e) => {
+        e.preventDefault(); // Prevent default form submission behavior
         setShowConfirmationModal(false);
         setIsLoading(true);
-
+    
         // Validation for required fields
-        if (
-            !applicationData.preferredMoveInDate ||
-            applicationData.numberOfPets < 0 ||
-            applicationData.signature.trim() === ''
-        ) {
+        if (!applicationData.preferredMoveInDate || applicationData.numberOfPets < 0 || applicationData.signature.trim() === '') {
             alert('Please fill out all required fields before submitting the application.');
+            setIsLoading(false); // Update loading state on validation failure
             return;
         }
-
+    
         if (!listing || !listing.address) {
             console.error('Listing data is not available or address is undefined');
+            setIsLoading(false); // Update loading state on listing validation failure
             return;
         }
-
+    
         const depositAmount = listing.depositAmount || 'Not specified';
 
         // Prepare the userIds array with the current user and selected roommates
-        const userIds = [user.id, ...selectedRoommates];
-
-        // Prepare the address object for the API payload
+        const totalOccupants = 1 + selectedRoommatesData.length; // Including the user and selected roommates
+        const monthlyPrice = listing.monthlyPrice || '1500'; // Defaulting to '1500' if not specified
+        const rentPerPerson = parseInt(monthlyPrice) / totalOccupants;
+    
+        // Construct the proposedOccupants string with the user and selected roommates' names
+        const proposedOccupantsNames = [
+            `${user.firstName} ${user.lastName}`,
+            ...selectedRoommatesData.map(roommate => `${roommate.firstName} ${roommate.lastName}`)
+        ].join(', ');
+    
+        // Prepare the address object according to the updated requirements
         const address = {
-            "Street": listing.address.split(',')[0].trim(), // Assuming the street is the first part of the address
+            "Street": listing.address.split(',')[0].trim(),
             "City": listing.address.split(',')[1].trim(),
             "State": listing.address.split(',')[2].trim(),
-            "13 Address of Proposed Rental": listing.address,
-            "14 Proposed Movein Date": applicationData.preferredMoveInDate,
-            "5 Pets": applicationData.numberOfPets > 0 ? "Yes" : "No",
-            "Dated": applicationData.todaysDate,
-            "Deposit Amount": depositAmount,
+            "Deposit": (depositAmount || '500').toString(), // Assuming depositAmount is available, defaulting to '500'
+            "rentalAddress": listing.address,
+            "RentAmount": rentPerPerson.toFixed(2), // Rent amount per person
+            "TodaysDate": applicationData.todaysDate,
+            "rental_address": listing.address,
+            "Pets": applicationData.numberOfPets > 0 ? "Yes" : "No",
+            "proposedOccupants": proposedOccupantsNames, // Names of all proposed occupants including the user
+            "moveInDate": applicationData.preferredMoveInDate
         };
-
-        // Dynamically adding roommate names into the address object
-        selectedRoommatesData.forEach((roommate, index) => {
-            address[`${index + 1}`] = `${roommate.firstName} ${roommate.lastName}`; // 1-based indexing for roommate names
-        });
-
-        // Fill remaining fields with empty strings if less than 6 roommates are selected
-        for (let i = selectedRoommatesData.length + 1; i <= 6; i++) {
-            address[i] = "";
-        }
-
-        // Prepare the names array for the API payload
+    
+        // Prepare the names array with the user and selected roommates
         const names = [
             { "firstName": user.firstName, "lastName": user.lastName },
             ...selectedRoommatesData.map(roommate => ({
@@ -208,12 +208,14 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 "lastName": roommate.lastName
             }))
         ];
-
+    
+        // Construct the payload
         const payload = {
-            userIds,
+            userIds: [user.id, ...selectedRoommates.map(id => id)], // Assuming selectedRoommates contains IDs of selected roommates
             address,
             names
         };
+    
 
         try {
             // Sending POST request with application data to the combine-roommate-applications endpoint

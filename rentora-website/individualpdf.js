@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
 const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
+const QRCode = require('qrcode');
+
 
 const app = express();
 const port = 3010; // You can change the port number as needed
@@ -40,188 +42,188 @@ app.get('/generate-pdf/:userId', async (req, res) => {
         }
 
         const formData = docSnapshot.data();
+
+
+
+
+        // Function to generate a QR code image; returns a Promise that resolves to the image bytes
+        async function generateQRCodeImage(url) {
+            try {
+                // Generate the QR code with a transparent background
+                const qrCode = await QRCode.toDataURL(url, {
+                    errorCorrectionLevel: 'H',
+                    type: 'image/png',
+                    margin: 1,
+                    color: {
+                        dark: '#426aa3ff', // Black color for the QR code
+                        light: '#0000' // RGBA value for transparent background
+                    }
+                });
+                return qrCode; // This is a data URL of the QR code image
+            } catch (error) {
+                console.error('Error generating QR code', error);
+                throw error;
+            }
+        }
+
+
         // Function to handle the creation and uploading of a PDF
-        async function createAndUploadPDF(templatePath, outputFilename) {
+        async function createAndUploadPDF(templatePath, outputFilename, qrCodeText) {
             const pdfBuffer = await fs.promises.readFile(templatePath);
             const pdfDoc = await PDFDocument.load(pdfBuffer);
             const form = pdfDoc.getForm();
 
-            // Fill in the form fields with data from formData
-            form.getTextField("Applicant's First Name").setText(formData.firstName.toString());
-            form.getTextField("Applicant's Last Name").setText(formData.lastName.toString());
-            form.getTextField('Middle initial').setText(formData.middleInitial.toString());
-            form.getTextField('Date of birth').setText(formData.dateOfBirth.toString());
-            form.getTextField('Email Address').setText(formData.email.toString());
-            form.getTextField('Contact number').setText(formData.phone.toString());
-            form.getTextField('ID number').setText(formData.studentId.toString());
-            form.getTextField('Issuing Govt').setText(formData.issuingGovernment.toString());
-            form.getTextField('Expires').setText(formData.idExpiryDate.toString());
-            form.getTextField('3 If applicable Current or Previous Campus Address').setText(formData.college.address.toString());
-            form.getTextField('FromTo_3').setText(`${formData.startDate.toString()} - Present`);
-            form.getTextField('Rent Amount_3').setText(formData.rentalHistory[0].monthlyRent.toString());
-            form.getTextField('HousingResidentialLife Office Phone').setText(formData.college.phoneNumber.toString());
-            form.getTextField('Student ID').setText(formData.studentId.toString());
-            form.getTextField('10 Personal Reference').setText(formData.references[1].name.toString());
-            form.getTextField('Phone Number').setText(formData.references[1].phoneNumber.toString());
-            form.getTextField('11 In case of emergency please contact').setText(formData.references[0].name.toString());
-            form.getTextField('Phone_3').setText(formData.references[0].phoneNumber.toString());
-            form.getTextField('Relation').setText(formData.references[0].relation.toString());
-            form.getTextField('Email').setText(formData.references[0].email.toString());
-            form.getTextField('Photo ID Type').setText(formData.photoIdType.toString());
-            form.getTextField('Name of Guarantor').setText(formData.guarantor.guarantorName.toString());
-            form.getTextField('Name of Student').setText((formData.firstName + " " + formData.lastName).toString());
-            form.getTextField('State Drivers Licenses').setText(formData.driversLicense.toString());
-            form.getTextField('Date of Birth').setText(formData.dateOfBirth.toString());
-            form.getTextField('Home Address Street').setText(formData.homeAddress.split(', ')[0].toString());
-            form.getTextField('Home Address  City').setText(formData.homeAddress.split(', ')[1].toString());
-            form.getTextField('Home Address  State').setText(formData.homeAddress.split(', ')[2].toString());
-            form.getTextField('Home Phone').setText(formData.guarantor.guarantorPhone.toString());
-            form.getTextField('Business Phone').setText('N/A');
-            form.getTextField('Email').setText(formData.guarantor.guarantorEmail.toString());
-            form.getTextField('Employer Name').setText(formData.guarantor.employerName.toString());
-            form.getTextField('Monthly Income').setText(formData.guarantor.monthlyIncome.toString());
-            form.getTextField('Business Address').setText(formData.guarantor.businessAddress.split(', ')[0].toString());
-            form.getTextField('Business Address  State').setText(formData.guarantor.businessAddress.split(', ')[1].toString());
-            form.getTextField('Business Address  City').setText(formData.guarantor.businessAddress.split(', ')[2].toString());
-            form.getTextField('Supervisor').setText(formData.guarantor.supervisorName.toString());
-            form.getTextField('Supervisor Phone').setText(formData.guarantor.supervisorPhone.toString());
-            form.getTextField('Position').setText(formData.guarantor.jobTitle.toString());
-            form.getTextField('Length of Employment').setText(formData.guarantor.employmentLength.toString());
-            form.getTextField('Print Name').setText(formData.guarantor.guarantorName.toString());
-            form.getTextField('Relationship').setText(formData.guarantor.guarantorRelation.toString());
-            form.getTextField('Date_af_date').setText(formData.dateSaved.toString());
 
-            if (formData.vehicleInfo && formData.vehicleInfo.length > 0) {
-                const firstVehicle = formData.vehicleInfo[0];
-                const vehicleDetails = `${firstVehicle.make} / ${firstVehicle.year} / ${firstVehicle.licenseNumber}`;
-                form.getTextField('12 Vehicles MakeYearLicense  1').setText(vehicleDetails);
+            // Generate QR code image for the URL
+            const qrCodeDataURL = await generateQRCodeImage('https://www.rentora.net');
+
+            // Extract the raw image data from the Data URL
+            const qrImageBytes = Buffer.from(qrCodeDataURL.split(',')[1], 'base64');
+
+            // Embed the QR code image into the PDF
+            const qrImage = await pdfDoc.embedPng(qrImageBytes);
+
+            // Get the first page of the document
+            const page1 = pdfDoc.getPages()[0];
+
+            // Calculate position for the QR code (top-right corner)
+            const pageWidth1 = page1.getSize().width;
+            const pageHeight = page1.getSize().height;
+            const qrSize = 65; // Set the size of the QR code
+            const qrX = pageWidth1 - qrSize - 30; // 30 is the margin from the right edge
+            const qrY = pageHeight - qrSize - 48; // 30 is the margin from the top edge
+
+            // Draw the QR code image
+            page1.drawImage(qrImage, {
+                x: qrX,
+                y: qrY,
+                width: qrSize,
+                height: qrSize
+            });
+
+
+
+            function getFieldValue(fieldValue) {
+                return fieldValue && fieldValue.toString().trim() ? fieldValue.toString().trim() : 'N/A';
             }
 
+            // Enhanced splitAddress function to handle undefined addresses
+            function splitAddress(address) {
+                if (!address) return { street: 'N/A', city: 'N/A', state: 'N/A' };
+                const parts = address.split(',').map(part => getFieldValue(part)); // Use getFieldValue to handle empty parts
+                return {
+                    street: parts[0],
+                    city: parts[1] || 'N/A', // Provide default value if undefined
+                    state: parts[2] || 'N/A'
+                };
+            }
 
-            formData.monthlyIncome2.forEach((income) => {
-                if (income.source === "Employment") {
-                    form.getTextField('8 Current Gross Income').setText(income.amount.toString());
-                    form.getTextField('Per').setText(`Month`.toString());
-                    form.getTextField('Savings').setText(`N/A`.toString());
-                } else if (income.source === "Scholarship") {
-                    form.getTextField('9 Financial Aid Award').setText(income.amount.toString());
-                    form.getTextField('Per_2').setText(`Month`.toString());
+            // Basic Personal Information
+            form.getTextField('firstName').setText(getFieldValue(formData.firstName));
+            form.getTextField('lastName').setText(getFieldValue(formData.lastName));
+            form.getTextField('middleInitial').setText(getFieldValue(formData.middleInitial));
+            form.getTextField('dateOfBirth').setText(getFieldValue(formData.dateOfBirth));
+            form.getTextField('phone').setText(getFieldValue(formData.phone));
+            form.getTextField('firstNamelastName').setText(getFieldValue(formData.firstName + " " + formData.lastName));
+            form.getTextField('TodaysDate1').setText(getFieldValue(formData.dateSaved));
 
+            // ID and School Information
+            form.getTextField('photoIdType').setText(getFieldValue(formData.photoIdType));
+            form.getTextField('photoIdNumber').setText(getFieldValue(formData.photoIdNumber));
+            form.getTextField('issuingGovernment').setText(getFieldValue(formData.issuingGovernment));
+            form.getTextField('idExpiryDate').setText(getFieldValue(formData.idExpiryDate));
+            form.getTextField('schoolName').setText(getFieldValue(formData.schoolName));
+            form.getTextField('datesOfEnrollment').setText(getFieldValue(formData.startDate + ' - ' + (formData.endDate || 'Present')));
+            form.getTextField('studentId').setText(getFieldValue(formData.studentId));
+
+            // Employment History (assuming a single entry for demonstration)
+            if (formData.employmentHistory && formData.employmentHistory.length > 0) {
+                const employment = formData.employmentHistory[0]; // First employment entry
+                form.getTextField('emplyoment_1-title').setText(getFieldValue(employment.title));
+                form.getTextField('emplyoment_1-employer').setText(getFieldValue(employment.employer));
+                form.getTextField('emplyoment_1-dates').setText(getFieldValue(employment.startDate + ' - ' + employment.endDate));
+                form.getTextField('emplyoment_1-employer_name').setText(getFieldValue(employment.nameOfSupervisor));
+                form.getTextField('emplyoment_1-employer_phone').setText(getFieldValue(employment.supervisorPhoneNumber));
+                form.getTextField('emplyoment_1-city').setText(getFieldValue(employment.cityOfEmployment));
+            }
+
+            // Monthly Income and Financial Aid
+            form.getTextField('monthlyIncome').setText(getFieldValue(formData.monthlyIncome));
+            // Assuming 'monthlyIncome2' contains additional sources of income
+            formData.monthlyIncome2.forEach((income, index) => {
+                if (index === 0) { // Only filling out the first entry for demonstration
+                    form.getTextField('financialAidAmount').setText(getFieldValue(income.amount));
                 }
             });
 
-            // Sort employment history by endDate with present employment first
-            const sortedEmploymentHistory = formData.employmentHistory.sort((a, b) => {
-                if (a.present && !b.present) return -1;
-                if (!a.present && b.present) return 1;
-                return new Date(b.endDate) - new Date(a.endDate);
-            });
-
-            // Find the first previous employment entry after present employment
-            const previousEmployment = sortedEmploymentHistory.find((employment) => !employment.present);
-
-            // Fill in the form fields for present occupation
-            if (sortedEmploymentHistory.length > 0 && sortedEmploymentHistory[0].present) {
-                const presentEmployment = sortedEmploymentHistory[0];
-                form.getTextField('6 Present Occupation').setText(presentEmployment.title.toString());
-                form.getTextField('Employer').setText(presentEmployment.employer.toString());
-                form.getTextField('FromTo_4').setText(`${presentEmployment.startDate.toString()} - ${presentEmployment.endDate.toString()}`);
-                form.getTextField('Name of Supervisor').setText(presentEmployment.nameOfSupervisor.toString());
-                form.getTextField('Phone').setText(presentEmployment.supervisorPhoneNumber.toString());
-                form.getTextField('City_3').setText(presentEmployment.cityOfEmployment.toString());
-            }
-
-            // Fill in the form fields for the first previous occupation after present
-            if (previousEmployment) {
-                form.getTextField('7 Previous Occupation').setText(previousEmployment.title.toString());
-                form.getTextField('Employer_2').setText(previousEmployment.employer.toString());
-                form.getTextField('FromTo_5').setText(`${previousEmployment.startDate.toString()} - ${previousEmployment.endDate.toString()}`);
-                form.getTextField('Name of Supervisor_2').setText(previousEmployment.nameOfSupervisor.toString());
-                form.getTextField('Phone_2').setText(previousEmployment.supervisorPhoneNumber.toString());
-                form.getTextField('City_4').setText(previousEmployment.cityOfEmployment.toString());
-            }
-
-            // Rental History
-            // Order rental history by present first, then by end date
-
-            // Separate rental history into present and previous addresses
-            const presentAddresses = [];
-            const previousAddresses = [];
-
-            formData.rentalHistory.forEach((rental) => {
-                const addressParts = rental.address.split(', ');
-                if (rental.present) {
-                    presentAddresses.push({
-                        address: addressParts[0],
-                        city: addressParts[1],
-                        state: addressParts[2],
-                        zipCode: formData.zipCode,
-                        ownerManager: rental.ownerName,
-                        phoneRequired: rental.ownerPhoneNumber,
-                        rentAmount: rental.monthlyRent,
-                        fromTo: `${rental.startDate} - ${rental.endDate}`,
-                        reasonForLeaving: rental.reasonForLeaving,
-                    });
-                } else {
-                    previousAddresses.push({
-                        address: addressParts[0],
-                        city: addressParts[1],
-                        state: addressParts[2],
-                        zipCode: formData.zipCode,
-                        ownerManager: rental.ownerName,
-                        phoneRequired: rental.ownerPhoneNumber,
-                        rentAmount: rental.monthlyRent,
-                        fromTo: `${rental.startDate} - ${rental.endDate}`,
-                        reasonForLeaving: rental.reasonForLeaving,
-                    });
+            // Rental History (assuming two entries for demonstration)
+            formData.rentalHistory.forEach((rental, index) => {
+                const addressComponents = splitAddress(rental.address);
+                if (index === 0) { // First rental entry
+                    form.getTextField('rentalHistory1-street').setText(getFieldValue(addressComponents.street));
+                    form.getTextField('rentalHistory1-city').setText(getFieldValue(addressComponents.city));
+                    form.getTextField('rentalHistory1-state').setText(getFieldValue(addressComponents.state));
+                    form.getTextField('rentalHistory1-monthlyRent').setText(getFieldValue(rental.monthlyRent));
+                    form.getTextField('rentalHistory1-ownerName').setText(getFieldValue(rental.ownerName));
+                    form.getTextField('rentalHistory1-ownerPhoneNumber').setText(getFieldValue(rental.ownerPhoneNumber));
+                    form.getTextField('rentalHistory1-dates').setText(getFieldValue(rental.startDate + ' - ' + rental.endDate));
+                    form.getTextField('rentalHistory1-reasonForLeaving').setText(getFieldValue(rental.reasonForLeaving));
+                } else if (index === 1) { // Second rental entry
+                    form.getTextField('rentalHistory2-street').setText(getFieldValue(addressComponents.street));
+                    form.getTextField('rentalHistory2-city').setText(getFieldValue(addressComponents.city));
+                    form.getTextField('rentalHistory2-state').setText(getFieldValue(addressComponents.state));
+                    form.getTextField('rentalHistory2-monthlyRent').setText(getFieldValue(rental.monthlyRent));
+                    form.getTextField('rentalHistory2-ownerName').setText(getFieldValue(rental.ownerName));
+                    form.getTextField('rentalHistory2-ownerPhoneNumber').setText(getFieldValue(rental.ownerPhoneNumber));
+                    form.getTextField('rentalHistory2-dates').setText(getFieldValue(rental.startDate + ' - ' + rental.endDate));
+                    form.getTextField('rentalHistory2-reasonForLeaving').setText(getFieldValue(rental.reasonForLeaving));
                 }
             });
 
-            // Fill in the form fields for present address
-            form.getTextField('1 Present Address').setText(presentAddresses[0].address.toString());
-            form.getTextField('City').setText(presentAddresses[0].city.toString().toString());
-            form.getTextField('State').setText(presentAddresses[0].state.toString().toString());
-            form.getTextField('Zip Code').setText(presentAddresses[0].zipCode);
-            form.getTextField('OwnerManager').setText(presentAddresses[0].ownerManager.toString());
-            form.getTextField('Phone Required').setText(presentAddresses[0].phoneRequired.toString());
-            form.getTextField('Rent Amount').setText(presentAddresses[0].rentAmount.toString());
-            form.getTextField('FromTo').setText(presentAddresses[0].fromTo.toString());
-            form.getTextField('Reason for Leaving').setText(presentAddresses[0].reasonForLeaving.toString());
+            // References
+            formData.references.forEach((reference, index) => {
+                if (index === 0) { // First reference entry
+                    form.getTextField('reference1-name').setText(getFieldValue(reference.name));
+                    form.getTextField('reference1-relation').setText(getFieldValue(reference.relation));
+                    form.getTextField('reference1-email').setText(getFieldValue(reference.email));
+                    form.getTextField('reference1-phoneNumber').setText(getFieldValue(reference.phoneNumber));
+                } else if (index === 1) { // Second reference entry
+                    form.getTextField('reference2-name').setText(getFieldValue(reference.name));
+                    form.getTextField('reference2-relation').setText(getFieldValue(reference.relation));
+                    form.getTextField('reference2-email').setText(getFieldValue(reference.email));
+                    form.getTextField('reference2-phone').setText(getFieldValue(reference.phoneNumber));
+                }
+            });
 
-            // Fill in the form fields for previous address
-            form.getTextField('2 Previous Address').setText(previousAddresses[0].address.toString());
-            form.getTextField('City_2').setText(previousAddresses[0].city.toString());
-            form.getTextField('State_2').setText(previousAddresses[0].state.toString());
-            form.getTextField('Zip Code_2').setText(previousAddresses[0].zipCode);
-            form.getTextField('OwnerManager_2').setText(previousAddresses[0].ownerManager.toString());
-            form.getTextField('Phone Required_2').setText(previousAddresses[0].phoneRequired.toString());
-            form.getTextField('Rent Amount_2').setText(previousAddresses[0].rentAmount.toString());
-            form.getTextField('FromTo_2').setText(previousAddresses[0].fromTo.toString());
-            form.getTextField('Reason for Leaving_2').setText(previousAddresses[0].reasonForLeaving.toString());
-            // ... Continue for other fields as necessary ...
+            // Guarantor Information
+            if (formData.guarantor) {
+                form.getTextField('Guarantor-Name').setText(getFieldValue(formData.guarantor.guarantorName));
+                form.getTextField('guarantor-name1').setText(getFieldValue(formData.guarantor.guarantorName));
+                form.getTextField('guarantor-license').setText(getFieldValue(formData.guarantor.driversLicense));
+                form.getTextField('guarantor-dateOfBirth').setText(getFieldValue(formData.guarantor.dateOfBirth));
+                form.getTextField('guarantor-phoneNumber').setText(getFieldValue(formData.guarantor.guarantorPhone));
+                form.getTextField('guarantor-address').setText(getFieldValue(formData.guarantor.homeAddress));
+                form.getTextField('guarantor-relation').setText(getFieldValue(formData.guarantor.guarantorRelation));
+                form.getTextField('guarantor-email').setText(getFieldValue(formData.guarantor.guarantorEmail));
+            }
 
-            // // Employment History - Assuming your form has fields for each employment history entry
-            // formData.employmentHistory.forEach((employment, index) => {
-            //   form.getTextField(`Employer ${index + 1}`).setText(employment.employer.toString());
-            //   form.getTextField(`Job Title ${index + 1}`).setText(employment.title.toString());
-            //   form.getTextField(`City of Employment ${index + 1}`).setText(employment.cityOfEmployment.toString());
-            //   // ... additional fields for each employment history entry ...
-            // });
 
-            // // Rental History - Similar approach as employment history
-            // formData.rentalHistory.forEach((rental, index) => {
-            //   form.getTextField(`Address ${index + 1}`).setText(rental.address.toString());
-            //   form.getTextField(`Monthly Rent ${index + 1}`).setText(rental.monthlyRent.toString());
-            //   // ... additional fields for each rental history entry ...
-            // });
 
-            // Flatten the form to prevent editing after filling
+            // Define the custom color
+            const customColor = rgb(0x42 / 255, 0x6a / 255, 0xa3 / 255);
+
+            const regColor = rgb(0x00 / 255, 0x30 / 255, 0x75 / 255);
+
+            // Embed the standard Helvetica and Helvetica-Bold fonts
+            const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+            const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
             // Add this inside your endpoint where you generate the PDF
             const page = pdfDoc.addPage();
             // Set font sizes and line height
             const fontSize = 11;
-            const titleFontSize = 16;
+            const titleFontSize = 23;
+            const nameFontSize = 19;
             const lineHeight = fontSize * 1.4; // Line height for better readability
 
             // Define the starting Y position from the top of the page
@@ -233,15 +235,15 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             // Calculate text width for center alignment
             const textWidth = font.widthOfTextAtSize('Tenant Resume', titleFontSize);
             const pageWidth = page.getWidth();
-            const textXPosition = (pageWidth / 2) - (textWidth / 2); // Center the text
+            const textXPosition = (pageWidth / 2) - (textWidth / 2 + 10); // Center the text
 
             // Draw the resume title centered
             page.drawText('Tenant Resume', {
                 x: textXPosition,
                 y: yPos,
                 size: titleFontSize,
-                font: font,
-                color: rgb(0, 0, 0),
+                font: fontBold,
+                color: customColor,
             });
 
             yPos -= lineHeight * 2; // Adjust space after title
@@ -249,14 +251,15 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             // Calculate text width for the full name for center alignment
             const fullName = `${formData.firstName} ${formData.lastName}`;
             const fullNameWidth = font.widthOfTextAtSize(fullName, titleFontSize);
-            const fullNameXPosition = (pageWidth / 2) - (fullNameWidth / 2); // Center the text
+            const fullNameXPosition = (pageWidth / 2) - (fullNameWidth / 2 - 5); // Center the text
 
             // Draw the full name centered
             page.drawText(fullName, {
                 x: fullNameXPosition,
                 y: yPos,
-                size: titleFontSize,
-                font: font,
+                size: nameFontSize,
+                font: fontRegular,
+                color: customColor,
             });
 
             yPos -= lineHeight / 2; // Adjust the space as needed
@@ -267,7 +270,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             page.drawLine({
                 start: { x: margin, y: yPos },
                 end: { x: pageWidth - margin, y: yPos },
-                color: rgb(0, 0, 0),
+                color: customColor,
                 thickness: 1.5,
             });
 
@@ -277,13 +280,14 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             // Contact Information
             const contactInfo = `${formData.rentalHistory[0].address}, Phone: ${formData.phone}, Email: ${formData.email}`;
             const contactInfoWidth = font.widthOfTextAtSize(contactInfo, fontSize);
-            const contactInfoXPosition = (page.getWidth() / 2) - (contactInfoWidth / 2);
+            const contactInfoXPosition = (page.getWidth() / 2) - (contactInfoWidth / 2 + 15);
 
             page.drawText(contactInfo, {
                 x: contactInfoXPosition,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontRegular,
+                color: regColor,
             });
             yPos -= lineHeight * 2;
 
@@ -292,14 +296,16 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontBold,
+                color: customColor,
             });
             yPos -= lineHeight;
             page.drawText(`To acquire an appropriate place for studying close to ${formData.schoolName}`, {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontRegular,
+                color: regColor,
             });
             yPos -= lineHeight * 2;
 
@@ -308,7 +314,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontBold,
+                color: customColor,
             });
             yPos -= lineHeight;
             const educationInfo = `${formData.schoolName}, Full-Time, Graduation Date: ${formData.endDate}, ${formData.major} Major`;
@@ -316,7 +323,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontRegular,
+                color: regColor,
             });
             yPos -= lineHeight * 2;
 
@@ -325,7 +333,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontBold,
+                color: customColor,
             });
             formData.activitiesHistory.forEach(activity => {
                 yPos -= lineHeight;
@@ -334,7 +343,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                     x: 50,
                     y: yPos,
                     size: fontSize,
-                    font: font,
+                    font: fontRegular,
+                    color: regColor,
                 });
             });
             yPos -= lineHeight * 2; // Space before the next section
@@ -344,7 +354,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontBold,
+                color: customColor,
             });
             formData.employmentHistory.forEach(employment => {
                 yPos -= lineHeight;
@@ -353,7 +364,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                     x: 50,
                     y: yPos,
                     size: fontSize,
-                    font: font,
+                    font: fontRegular,
+                    color: regColor,
                 });
             });
             yPos -= lineHeight * 2;
@@ -364,14 +376,16 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontBold,
+                color: customColor,
             });
             yPos -= lineHeight;
             page.drawText(rentalInfo, {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontRegular,
+                color: regColor,
             });
             yPos -= lineHeight * 2;
 
@@ -380,7 +394,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontBold,
+                color: customColor,
             });
             formData.monthlyIncome2.forEach(income => {
                 yPos -= lineHeight;
@@ -388,7 +403,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                     x: 50,
                     y: yPos,
                     size: fontSize,
-                    font: font,
+                    font: fontRegular,
+                    color: regColor,
                 });
             });
             yPos -= lineHeight * 2;
@@ -398,7 +414,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontBold,
+                color: customColor,
             });
             formData.bankAccounts.checkingAccounts.forEach(account => {
                 yPos -= lineHeight;
@@ -406,7 +423,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                     x: 50,
                     y: yPos,
                     size: fontSize,
-                    font: font,
+                    font: fontRegular,
+                    color: regColor,
                 });
             });
             formData.bankAccounts.savingsAccounts.forEach(account => {
@@ -415,7 +433,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                     x: 50,
                     y: yPos,
                     size: fontSize,
-                    font: font,
+                    font: fontRegular,
+                    color: regColor,
                 });
             });
             yPos -= lineHeight * 2;
@@ -425,7 +444,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontBold,
+                color: customColor,
             });
             formData.creditCards.forEach(card => {
                 yPos -= lineHeight;
@@ -433,7 +453,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                     x: 50,
                     y: yPos,
                     size: fontSize,
-                    font: font,
+                    font: fontRegular,
+                    color: regColor,
                 });
             });
             yPos -= lineHeight * 2;
@@ -443,7 +464,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                 x: 50,
                 y: yPos,
                 size: fontSize,
-                font: font,
+                font: fontBold,
+                color: customColor,
             });
             formData.references.forEach(reference => {
                 yPos -= lineHeight;
@@ -452,7 +474,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                     x: 50,
                     y: yPos,
                     size: fontSize,
-                    font: font,
+                    font: fontRegular,
+                    color: regColor,
                 });
             });
             yPos -= lineHeight * 2;
@@ -461,32 +484,32 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             const appendDocumentToPdf = async (pdfDoc, userId, fileName, storageFolderPath) => {
                 const filePath = `${storageFolderPath}/${userId}/${fileName}`;
                 const fileExists = await bucket.file(filePath).exists();
-            
+
                 if (fileExists[0]) {
                     const fileBlob = await bucket.file(filePath).download();
                     const fileBytes = fileBlob[0];
-            
+
                     // Load the document as a PDFDocument
                     const documentPdf = await PDFDocument.load(fileBytes);
-            
+
                     // Copy the pages from the document PDF to the end of the original document
                     const copiedPages = await pdfDoc.copyPages(documentPdf, documentPdf.getPageIndices());
                     copiedPages.forEach((page) => pdfDoc.addPage(page));
                 } else {
                     console.log(`File ${fileName} does not exist, skipping.`);
                 }
-            };            
+            };
 
 
             // Append Letter of Reference
             const letterRefFileName = `${formData.firstName} ${formData.lastName}-Letter_of_Reference.pdf`; // Update with your actual file naming convention
             await appendDocumentToPdf(pdfDoc, userId, letterRefFileName, 'userLettersOfReference');
-            
+
             // Inside the try block of the /generate-pdf/:userId route after creating the pdfDoc
             // Append Government-Issued Photo ID
             const photoIdFileName = `${formData.firstName} ${formData.lastName}-Photo_ID.pdf`; // Update with your actual file naming convention
             await appendDocumentToPdf(pdfDoc, userId, photoIdFileName, 'userGovernmentIds');
-            
+
             // Add the rental workshop certificate to the end of the document
             const certificateFileName = `${formData.firstName} ${formData.lastName}-Rental_Certificate.pdf`;
             await appendDocumentToPdf(pdfDoc, userId, certificateFileName, 'userCertificates');
@@ -533,8 +556,8 @@ app.get('/generate-pdf/:userId', async (req, res) => {
         }
 
         // Then, use this function as before to generate and upload both versions of the PDF
-        await createAndUploadPDF('./rentora_watermark.pdf', `${userId}_filled.pdf`, userId, formData);
-        await createAndUploadPDF('./rentora_nowatermark.pdf', `${userId}_official_filled.pdf`, userId, formData);
+        await createAndUploadPDF('./rentora-application.pdf', `${userId}_filled.pdf`, userId, formData);
+        await createAndUploadPDF('./rentora-application.pdf', `${userId}_official_filled.pdf`, userId, formData);
 
         res.status(200).json({ success: 'PDFs generated and saved' });
     } catch (error) {

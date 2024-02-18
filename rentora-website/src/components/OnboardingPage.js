@@ -4,7 +4,7 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import '../App.css';
 import './OnboardingPage.css';
-import logo from './images/Rentora_Logo.png';
+import logo_with_background from './images/Rentora_Logo-With_Background.png';
 import axios from 'axios';
 
 
@@ -104,7 +104,7 @@ const OnboardingPage = () => {
     <div className="onboarding-page">
       <nav className="top-nav">
         <a href="http://www.rentora.net" rel="noopener noreferrer">
-          <img src={logo} alt="Rentora Logo" className="logo" />
+          <img src={logo_with_background} alt="Rentora Logo" className="logo" />
         </a>
         <div className="nav-links">
           <Link to="#" className="sign-up-btn" onClick={handleSignUpClick}>

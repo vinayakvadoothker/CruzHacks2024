@@ -202,20 +202,14 @@ requestPage.drawText(letterContent, {
 
 
         const fieldNames = [
-            '13 Address of Proposed Rental',
-            '14 Proposed Movein Date',
-            '5 Pets',
-            '6',
-            '5',
-            '4',
-            '3',
-            '2',
-            '1',
-            'Dated',
-            'Deposit Amount',
-            'Street',
-            'State',
-            'City',
+            'Deposit',
+            'rentalAddress',
+            'RentAmount',
+            'TodaysDate',
+            'rental_address',
+            'Pets',
+            'proposedOccupants',
+            'moveInDate',
         ];
 
         for (const userId of userIds) {

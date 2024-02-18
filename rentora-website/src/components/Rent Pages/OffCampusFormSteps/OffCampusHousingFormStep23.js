@@ -57,7 +57,7 @@ const OffCampusHousingFormStep23 = () => {
 
             setIsGeneratingPDF(false);
             completeStep(currentStep);
-            navigate('/onboarding');
+            navigate('/rent/off-campus');
         } catch (error) {
             console.error('Error saving form data:', error);
             setIsGeneratingPDF(false);

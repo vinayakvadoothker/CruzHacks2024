@@ -83,6 +83,15 @@ const OffCampusHousingFormStep13 = () => {
             alert("Please ensure that Start Date and End Date are provided and that End Date is after Start Date for all entries, or set it to 'Present' if you are still living there.");
             return;
         }
+        
+        // Ensure there is at least one present and one previous address
+        const hasPresentAddress = formData.rentalHistory.some(entry => entry.present);
+        const hasPreviousAddress = formData.rentalHistory.some(entry => !entry.present);
+    
+        if (!hasPresentAddress || !hasPreviousAddress) {
+            alert("Please ensure you have added at least one present and one previous address.");
+            return;
+        }
     
         // Proceed with updating the document in the database
         const formattedData = {
