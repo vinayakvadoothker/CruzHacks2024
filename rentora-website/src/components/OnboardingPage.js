@@ -235,7 +235,7 @@ const OnboardingPage = () => {
 
                 <h4 class="member-name">Vin Vadoothker</h4>
                 
-                <p class="member-title">Founder and Full Stack</p>
+                <p class="member-title">Founder and Chief Executive Officer</p>
                 
                 <div class="logos">
 
@@ -257,7 +257,7 @@ const OnboardingPage = () => {
 
                 <h4 class="member-name">Ashwin Marichetty</h4>
                 
-                <p class="member-title">Backend and UI</p>
+                <p class="member-title">Chief Design Officer</p>
                 
                 <div class="logos">
 
@@ -279,7 +279,7 @@ const OnboardingPage = () => {
 
                 <h4 class="member-name">Saumit Vedula</h4>
                 
-                <p class="member-title">Software Architecht</p>
+                <p class="member-title">Chief Architect</p>
                 
                 <div class="logos">
 
@@ -301,7 +301,7 @@ const OnboardingPage = () => {
 
                 <h4 class="member-name">Sasank Gamini</h4>
                 
-                <p class="member-title">Backend and UI</p>
+                <p class="member-title">Chief Product Officer</p>
                 
                 <div class="logos">
 
@@ -323,7 +323,7 @@ const OnboardingPage = () => {
 
                 <h4 class="member-name">Raghav Dewangan</h4>
                 
-                <p class="member-title">Frontend</p>
+                <p class="member-title">VP Of Engineering</p>
                 
                 <div class="logos">
 
