@@ -55,7 +55,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
                     type: 'image/png',
                     margin: 1,
                     color: {
-                        dark: '#426aa3ff', // Black color for the QR code
+                        dark: '#426aa3ff', 
                         light: '#0000' // RGBA value for transparent background
                     }
                 });

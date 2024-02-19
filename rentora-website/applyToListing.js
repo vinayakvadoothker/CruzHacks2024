@@ -2,7 +2,9 @@ const admin = require('firebase-admin');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { PDFDocument, PDFTextField, rgb, StandardFonts } = require('pdf-lib');
+const { PDFDocument, StandardFonts, PDFTextField, rgb } = require('pdf-lib');
+const fs = require('fs');
+const QRCode = require('qrcode');
 
 // Initialize Firebase Admin SDK with your credentials and settings
 const serviceAccount = require('./rentora1.json');
@@ -24,58 +26,41 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.post('/combine-roommate-applications', async (req, res) => {
-    const { userIds, address, names } = req.body;
 
-    if (!userIds || userIds.length === 0 || !address || !names) {
-        return res.status(400).json({ error: 'User IDs, names, and address are required.' });
+    const { userIds, address, names } = req.body; // Extract 'names' from the request body
+
+    if (!userIds || userIds.length === 0 || !address) {
+        return res.status(400).json({ error: 'User IDs and address are required.' });
     }
 
     try {
         const combinedPdfDoc = await PDFDocument.create();
 
-        // Load a standard font
-        const font = await combinedPdfDoc.embedFont(StandardFonts.TimesRoman);
 
-        // Define title and address for the cover page
-        const title = "Application For Renting at:";
-        const fullAddress = `${address['Street']}, ${address['City']}, ${address['State']}`;
-        const titleFontSize = 24;
-        const addressFontSize = 18;
 
-        // Create a title page with a light blue background
-        const titlePage = combinedPdfDoc.addPage();
-        titlePage.drawRectangle({
-            x: 0,
-            y: 0,
-            width: titlePage.getWidth(),
-            height: titlePage.getHeight(),
-            color: rgb(0.68, 0.85, 0.9), // Light blue background
-        });
+        // Function to generate a QR code image; returns a Promise that resolves to the image bytes
+        async function generateQRCodeImage(url) {
+            try {
+                // Generate the QR code with a transparent background
+                const qrCode = await QRCode.toDataURL(url, {
+                    errorCorrectionLevel: 'H',
+                    type: 'image/png',
+                    margin: 1,
+                    color: {
+                        dark: '#426aa3ff',
+                        light: '#0000' // RGBA value for transparent background
+                    }
+                });
+                return qrCode; // This is a data URL of the QR code image
+            } catch (error) {
+                console.error('Error generating QR code', error);
+                throw error;
+            }
+        }
 
-        // Calculate the title width for centering
-        const titleWidth = font.widthOfTextAtSize(title, titleFontSize);
-        const addressWidth = font.widthOfTextAtSize(fullAddress, addressFontSize);
 
-        // Draw the title and address on the title page
-        titlePage.drawText(title, {
-            x: (titlePage.getWidth() - titleWidth) / 2,
-            y: titlePage.getHeight() - 150,
-            size: titleFontSize,
-            font: font,
-            color: rgb(0, 0, 0),
-        });
 
-        titlePage.drawText(fullAddress, {
-            x: (titlePage.getWidth() - addressWidth) / 2,
-            y: titlePage.getHeight() - 190,
-            size: addressFontSize,
-            font: font,
-            color: rgb(0, 0, 0),
-        });
 
-        // ... [previous code to draw the title and address] ...
-
-        // Function to load and embed images
         const loadImages = async (userIds, names) => {
             const images = [];
 
@@ -120,86 +105,105 @@ app.post('/combine-roommate-applications', async (req, res) => {
             return images;
         };
 
-        // Load images and then add them to the PDF
+
+
+        // Load the cover page PDF and fill in the form fields
+        let coverPageBytes = fs.readFileSync('./rentora-cover.pdf');
+        let coverPdfDoc = await PDFDocument.load(coverPageBytes);
+        const coverForm = coverPdfDoc.getForm();
+
         const images = await loadImages(userIds, names);
 
-        // Calculate positions and draw images
-        const pictureSize = 100;
-        const startYPos = titlePage.getHeight() / 2 - pictureSize / 2;
-        const imageXPosition = titlePage.getWidth() / 2 - pictureSize / 2;
+        // Fetch primary user's data for 'Name' field
+        const primaryUserData = await db.collection('SurveyResponses').doc(userIds[0]).get();
+        const primaryUserName = `${primaryUserData.data().firstName} ${primaryUserData.data().lastName}`;
+        coverForm.getTextField('Name').setText(primaryUserName);
 
-        images.forEach((image, index) => {
-            if (image) {
-                // Adjust the y position for each image
-                const yPos = startYPos - index * (pictureSize + 20);
-                titlePage.drawImage(image, {
-                    x: imageXPosition,
-                    y: yPos,
-                    width: pictureSize,
-                    height: pictureSize,
+        // Set 'address' and 'address1' fields
+        const fullAddress = `${address['Street']}, ${address['City']}, ${address['State']}`;
+        coverForm.getTextField('address').setText(fullAddress);
+        coverForm.getTextField('address1').setText(fullAddress); // 'address1' is the same as 'address'
+
+        // Set '#ofRoommates' field
+        coverForm.getTextField('#ofRoommates').setText(String(userIds.length - 1));
+
+        // Set 'NamesOfRoommates'
+        const namesOfRoommates = names.map(name => `${name.firstName} ${name.lastName}`).join('\n');
+
+        console.log('NamesOfRoommates:', namesOfRoommates); // Log the value being sent for NamesOfRoommates
+
+        coverForm.getTextField('NamesOfRoommates').setText(namesOfRoommates);
+
+        // Save the modified cover PDF and reload it to preserve the filled form fields
+        coverPageBytes = await coverPdfDoc.save();
+        coverPdfDoc = await PDFDocument.load(coverPageBytes);
+
+        // Copy the cover pages to the combined PDF
+        const coverPages = await combinedPdfDoc.copyPages(coverPdfDoc, coverPdfDoc.getPageIndices());
+
+        let isFirstPage = true; // Flag to track the first page
+
+
+
+
+        coverPages.forEach(async (page) => {
+
+            combinedPdfDoc.addPage(page);
+
+            // Check if it's the first page
+            if (isFirstPage) {
+                // Get the width and height of the page
+                const { width, height } = page.getSize();
+
+                // Position the profile pictures under the address
+                let x = 250; // Initialize x with a value
+                const y = 350; // Adjust this value as needed
+
+                images.forEach(async (image) => { // Define image within the forEach loop
+                    if (image) {
+                        const profilePicDims = image.scale(0.1); // Adjust the scale as needed
+                        await page.drawImage(image, {
+                            x,
+                            y,
+                            width: profilePicDims.width,
+                            height: profilePicDims.height,
+                        });
+                        x += 100; // Adjust the spacing between profile pictures
+                    }
                 });
+
+                isFirstPage = false; // Set flag to false after adding profile pictures to the first page
             }
         });
 
-// Add a new page for the letter of request
-const requestPage = combinedPdfDoc.addPage();
-const letterTitle = "Letter of Request";
+        console.log('Number of pages in combinedPdfDoc:', combinedPdfDoc.getPageCount());
 
-// Extracting address details
-const street = address['Street'];
-const state = address['State'];
-const city = address['City'];
+        // Generate QR code image for the URL
+        const qrCodeDataURL = await generateQRCodeImage('https://www.rentora.net');
 
-// Extracting roommate details
-const namesString = names.map(name => name.firstName).join(', ');
-const roommatesCount = names.length;
+        // Extract the raw image data from the Data URL
+        const qrImageBytes = Buffer.from(qrCodeDataURL.split(',')[1], 'base64');
 
-// Constructing the letter content
-const letterContent = `
-${letterTitle}
-Dear Landlord/Property Manager,
+        // Embed the QR code image into the PDF
+        const qrImage = await combinedPdfDoc.embedPng(qrImageBytes);
 
-I hope this email finds you well. My name is ${names[0].firstName} ${names[0].lastName}, 
-and I am currently a student along with my ${roommatesCount-1} roommate(s). 
-We are in search of a comfortable and secure place to reside for the academic year, 
-and we came across your listing for the home located at ${street}, ${city}, ${state}.
+        // Get the first page of the document
+        const page1 = combinedPdfDoc.getPages()[0];
 
-We are highly interested in renting your property due to its convenient location, amenities, 
-and the features you've mentioned in the listing. As diligent students, we are committed 
-to maintaining a quiet and respectful living environment, which aligns well with our academic 
-and personal responsibilities.
+        // Calculate position for the QR code (top-right corner)
+        const pageWidth1 = page1.getSize().width;
+        const pageHeight = page1.getSize().height;
+        const qrSize = 65; // Set the size of the QR code
+        const qrX = pageWidth1 - qrSize - 42; // 30 is the margin from the right edge
+        const qrY = pageHeight - qrSize - 48; // 30 is the margin from the top edge
 
-Our collective aim is to find a home that not only meets our basic needs but also provides 
-a conducive environment for our studies. We are responsible young adults who understand 
-the importance of keeping a property in good condition and adhering to the terms of a lease agreement.
-
-We would greatly appreciate the opportunity to discuss this further and to view the property 
-at your earliest convenience. We are prepared to provide references or any additional information 
-you may require for your screening process.
-
-Thank you very much for considering our application. We look forward to the possibility 
-of renting from you and promise to be exemplary tenants.
-
-Sincerely,
-
-${namesString}
-`;
-
-const letterFontSize = 14; // Increased font size
-const leading = 18;
-
-// Drawing letter title
-requestPage.drawText(letterContent, {
-    x: 50,
-    y: requestPage.getHeight() - 50,
-    size: letterFontSize,
-    font: font,
-    color: rgb(0, 0, 0),
-    lineHeight: leading,
-    maxWidth: 500, // Limiting the width to create a block-like structure
-});
-
-
+        // Draw the QR code image
+        page1.drawImage(qrImage, {
+            x: qrX,
+            y: qrY,
+            width: qrSize,
+            height: qrSize
+        });
 
         const fieldNames = [
             'Deposit',
@@ -213,15 +217,13 @@ requestPage.drawText(letterContent, {
         ];
 
         for (const userId of userIds) {
-            // Retrieve user data from Firestore to get first and last names
             const userData = await db.collection('SurveyResponses').doc(userId).get();
             if (!userData.exists) {
                 console.log(`User data for ${userId} not found.`);
                 continue; // Skip this user and continue with the next one
             }
 
-            const { firstName, lastName } = userData.data();
-            const userPdfPath = `Rental Applications/${firstName} ${lastName}/${userId}_official_filled.pdf`;
+            const userPdfPath = `Rental Applications/${userData.data().firstName} ${userData.data().lastName}/${userId}_official_filled.pdf`;
             const file = bucket.file(userPdfPath);
             const [exists] = await file.exists();
 
@@ -238,22 +240,15 @@ requestPage.drawText(letterContent, {
                         continue;
                     }
 
-                    const originalText = field.getText();
-                    console.log(`Text field found for user ${userId}. Original text: "${originalText}"`);
-
                     if (field instanceof PDFTextField) {
-                        // Handle PDFTextField
                         field.setText(address[fieldName] || '');
                     } else {
-                        // Handle other field types (if needed)
                         console.log(`Unhandled field type ${field.constructor.name} for field "${fieldName}"`);
                     }
                 }
 
-                // Copy only the modified pages to the combined PDF
                 const modifiedPdfBytes = await userPdfDoc.save({ useObjectStreams: false });
 
-                // Append modified document to the combined PDF
                 const modifiedPdfDoc = await PDFDocument.load(modifiedPdfBytes);
                 const modifiedPages = await combinedPdfDoc.copyPages(modifiedPdfDoc, modifiedPdfDoc.getPageIndices());
                 modifiedPages.forEach((page) => combinedPdfDoc.addPage(page));
@@ -261,23 +256,30 @@ requestPage.drawText(letterContent, {
                 console.log(`PDF for user ${userId} not found.`);
             }
         }
+
+
+
+
+
         // Extract the address to name the folder and file
         const formattedAddress = `${address['Street'].replace(/\s+/g, '_')}_${address['City'].replace(/\s+/g, '_')}_${address['State'].replace(/\s+/g, '_')}_USA`;
         const combinedPdfFileName = `combined_application-${userIds.join('-')}-${formattedAddress}.pdf`;
         const combinedPdfPath = `Combined_Applications/${formattedAddress}/${combinedPdfFileName}`;
 
+        // Save the combined PDF and get the URL
         const combinedPdfBytes = await combinedPdfDoc.save({ useObjectStreams: false });
-        const combinedPdfBuffer = Buffer.from(combinedPdfBytes.buffer); // Convert Uint8Array to Buffer
-
+        const combinedPdfBuffer = Buffer.from(combinedPdfBytes.buffer);
         const combinedPdfFile = bucket.file(combinedPdfPath);
-        await combinedPdfFile.save(combinedPdfBuffer, {
-            metadata: { contentType: 'application/pdf' },
-        });
+        const [url] = await combinedPdfFile.getSignedUrl({ action: 'read', expires: '03-01-2500' });
 
-        const [url] = await combinedPdfFile.getSignedUrl({
-            action: 'read',
-            expires: '03-01-2500',
-        });
+
+
+
+        await combinedPdfFile.save(combinedPdfBuffer, { metadata: { contentType: 'application/pdf' } });
+
+
+
+
 
         console.log('Combined PDF generated and saved');
 
@@ -285,9 +287,7 @@ requestPage.drawText(letterContent, {
         userIds.forEach(async (userId) => {
             const userRef = db.collection('SurveyResponses').doc(userId);
             const addressRef = userRef.collection('offcampusapplications').doc(formattedAddress);
-            await addressRef.set({
-                combinedPdfUrl: url,
-            }, { merge: true });
+            await addressRef.set({ combinedPdfUrl: url }, { merge: true });
         });
 
         res.status(200).json({ success: 'Combined PDF generated and saved', url });

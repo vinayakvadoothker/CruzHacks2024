@@ -3,6 +3,15 @@ html, body {
   max-width: 100%; /* Ensure the page width does not exceed the viewport */
 }
 
+.container {
+  min-width: 90%;
+  overflow-y: auto;
+  background-color: #e7f1ff00;
+  border-radius: 20px;
+  z-index: 1;
+
+}
+
 .onboarding-page::before {
   content: '';
   position: absolute;
@@ -80,7 +89,7 @@ html, body {
     position: absolute; /* Absolute positioning */
     top: 30px; /* Position from the top */
     right: 20px; /* Position from the right */
-    font-family: monospace;
+    font-family: 'Segoe UI' Verdana; /* Ensures typography consistency */
 }
 
 .sign-up-btn {
@@ -156,7 +165,7 @@ html, body {
 }
 
 .learn-more-btn {
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
   padding: 10px 25px; /* Padding inside the button */
   font-size: 1rem; /* Font size inside the button */
   color: #000; /* Text color */
@@ -228,7 +237,7 @@ html, body {
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
   margin-bottom: 20px; /* Add margin to separate sections */
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .about-us h2 {
@@ -238,7 +247,7 @@ html, body {
 }
 
 .about-us p {
-  font-size: 1rem; /* Font size for the paragraph */
+  font-size: 1.2rem; /* Font size for the paragraph */
   line-height: 1.6; /* Line height for readability */
   color: #ffffff; /* Dark color for the text */
   max-width: 800px; /* Max width to maintain optimal line length */
@@ -256,7 +265,7 @@ html, body {
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
   margin-bottom: 20px; /* Add margin to separate sections */
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .our-mission h3 {
@@ -266,7 +275,7 @@ html, body {
 }
 
 .our-mission p {
-  font-size: 1rem; /* Font size for the paragraph */
+  font-size: 1.2rem; /* Font size for the paragraph */
   line-height: 1.6; /* Line height for readability */
   color: #ffffff; /* Dark color for the text */
   max-width: 800px; /* Max width to maintain optimal line length */
@@ -282,7 +291,7 @@ html, body {
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
   margin-bottom: 20px; /* Add margin to separate sections */
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .how-it-works h3 {
@@ -293,7 +302,7 @@ html, body {
 
 .how-it-works ol {
   padding-left: 30px; /* Add left padding to the list */
-  font-size: 15px;
+  font-size: 20px;
   line-height: 2; /* Add space between each line */
 }
 
@@ -305,13 +314,14 @@ html, body {
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
   margin-bottom: 20px; /* Add margin to separate sections */
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .faqs h3 {
   font-size: 2rem; /* Large font size for the section heading */
   color: #ffffff; /* Dark color for the heading */
   margin-bottom: 0.5em; /* Space below the heading */
+  
 }
 
 .faqs ul {
@@ -334,18 +344,19 @@ html, body {
 
 .faqs details {
   background-color: #ffffff36; /* White background for the details */
-  font-size: 15px;
+  font-size: 20px;
   line-height: 2; /* Add space between each line */
   padding: 10px; /* Add padding */
   border-radius: 10px; /* Rounded corners for the details */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for a card effect */
   text-align: left;
-  max-width: 600px;
+  max-width: 800px;
 }
 
 .faqs summary {
   cursor: pointer; /* Change cursor to pointer */
   outline: none; /* Remove default focus outline */
+
 }
 
 .faqs p {
@@ -362,7 +373,7 @@ html, body {
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
   margin-bottom: 20px; /* Add margin to separate sections */
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .team h3 {
@@ -394,7 +405,7 @@ html, body {
 }
 
 .member-name {
-  font-size: 1rem;
+  font-size: 1.1rem;
   margin-bottom: 0.5em; /* Reduced margin to decrease the gap */
 }
 
@@ -438,7 +449,7 @@ html, body {
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
   margin-bottom: 20px; /* Add margin to separate sections */
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .contact-us h3 {
@@ -460,7 +471,7 @@ html, body {
   border-radius: 5px;
   border: 1px solid #ccc;
   outline: none;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .contact-us input:focus,
@@ -475,18 +486,18 @@ html, body {
 
 .contact-us button {
   padding: 10px 20px;
-  background-color: #0f2fff;
+  background-color: #02158f;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 20px;
   transition: background-color 0.3s ease;
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .contact-us button:hover {
-  background-color: rgb(101, 160, 255);
+  background-color: #3550ff;
 }
 
 /* Adjustments for smaller screens */
@@ -544,7 +555,7 @@ html, body {
         align-items: center; /* Centers content vertically */
         right: 20px; /* Align to the right edge */
         width: 90px; /* Set a fixed width for both buttons */
-        font-family: monospace;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
     }
 
     .sign-up-btn {

@@ -5,6 +5,8 @@ import { db } from "../../config";
 import './styles.css';
 import { allowedClerkIDs } from './AddListingPermissions';
 import ApplyPopup from './ApplyPopup';
+import CustomApplyPopup from './ApplyPopup_Custom';
+
 
 const OffCampusHousingDashboard = () => {
     const { user } = useUser();
@@ -13,23 +15,60 @@ const OffCampusHousingDashboard = () => {
     const [activeListing, setActiveListing] = useState(null);
     const [currentImageIndexes, setCurrentImageIndexes] = useState([]);
     const [expandedImages, setExpandedImages] = useState([]); // Add state for expanded images
+    const [userSchoolName, setUserSchoolName] = useState('');
+    const [activeCustomListing, setActiveCustomListing] = useState(null);
+    const [isHovering, setIsHovering] = useState(false); // State to manage hover effect
+
+
+
+        // Function to handle mouse enter event
+        const handleMouseEnter = () => {
+            setIsHovering(true);
+        };
+    
+        // Function to handle mouse leave event
+        const handleMouseLeave = () => {
+            setIsHovering(false);
+        };
+
+
+    const openCustomApplyPopup = async () => {
+        try {
+            setActiveCustomListing(true);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const closeCustomApplyPopup = () => {
+        setActiveCustomListing(null);
+    };
 
     useEffect(() => {
         const fetchFormStatusAndListings = async () => {
             try {
-                const formResponseDoc = await db.collection('SurveyResponses').doc(user.id).get();
-                const formResponseData = formResponseDoc.data();
+                // Fetch the user's survey response to get the schoolName
+                const surveyResponseDoc = await db.collection('SurveyResponses').doc(user.id).get();
+                const surveyResponseData = surveyResponseDoc.data();
 
-                if (!formResponseData || formResponseData.offcampusformdone !== true) {
+                if (!surveyResponseData || surveyResponseData.offcampusformdone !== true) {
                     navigate('/rent/off-campus/step1');
                     return;
                 }
 
-                const querySnapshot = await db.collection('OffCampusListings').get();
-                const listings = querySnapshot.docs.map(doc => ({
+                const userSchoolName = surveyResponseData.schoolName; // Get the user's school name from the survey response
+                setUserSchoolName(surveyResponseData.schoolName);
+
+                // Sanitize and format the school name to match the subcollection naming convention
+                const schoolNameFormatted = userSchoolName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
+
+                // Fetch listings from the subcollection named after the user's school
+                const querySnapshot = await db.collection('OffCampusListings').doc(schoolNameFormatted).collection('Listings').get();
+                let listings = querySnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
+
                 setListingsData(listings);
                 setCurrentImageIndexes(listings.map(() => 0));
                 setExpandedImages(listings.map(() => false)); // Initialize expanded state for each listing
@@ -42,6 +81,7 @@ const OffCampusHousingDashboard = () => {
             fetchFormStatusAndListings();
         }
     }, [user, navigate]);
+
 
     const handleAddOffCampusClick = () => {
         navigate('/addoffcampuslisting');
@@ -65,13 +105,13 @@ const OffCampusHousingDashboard = () => {
 
     const openApplyPopup = async (listing) => {
         const formattedAddress = listing.address.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
-        
+
         try {
             const snapshot = await db.collection('offcampus_listing_applications').doc(user.id)
-                                    .collection(formattedAddress).limit(1).get();
-    
+                .collection(formattedAddress).limit(1).get();
+
             const existingApplication = snapshot.docs.length > 0 ? snapshot.docs[0].data() : null;
-            setActiveListing({...listing, existingApplication});
+            setActiveListing({ ...listing, existingApplication });
         } catch (error) {
             console.error('Error fetching application data:', error);
         }
@@ -97,14 +137,35 @@ const OffCampusHousingDashboard = () => {
 
     return (
         <>
-            <div className="form-container" style={{ maxHeight: '70vh' }}>
+            <div className="form-container" style={{ maxHeight: '67vh' }}>
                 <h2 className="step-title">Off-Campus Housing</h2>
                 {isClerkAuthorized && (
                     <button onClick={handleAddOffCampusClick} style={{ position: 'absolute', top: '20px', right: '20px' }}>
                         +Add
                     </button>
                 )}
-                <p className="step-description">Your Off-Campus Housing Listings</p>
+                
+                <button className="apply-button custom-apply" onClick={() => openCustomApplyPopup()}
+
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                >
+                    Build Your Own
+                </button>
+
+                {isHovering && (
+                    <div className="hover-message">
+                        <h2>Fill out this form to be emailed a custom application for the address you choose, with the roommates you select</h2>
+                    </div>
+                )}
+
+                {activeCustomListing && (
+                    <CustomApplyPopup
+                        user={user}
+                        closePopup={closeCustomApplyPopup}
+                    />
+                )}
+                <p className="step-description">Listings near {userSchoolName}</p>
 
                 <div className="listings-container">
                     {listingsData.map((listing, index) => {

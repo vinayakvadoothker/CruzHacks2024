@@ -24,12 +24,33 @@ const OffCampusHousingFormStep5 = () => {
   const [imagePreview, setImagePreview] = useState(user?.imageUrl || "url_to_default_image.jpg"); // Default to Clerk image or a default image
 
   const uploadFileToStorage = useCallback(async (userId, file) => {
-    const newFileName = `${user.firstName}_${user.lastName}_Profile_Picture`;
-    const fileExtension = file.name.split('.').pop();
-    const storageRef = storage.ref(`userProfilePictures/${userId}/${newFileName}.${fileExtension}`);
-
+    // Construct the new file name with a fixed '.jpg' extension
+    const newFileName = `${user.firstName}_${user.lastName}_Profile_Picture.jpg`;
+    // Create a reference in your storage with the desired path and file name
+    const storageRef = storage.ref(`userProfilePictures/${userId}/${newFileName}`);
+  
     try {
-      await storageRef.put(file);
+      // Convert the file to a Blob if it's not a jpg to ensure it's in the right format before uploading
+      let blob = file;
+      if (file.type !== 'image/jpeg') {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = (e) => reject(e);
+          img.src = URL.createObjectURL(file);
+        });
+  
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg'));
+      }
+  
+      // Upload the Blob or the original jpg file
+      await storageRef.put(blob);
+      // Get the download URL of the uploaded jpg file
       const downloadURL = await storageRef.getDownloadURL();
       return downloadURL;
     } catch (error) {

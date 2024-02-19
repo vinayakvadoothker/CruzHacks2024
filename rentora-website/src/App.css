@@ -15,8 +15,7 @@
   nav {
     background-color: rgba(0, 0, 0, 0);
     padding: 1px; /* Decrease padding for smaller screens */
-    font-family: monospace;
-    gap: 2px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    gap: 2px;
 
   }
   .no-background {
@@ -46,8 +45,7 @@
     background-color: #c9c9c9;
     font-weight: bold;
     font-size: 20px;
-    font-family: monospace;
-    font-style: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-style: normal;
     line-height: normal;
     font-weight: 10;
     position: absolute;
@@ -95,8 +93,7 @@
     flex-shrink: 0;
     color: #000000;
     text-align: justify;
-    font-family: monospace;
-    font-size: 70px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-size: 70px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -112,8 +109,7 @@
     flex-shrink: 0;
     color: #EBE1E9;
     text-align: center;
-    font-family: monospace;
-    font-size: 90;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-size: 90;
     font-style: normal;
     font-weight: 300;
     line-height: normal;
@@ -126,8 +122,7 @@
     background: #2E2F5B;
     color: #EBE1E9;
     text-align: center;
-    font-family: monospace;
-    font-size: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-size: 24px;
     font-weight: 500;
     line-height: 80px; /* Vertically center text */
     text-decoration: none;
@@ -162,8 +157,7 @@
     justify-content: center;
     height: 100%; /* Ensure it takes the full height of the container */
     margin: 0 auto; /* Center the container horizontally */
-    font-family: monospace;
-    font-size: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-size: 24px;
     font-weight: 500;
   }
 }
@@ -206,8 +200,7 @@
     color: rgb(0, 0, 0);
     font-weight: bold;
     font-size: 30px;
-    font-family: monospace;
-    font-style: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-style: normal;
     line-height: normal;
     font-weight: 10;
   }
@@ -218,8 +211,7 @@
     background-color: #c9c9c9;
     font-weight: bold;
     font-size: 20px;
-    font-family: monospace;
-    font-style: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-style: normal;
     line-height: normal;
     font-weight: 10;
     position: absolute;
@@ -266,8 +258,7 @@
     flex-shrink: 0;
     color: #000000;
     text-align: center;
-    font-family: monospace;
-    font-size: 120px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-size: 120px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -283,8 +274,7 @@
     flex-shrink: 0;
     color: #EBE1E9;
     text-align: center;
-    font-family: monospace;
-    font-size: 90;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-size: 90;
     font-style: normal;
     font-weight: 300;
     line-height: normal;
@@ -297,8 +287,7 @@
     background: #2E2F5B;
     color: #EBE1E9;
     text-align: center;
-    font-family: monospace;
-    font-size: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-size: 24px;
     font-weight: 500;
     line-height: 80px; /* Vertically center text */
     text-decoration: none;
@@ -336,15 +325,14 @@
     justify-content: center;
     height: 100%; /* Ensure it takes the full height of the container */
     margin: 0 auto; /* Center the container horizontally */
-    font-family: monospace;
-    font-size: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-size: 24px;
     font-weight: 500;
   }
 }
 
 .logo-circle {
-  width: 50px; /* Adjust based on your logo size */
-  height: 50px; /* Adjust to maintain aspect ratio */
+  width: 70px; /* Adjust based on your logo size */
+  height: 80px; /* Adjust to maintain aspect ratio */
   border-radius: 50%; /* This creates the circular shape */
   object-fit: cover; /* Ensures the image covers the area without distortion */
 }

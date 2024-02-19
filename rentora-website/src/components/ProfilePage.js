@@ -123,7 +123,7 @@ const ProfilePage = () => {
               borderRadius: '4px',
               cursor: 'pointer',
               fontWeight: 'bold',
-              fontFamily: 'monospace',
+              fontFamily: 'Verdana', 
               fontSize: '16px',
             }}
             onClick={() => window.open(pdfUrl, '_blank')}
@@ -150,7 +150,7 @@ const styles = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '700px', // Increased width
+    minWidth: '80%', // Increased width
   },
   imageContainer: {
     position: 'relative',
@@ -164,8 +164,6 @@ const styles = {
   editImageButton: {
     position: 'absolute',
     bottom: '0',
-    right: '-110px',
-    transform: 'translate(-520%, 50%)', // Center the button
     backgroundColor: '#3498db',
     color: '#fff',
     border: 'none',
@@ -173,7 +171,7 @@ const styles = {
     borderRadius: '4px',
     cursor: 'pointer',
     fontWeight: 'bold',
-    fontFamily: 'monospace',
+    fontFamily: 'Verdana',
     fontSize: '12px', // Smaller font size
   },
   nameContainer: {
@@ -182,7 +180,7 @@ const styles = {
   userName: {
     fontSize: '24px',
     fontWeight: 'bold',
-    fontFamily: 'monospace',
+    fontFamily: 'Verdana',
   },
   username: {
     fontSize: '14px', // Smaller font size
@@ -194,7 +192,7 @@ const styles = {
   contactInfo: {
     fontSize: '16px',
     marginBottom: '10px',
-    fontFamily: 'monospace',
+    fontFamily: 'Verdana',
   },
   portfolioContainer: {
     marginBottom: '20px',
@@ -202,12 +200,12 @@ const styles = {
   portfolioHeading: {
     fontSize: '18px',
     fontWeight: 'bold',
-    fontFamily: 'monospace',
+    fontFamily: 'Verdana',
   },
   socialLink: {
     fontSize: '16px',
     margin: '5px 0',
-    fontFamily: 'monospace',
+    fontFamily: 'Verdana',
   },
   preferencesContainer: {
     marginTop: '20px',
@@ -215,10 +213,10 @@ const styles = {
   preferencesHeading: {
     fontSize: '18px',
     fontWeight: 'bold',
-    fontFamily: 'monospace',
+    fontFamily: 'Verdana',
   },
   preferencesText: {
     fontSize: '16px',
-    fontFamily: 'monospace',
+    fontFamily: 'Verdana', 
   },
 };

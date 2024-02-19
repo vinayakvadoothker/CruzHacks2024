@@ -28,7 +28,7 @@
     justify-content: center;
     align-items: center;
     
-    font-family: 'Courier New', monospace; /* Use monospace font */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .apply-popup-close {
@@ -70,7 +70,7 @@
     padding: 10px;
     z-index: 1;
     border-radius: 5px; /* Add curved corners */
-    font-family: 'Courier New', monospace; /* Use monospace font */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .dropdown-content h3 {
@@ -82,7 +82,7 @@
     padding: 5px;
     border: 1px solid #ddd;
     border-radius: 5px; /* Add curved corners */
-    font-family: 'Courier New', monospace; /* Use monospace font */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 /* Add space between name and email */

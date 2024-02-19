@@ -51,14 +51,14 @@
   font-size: 30px;
   margin-bottom: 10px;
   font-weight: bold;
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 /* Styles for step descriptions */
 .step-description {
   font-size: 18px;
   margin-bottom: 20px;
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
   font-style: italic; 
 }
 
@@ -68,7 +68,7 @@
   padding: 10px;
   margin-bottom: 20px;
   font-weight: bold;
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
   text-align: left; 
   box-sizing: border-box;
   font-size: large;
@@ -82,7 +82,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
   display: block;
   margin: 10px auto; /* Center the button horizontally with top and bottom margin */
 }
@@ -91,7 +91,7 @@
   color: rgb(0, 0, 0);
   padding: 10px;
   cursor: pointer;
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
   position: absolute;
   top: 0;
   left: 0;
@@ -121,7 +121,7 @@ label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .react-datepicker-wrapper {
@@ -132,7 +132,7 @@ label {
   background-color: #787cff2a;
 }
 .react-datepicker {
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
   font-weight: bold;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -284,7 +284,7 @@ label {
   background: #2E2F5B;
   color: #EBE1E9;
   text-align: center;
-  font-family: monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
   font-size: 10px; /* Adjusted font size for both buttons */
   line-height: 20px; /* Adjusted line-height for both buttons */
   text-decoration: none;
@@ -315,7 +315,7 @@ label {
   margin-bottom: 20px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  font-family: monospace; /* Use monospace font-family */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .listing-item img {
@@ -328,7 +328,7 @@ label {
   margin-top: 10px;
   font-size: 24px; /* Adjust the font size as needed */
   font-weight: bold; /* Make the font bold */
-  font-family: monospace; /* Use monospace font-family */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .listing-item p {
@@ -339,7 +339,7 @@ label {
   text-overflow: ellipsis;
   text-align: center;
   font-size: 16px; /* Adjust the font size as needed */
-  font-family: monospace; /* Use monospace font-family */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
 
 .listing-item .info {
@@ -469,4 +469,66 @@ label {
   line-height: 1.6; /* Improves readability */
   margin: 10px 0; /* Adds spacing between paragraphs */
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Keeps the font consistent */
+}
+
+
+.apply-button.custom-apply {
+  background-color: #426aa3; /* Green background */
+  color: white; /* White text */
+  padding: 10px 20px; /* Padding around the text */
+  border: none; /* No border */
+  cursor: pointer; /* Cursor changes to pointer to indicate it's clickable */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px; /* Text size */
+  transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
+}
+
+.apply-button.custom-apply:hover {
+  background-color: #639ff2; /* Darker shade of green on hover */
+  transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+/* Style for the hover message */
+.hover-message {
+  display: none; /* Initially don't display the message */
+  position: absolute; /* Position it relative to its nearest positioned ancestor */
+  background-color: #4b4b4b; /* Light grey background */
+  max-width: 350px; /* Maximum width */
+  padding: 4px; /* Padding inside the message box */
+  border: 1px solid #000000; /* Light grey border */
+  border-radius: 4px; /* Rounded corners for the message box */
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Subtle shadow */
+  z-index: 1; /* Ensure it's above other content */
+  bottom: 85%; /* Position the bottom of the message box at the top of the button */
+  left: 50%; /* Center the message box horizontally relative to the button */
+  transform: translateX(-50%); /* Shift the message box leftwards by half its width to center it */
+  margin-bottom: 8px; /* Space between the message box and the button */
+  font-size: 8.5px;
+  text-align: center;
+  color: #EBE1E9;
+}
+
+/* When hovering over the button, display the message */
+.apply-button.custom-apply:hover + .hover-message {
+  display: block; /* Display the message box */
+}
+
+.listings-container {
+  min-width: 85%;
+}
+
+.apply-button {
+  background-color: #426aa3; /* Green background */
+  color: white; /* White text */
+  padding: 8px 15px; /* Padding around the text */
+  border: none; /* No border */
+  cursor: pointer; /* Cursor changes to pointer to indicate it's clickable */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px; /* Text size */
+  transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
+}
+
+.apply-button:hover {
+  background-color: #639ff2; /* Darker shade of green on hover */
+  transform: scale(1.05); /* Slightly enlarge the button on hover */
 }

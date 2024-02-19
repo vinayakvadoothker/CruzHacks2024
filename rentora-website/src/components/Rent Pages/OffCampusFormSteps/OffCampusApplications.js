@@ -36,23 +36,23 @@ const OffCampusApplications = () => {
         fetchUserApplications();
     }, [fetchUserApplications]); // Dependency array includes 'fetchUserApplications'
 
-    const handleEdit = (applicationId) => {
-        const selectedApplication = applications.find(app => app.id === applicationId);
-        setEditApplication(selectedApplication);
-    };
-
     const handleApplicationUpdate = async () => {
         setEditApplication(null);
         await fetchUserApplications();
     };
 
     function formatAddress(address) {
+        console.log("Original address:", address);
         // Check if address is defined
         if (!address) {
+            console.log("Address is not available");
             return 'Address not available'; // or some default text
         }
-        return address.replace(/_/g, ' ');
+        const formattedAddress = address.replace(/_USA$/, '').replace(/_/g, ' ');
+        console.log("Formatted address:", formattedAddress);
+        return formattedAddress;
     }
+
 
     const handleViewApplication = (combinedPdfUrl) => {
         if (combinedPdfUrl) {
@@ -68,12 +68,8 @@ const OffCampusApplications = () => {
                 <div className='off-campus-title'>Your Off-Campus Applications</div>
                 {applications.map(application => (
                     <div key={application.id} className="application-container">
-                        <h3>{formatAddress(application.address)}</h3>
-                        <p>Preferred Move-In Date: {application.preferredMoveInDate}</p>
-                        <p>Number of Pets: {application.numberOfPets}</p>
-                        <p>Any Smokers? {application.anySmokers ? 'Yes' : 'No'}</p>
-                        <h4>Roommates</h4>
-                        {application.selectedRoommatesData?.map(roommate => ( 
+                        <h3>{formatAddress(application.id)}</h3>
+                        {application.selectedRoommatesData?.map(roommate => (
                             <div key={roommate.id}>
                                 <p>{roommate.name}</p>
                             </div>

@@ -1,8 +1,12 @@
 /* OffCampusApplications.css */
 
 .scrollable-container {
-    max-height: 850px;
+    min-height: 100%;
+    min-width: 80%;
     overflow-y: auto;
+    background-color: #e7f1ff;
+    border-radius: 20px;
+
 }
 
 .offcampus-applications-container {
@@ -14,7 +18,7 @@
 }
 
 .application-container {
-    border: 1px solid #ccc;
+    border: 1px solid #000000;
     padding: 15px;
     margin-bottom: 20px;
     background-color: rgba(255, 255, 255, 0.9);
@@ -27,17 +31,17 @@
 }
 
 .off-campus-title {
-    color: #ffffff; /* Text color (blue) */
+    color: #2f4c75; /* Text color (blue) */
     font-size: 30px; /* Font size */
     font-weight: bold; /* Bold text */
-    font-family: monospace;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
     text-align: center; /* Center-align text */
     padding: 10px; /* Add some padding */
     border-radius: 5px; /* Rounded corners */
   }
 
 .application-container h2 {
-    color: #000000;
+    color: #426aa3;
     /* Adjust the color as needed */
     margin-bottom: 15px;
     /* Add margin to separate from other elements */

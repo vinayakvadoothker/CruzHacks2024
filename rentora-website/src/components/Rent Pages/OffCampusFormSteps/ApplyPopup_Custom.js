@@ -1,9 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { db } from "../../config";
+import React, { useState, useEffect, useRef } from 'react';
 import Spinner from './Spinner';
 import "./ApplyPopup.css";
 
-const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
+const CustomApplyPopup = ({ user, closePopup, editApplicationData }) => {
+
+    const listingAddressRef = useRef(null); // Create a ref for the address input
+
+    useEffect(() => {
+        // Initialize Google Places Autocomplete
+        if (window.google) {
+            const autocomplete = new window.google.maps.places.Autocomplete(listingAddressRef.current, {
+                types: ['address'], // Specify the type as address
+            });
+            autocomplete.addListener('place_changed', () => {
+                const place = autocomplete.getPlace();
+                setListingAddress(place.formatted_address); // Update the address state with the selected address
+            });
+        }
+    }, []);
+
+
+
     const [userDetails, setUserDetails] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -19,6 +36,9 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [listingAddress, setListingAddress] = useState('');
+    const [monthlyRent, setMonthlyRent] = useState('');
+    const [depositAmount, setDepositAmount] = useState('');
 
     const handleInitialSubmit = (e) => {
         e.preventDefault(); // Prevent the default form submission behavior
@@ -27,50 +47,40 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
             handleSubmit(e); // Pass the event object to handleSubmit
         }
     };
-    
-    
+
+
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
                 const response = await fetch('http://localhost:3002/fetch_user_details');
                 const data = await response.json();
-    
-                const filteredData = data.filter(user => {
-                    const addToRoommateSearch = user.addToRoommateSearch;
-                    const isSameSchool = user.schoolName === listing.schoolName; // Check if the user is from the same school as the listing
-    
-                    // Include user if addToRoommateSearch is true, not undefined, not 'Not specified', and from the same school
+
+                // Assuming you have a way to determine the school name, e.g., from user's profile or an input field
+                const currentSchoolName = user.schoolName; // Or another source for school name
+
+                const filteredData = data.filter(userDetail => {
+                    const addToRoommateSearch = userDetail.addToRoommateSearch;
+                    const isSameSchool = user.schoolName === currentSchoolName;
+
+                    // Include userDetail if addToRoommateSearch is true, not undefined, not 'Not specified', and from the same school
                     return (addToRoommateSearch || addToRoommateSearch === undefined || addToRoommateSearch === 'Not specified') && isSameSchool;
                 });
-    
+
                 if (Array.isArray(filteredData)) {
                     setUserDetails(filteredData);
                 } else {
                     console.error('Fetched data is not an array:', filteredData);
                 }
-    
-                // Check for an existing application
-                const existingApplication = filteredData.find(userData => userData.id === user.id && userData.listingTitle === listing.title);
-                if (existingApplication) {
-                    setApplicationData({
-                        ...existingApplication,
-                        selectedRoommatesData: existingApplication?.selectedRoommatesData ?? []
-                    });
-    
-                    if (existingApplication && Array.isArray(existingApplication.selectedRoommatesData)) {
-                        setSelectedRoommates(existingApplication.selectedRoommatesData.map(roommate => roommate.id));
-                    } else {
-                        setSelectedRoommates([]);
-                    }
-                }
             } catch (error) {
+                // Handle any errors that occurred during the fetch operation
                 console.error('Error fetching user details:', error);
             }
         };
-    
+
         fetchUserDetails();
-    }, [user.id, listing.title, user.schoolName ,listing.schoolName]);
-    
+    }, [user.id, user.schoolName]);
+
+
 
     useEffect(() => {
         const filteredResults = userDetails.filter(user =>
@@ -156,48 +166,41 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
         e.preventDefault(); // Prevent default form submission behavior
         setShowConfirmationModal(false);
         setIsLoading(true);
-    
+
         // Validation for required fields
         if (!applicationData.preferredMoveInDate || applicationData.numberOfPets < 0 || applicationData.signature.trim() === '') {
             alert('Please fill out all required fields before submitting the application.');
             setIsLoading(false); // Update loading state on validation failure
             return;
         }
-    
-        if (!listing || !listing.address) {
-            console.error('Listing data is not available or address is undefined');
-            setIsLoading(false); // Update loading state on listing validation failure
-            return;
-        }
-    
-        const depositAmount = listing.depositAmount || 'Not specified';
+
 
         // Prepare the userIds array with the current user and selected roommates
         const totalOccupants = 1 + selectedRoommatesData.length; // Including the user and selected roommates
-        const monthlyPrice = listing.monthlyPrice || '1500'; // Defaulting to '1500' if not specified
+        const monthlyPrice = monthlyRent || '1500'; // Defaulting to '1500' if not specified
         const rentPerPerson = parseInt(monthlyPrice) / totalOccupants;
-    
+
         // Construct the proposedOccupants string with the user and selected roommates' names
         const proposedOccupantsNames = [
             `${user.firstName} ${user.lastName}`,
             ...selectedRoommatesData.map(roommate => `${roommate.firstName} ${roommate.lastName}`)
         ].join(', ');
-    
+
         // Prepare the address object according to the updated requirements
         const address = {
-            "Street": listing.address.split(',')[0].trim(),
-            "City": listing.address.split(',')[1].trim(),
-            "State": listing.address.split(',')[2].trim(),
-            "Deposit": (depositAmount || '500').toString(), // Assuming depositAmount is available, defaulting to '500'
-            "rentalAddress": listing.address,
-            "RentAmount": rentPerPerson.toFixed(2), // Rent amount per person
+            "Street": listingAddress.split(',')[0].trim(),
+            "City": listingAddress.split(',')[1].trim(),
+            "State": listingAddress.split(',')[2].trim(),
+            "Deposit": depositAmount.toString(),
+            "rentalAddress": listingAddress,
+            "RentAmount": monthlyRent.toString(),
             "TodaysDate": applicationData.todaysDate,
-            "rental_address": listing.address,
+            "rental_address": listingAddress,
             "Pets": applicationData.numberOfPets > 0 ? "Yes" : "No",
             "proposedOccupants": proposedOccupantsNames, // Names of all proposed occupants including the user
             "moveInDate": applicationData.preferredMoveInDate
         };
-    
+
         // Prepare the names array with the user and selected roommates
         const names = [
             { "firstName": user.firstName, "lastName": user.lastName },
@@ -206,14 +209,18 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 "lastName": roommate.lastName
             }))
         ];
-    
+
         // Construct the payload
         const payload = {
             userIds: [user.id, ...selectedRoommates.map(id => id)], // Assuming selectedRoommates contains IDs of selected roommates
             address,
-            names
+            names,
+            applicationDetails: {
+                ...applicationData,
+            }
         };
-    
+
+
 
         try {
             // Sending POST request with application data to the combine-roommate-applications endpoint
@@ -229,24 +236,25 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 throw new Error('Failed to submit application');
             }
 
+            const applicationResponse = await response.json(); // Extract JSON response
+            const combinedApplicationUrl = applicationResponse.url; // Assuming the response has a 'url' field
+
+            // Notify the user (primary applicant) via email
+            await sendEmailToRoommate({
+                to: user.email,
+                subject: 'Your Rental Application Submission',
+                html: `Dear ${user.firstName},<br><br>You have successfully submitted your rental application for ${listingAddress}.<br><br>You can view your application here: <a href="${combinedApplicationUrl}">View Application</a>.<br><br>Best,<br>Rentora Team`
+            });
+
             // Notify roommates via email
             for (const roommate of selectedRoommatesData) {
                 await sendEmailToRoommate({
                     to: roommate.email,
                     subject: 'You have been added as a roommate in an application',
-                    html: `Dear ${roommate.firstName},<br><br>${user.firstName} ${user.lastName} has included you as a roommate in their rental application for ${listing.address}.<br><br>Best,<br>Rentora Team`
+                    html: `Dear ${roommate.firstName},<br><br>${user.firstName} ${user.lastName} has included you as a roommate in their rental application for ${listingAddress}.<br><br>You can view the application here: <a href="${combinedApplicationUrl}">View Application</a><br><br>Best,<br>Rentora Team`
                 });
             }
 
-            const applicationResponse = await response.json(); // Extract JSON response
-            const combinedApplicationUrl = applicationResponse.url; // Assuming the response has a 'url' field
-
-            // Notify the agent via email including the link to the combined application
-            await sendEmail({
-                to: listing.agentEmail, // Assuming agentEmail is available in the listing data
-                subject: 'New Rental Application Submitted',
-                html: `Dear Agent,<br><br>A new rental application has been submitted for ${listing.address} by ${user.firstName} ${user.lastName} with roommates: ${selectedRoommatesData.map(rm => `${rm.firstName} ${rm.lastName}`).join(', ')}.<br><br>Please review the application at the following link: <a href="${combinedApplicationUrl}">View Application</a><br><br>Best,<br>Rentora Team`
-            });
 
             console.log('Application submitted successfully');
             closePopup(); // Close the application popup
@@ -255,26 +263,6 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
             console.error('Error submitting application:', error);
         }
         setIsLoading(false);
-    };
-
-    const sendEmail = async (emailData) => {
-        try {
-            const response = await fetch('http://localhost:3001/send-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(emailData),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to send email');
-            }
-
-            console.log('Email sent successfully');
-        } catch (error) {
-            console.error('Error sending email:', error);
-        }
     };
 
 
@@ -299,8 +287,44 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
         <div className="apply-popup-overlay">
             <div className="apply-popup-content">
                 <button className="apply-popup-close" onClick={closePopup}>X</button>
-                <h2>Apply for {listing.address}</h2>
-                {/* Form fields */}
+
+                {/* Message at the top of the form */}
+                <h2>Fill out this form to be emailed a custom application for the address you choose, with the roommates you select.</h2>
+
+
+                {/* Input for Listing Address */}
+                <label>
+                    Listing Address:
+                    <input
+                        ref={listingAddressRef} // Attach the ref to your input
+                        type="text"
+                        value={listingAddress}
+                        onChange={(e) => setListingAddress(e.target.value)}
+                        placeholder="123 Main St, Anytown, AN"
+                    />
+                </label>
+
+                {/* Input for Monthly Rent */}
+                <label>
+                    Monthly Rent:
+                    <input
+                        type="number"
+                        value={monthlyRent}
+                        onChange={(e) => setMonthlyRent(e.target.value)}
+                        placeholder="Monthly Rent"
+                    />
+                </label>
+
+                {/* Input for Deposit Amount */}
+                <label>
+                    Deposit Amount:
+                    <input
+                        type="number"
+                        value={depositAmount}
+                        onChange={(e) => setDepositAmount(e.target.value)}
+                        placeholder="Deposit Amount"
+                    />
+                </label>
                 <label>
                     Preferred Move-In Date:
                     <input
@@ -416,4 +440,4 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
     );
 };
 
-export default ApplyPopup;
+export default CustomApplyPopup;

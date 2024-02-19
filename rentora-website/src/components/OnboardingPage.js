@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
-import '../App.css';
 import './OnboardingPage.css';
 import logo_with_background from './images/Rentora_Logo-With_Background.png';
 import axios from 'axios';
@@ -127,7 +126,7 @@ const OnboardingPage = () => {
         </div>
       )}
       {showAboutUs && (
-        <div className="scrollable-container">
+        <div className="container">
           <section className="our-mission">
             <h3>Our Mission</h3>
             <p>

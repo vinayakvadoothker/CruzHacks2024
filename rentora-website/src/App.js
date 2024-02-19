@@ -203,7 +203,7 @@ const styles = {
     display: 'block',
     textAlign: 'center',
     fontSize: '20px',
-    fontFamily: 'monospace',
+    fontFamily: 'Verdana',
   },
 
   offCampusButtonContainer: {
@@ -219,7 +219,7 @@ const styles = {
     borderRadius: '5px',
     textDecoration: 'none', // Remove underline from link
     transition: 'background-color 0.3s', // Smooth transition for hover effect
-    fontFamily: 'monospace',
+    fontFamily: 'Verdana',
     fontSize: '10px',
     zIndex: '10',
   },
