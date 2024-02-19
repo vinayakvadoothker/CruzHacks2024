@@ -145,11 +145,11 @@ const OnboardingPage = () => {
           <section className="how-it-works">
             <h3>How it Works</h3>
             <ol>
-              <li><strong>Sign Up or Log In:</strong>&nbsp;Create an account or log in to Rentora.</li>
-              <li><strong>Build Your Profile: </strong>&nbsp;Complete your user profile by filling out an easy-to-use form.</li>
-              <li><strong>AI Matching: </strong>&nbsp;Our AI matches you with suitable off-campus housing options.</li>
-              <li><strong>Rental Application: </strong>&nbsp;Rentora generates your Rental Application Packet.</li>
-              <li><strong>Submit with Confidence: </strong>&nbsp;Send your rental applications directly through Rentora.</li>
+              <li><strong>Sign Up or Log In:</strong>&nbsp;Create an account or log in to Rentora</li>
+              <li><strong>Build Your Profile: </strong>&nbsp;Complete your user profile by filling out an easy-to-use form</li>
+              <li><strong>AI Matching: </strong>&nbsp;Our AI matches you with suitable off-campus housing options</li>
+              <li><strong>Rental Application: </strong>&nbsp;Rentora generates your Rental Application Packet</li>
+              <li><strong>Submit with Confidence: </strong>&nbsp;Send your rental applications directly through Rentora</li>
             </ol>
           </section>
           <section class="faqs">

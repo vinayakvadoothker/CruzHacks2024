@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Spinner from './Spinner';
 import "./ApplyPopup.css";
+import { db } from "../../config";
 
-const CustomApplyPopup = ({ user, closePopup, editApplicationData }) => {
+const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) => {
 
     const listingAddressRef = useRef(null); // Create a ref for the address input
 
@@ -241,9 +242,9 @@ const CustomApplyPopup = ({ user, closePopup, editApplicationData }) => {
 
             // Notify the user (primary applicant) via email
             await sendEmailToRoommate({
-                to: user.email,
-                subject: 'Your Rental Application Submission',
-                html: `Dear ${user.firstName},<br><br>You have successfully submitted your rental application for ${listingAddress}.<br><br>You can view your application here: <a href="${combinedApplicationUrl}">View Application</a>.<br><br>Best,<br>Rentora Team`
+                to: userEmail,
+                subject: 'Your Rental Application',
+                html: `Dear ${user.firstName},<br><br>Thank You for choosing Rentora to build your rental application for ${listingAddress}.<br><br>You can view your application here: <a href="${combinedApplicationUrl}">View Application</a>.<br><br>Best,<br>Rentora Team`
             });
 
             // Notify roommates via email

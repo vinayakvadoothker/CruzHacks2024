@@ -19,17 +19,29 @@ const OffCampusHousingDashboard = () => {
     const [activeCustomListing, setActiveCustomListing] = useState(null);
     const [isHovering, setIsHovering] = useState(false); // State to manage hover effect
 
+    const [userEmail, setUserEmail] = useState('');
+    useEffect(() => {
+        if (user && user.id) {
+            const fetchUserEmail = async () => {
+                const userDoc = await db.collection('SurveyResponses').doc(user.id).get();
+                if (userDoc.exists) {
+                    setUserEmail(userDoc.data().email);
+                }
+            };
 
+            fetchUserEmail().catch(console.error);
+        }
+    }, [user]);
 
-        // Function to handle mouse enter event
-        const handleMouseEnter = () => {
-            setIsHovering(true);
-        };
-    
-        // Function to handle mouse leave event
-        const handleMouseLeave = () => {
-            setIsHovering(false);
-        };
+    // Function to handle mouse enter event
+    const handleMouseEnter = () => {
+        setIsHovering(true);
+    };
+
+    // Function to handle mouse leave event
+    const handleMouseLeave = () => {
+        setIsHovering(false);
+    };
 
 
     const openCustomApplyPopup = async () => {
@@ -144,7 +156,7 @@ const OffCampusHousingDashboard = () => {
                         +Add
                     </button>
                 )}
-                
+
                 <button className="apply-button custom-apply" onClick={() => openCustomApplyPopup()}
 
                     onMouseEnter={handleMouseEnter}
@@ -162,6 +174,7 @@ const OffCampusHousingDashboard = () => {
                 {activeCustomListing && (
                     <CustomApplyPopup
                         user={user}
+                        userEmail={userEmail} // Pass userEmail as a prop
                         closePopup={closeCustomApplyPopup}
                     />
                 )}

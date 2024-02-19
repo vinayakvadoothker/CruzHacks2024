@@ -15,7 +15,7 @@ const VenturePage = () => {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: '8px',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.9)',
-    fontFamily: 'monospace',
+    fontFamily: 'Segoe UI',
     fontSize: '16px',
     fontWeight: 'normal',
     lineHeight: '1.5',
