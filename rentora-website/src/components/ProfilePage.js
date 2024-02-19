@@ -11,6 +11,17 @@ const ProfilePage = () => {
   const [pdfUrl, setPdfUrl] = useState('');
   const fileInputRef = useRef(null);
 
+
+  const viewPublicProfile = () => {
+    const publicProfileUrl = `https://www.rentora.net/profiles/${user.id}`; // Construct the URL
+    window.open(publicProfileUrl, '_blank'); // Open the URL in a new tab
+  };
+
+  const editForm = () => {
+    const publicProfileUrl = `https://www.rentora.net/rent/off-campus/step1`; // Construct the URL
+    window.open(publicProfileUrl, '_blank'); // Open the URL in a new tab
+  };
+
   useEffect(() => {
     const fetchPdfUrl = async () => {
       if (user) {
@@ -105,15 +116,53 @@ const ProfilePage = () => {
       <div style={{ ...styles.contactContainer, marginBottom: '20px' }}>
         {/* Add your contact info elements here */}
       </div>
-  
+        {/* Button for Viewing the Public Profile */}
+        <div>
+        <button
+          style={{
+            backgroundColor: '#426aa3', // Green color for differentiation
+            color: '#fff',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontFamily: 'Verdana',
+            fontSize: '16px',
+            marginBottom: '10px', // Add some space below the button
+          }}
+          onClick={viewPublicProfile}
+        >
+          View Public Profile
+        </button>
+
+        <button
+          style={{
+            backgroundColor: '#6066c9', // Green color for differentiation
+            color: '#fff',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontFamily: 'Verdana',
+            fontSize: '16px',
+            marginBottom: '10px', // Add some space below the button
+            marginLeft: '10px',
+          }}
+          onClick={editForm}
+        >
+          Edit My Information
+        </button>
+      </div>
       {/* Preferences for Housing Types */}
-      <div style={{ ...styles.preferencesContainer, marginBottom: '20px' }}>
+      <div style={{ ...styles.preferencesContainer }}>
         <h3 style={styles.preferencesHeading}>Rental Application Packet</h3>
       </div>
       {/* Display the PDF URL */}
       {pdfUrl && (
-        <div style={{ marginBottom: '20px' }}>
-          <h3 style={{ marginBottom: '10px' }}>Your Rental Application:</h3>
+        <div>
+          <h3>Your Rental Application:</h3>
           <button
             style={{
               backgroundColor: '#3498db',

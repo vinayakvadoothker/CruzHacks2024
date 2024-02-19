@@ -75,7 +75,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
 
 
             // Generate QR code image for the URL
-            const qrCodeDataURL = await generateQRCodeImage('https://www.rentora.net');
+            const qrCodeDataURL = await generateQRCodeImage(`https://www.rentora.net/profiles/${userId}`);
 
             // Extract the raw image data from the Data URL
             const qrImageBytes = Buffer.from(qrCodeDataURL.split(',')[1], 'base64');

@@ -14,6 +14,8 @@ import OffCampusPage from './components/Rent Pages/OffCampusPage';
 import VenturePage from './components/VenturePage'; // Import VenturePage component
 import ProfilePage from './components/ProfilePage'; // Import ProfilePage component
 import GuarantorForm from './components/Rent Pages/OffCampusFormSteps/GuarantorForm'; // Import GuarantorForm component
+import PublicProfilePage from './components/PublicProfilePage'; // Import GuarantorForm component
+
 import AddOffCampusListing from './components/Rent Pages/OffCampusFormSteps/AddOffCampusListing'; // Import AddOffCampusListing component
 import OffCampusApplications from './components/Rent Pages/OffCampusFormSteps/OffCampusApplications';
 import logo from './components/images/Rentora_Logo.png'
@@ -140,6 +142,7 @@ const App = () => {
               <Route path="/onboarding" element={<OnboardingPage />} />
               <Route path="/buy" element={<BuyPage />} />
               <Route path="/guarantor/:userid" element={<GuarantorForm />} />
+              <Route path="/profiles/:userid" element={<PublicProfilePage />} />
               <Route path="/addoffcampuslisting" element={<AddOffCampusListing />} />
               <Route
                 path="/rent/*"

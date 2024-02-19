@@ -162,7 +162,7 @@ const OffCampusHousingDashboard = () => {
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                 >
-                    Build Your Own
+                    Build For A Custom Property
                 </button>
 
                 {isHovering && (

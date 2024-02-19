@@ -30,8 +30,24 @@ const fetchUserDetails = async () => {
       lastName: data.lastName || 'No last name',
       email: data.email || 'No email',
       schoolName: data.schoolName || 'No school name',
-      addToRoommateSearch: data.addToRoommateSearch || 'Not specified'
-    });
+      addToRoommateSearch: data.addToRoommateSearch || 'Not specified',
+      activitiesHistory: data.activitiesHistory || [], // Assuming this is an array of objects
+      major: data.major || 'No major specified',
+      middleInitial: data.middleInitial || '',
+      residence: data.residence || 'No residence specified',
+      startDate: data.startDate || 'No start date',
+      profilePicture: data.profilePicture || 'No profile picture URL',
+      lifestyle: data.lifestyle || 'No lifestyle specified',
+      studyHabits: data.studyHabits || 'No study habits specified',
+      socializingFrequency: data.socializingFrequency || 'No socializing frequency specified',
+      choresPreference: data.choresPreference || 'No chores preference specified',
+      privacyComfort: data.privacyComfort || 'No privacy comfort specified',
+      communicationComfort: data.communicationComfort || 'No communication comfort specified',
+      expenseHandling: data.expenseHandling || 'No expense handling specified',
+      scheduleCoordination: data.scheduleCoordination || 'No schedule coordination specified',
+      goalsSupport: data.goalsSupport || 'No goals support specified',
+      overnightGuests: data.overnightGuests || 'No overnight guests specified'
+  });
   });
 
   return userDetails;
