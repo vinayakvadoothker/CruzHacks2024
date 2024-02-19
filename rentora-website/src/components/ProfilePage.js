@@ -18,8 +18,8 @@ const ProfilePage = () => {
   };
 
   const editForm = () => {
-    const publicProfileUrl = `https://www.rentora.net/rent/off-campus/step1`; // Construct the URL
-    window.open(publicProfileUrl, '_blank'); // Open the URL in a new tab
+    const editFormUrl = `https://www.rentora.net/rent/off-campus/step1`; // Construct the URL
+    window.location.href = editFormUrl; // Navigate to the URL in the same tab
   };
 
   useEffect(() => {
