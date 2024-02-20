@@ -56,7 +56,7 @@ const OffCampusHousingFormStep7 = () => {
             completeStep(currentStep);
             navigate('/rent/off-campus/step8'); // Redirect to Step 8
           } else {
-            navigate('/rent/off-campus/step5'); // Redirect to Step 5
+            navigate('/rent/off-campus/step8'); // Redirect to Step 5
           }
         })
         .catch((error) => {
