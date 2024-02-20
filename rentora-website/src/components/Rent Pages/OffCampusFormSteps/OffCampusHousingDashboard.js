@@ -187,17 +187,17 @@ const OffCampusHousingDashboard = () => {
                             <div key={listing.id} className="listing-item" >
                                 <h3>{listing.title}</h3>
                                 <div className="thumbnail-container">
-                                    <img
-                                        src={listing.images[currentImageIndex]}
-                                        alt={listing.title}
-                                        className={expandedImages[index] ? 'expanded' : ''}
-                                        onClick={() => toggleImageExpansion(index)} // Pass index to toggleImageExpansion
-                                    />
-                                    <button className="expand-button" onClick={() => toggleImageExpansion(index)}>Expand</button>
-                                    <div>
-                                        <button className="slideshow-arrows" onClick={() => handlePrevImage(index)}>&#8249;</button>
-                                        <button className="slideshow-arrows" onClick={() => handleNextImage(index)}>&#8250;</button>
+                                    <div className="image-with-arrows">
+                                        <button className="slideshow-arrows left-arrow" onClick={() => handlePrevImage(index)}>&#8249;</button>
+                                        <img
+                                            src={listing.images[currentImageIndex]}
+                                            alt={listing.title}
+                                            className={expandedImages[index] ? 'expanded' : ''}
+                                            onClick={() => toggleImageExpansion(index)}
+                                        />
+                                        <button className="slideshow-arrows right-arrow" onClick={() => handleNextImage(index)}>&#8250;</button>
                                     </div>
+                                    <button className="expand-button" onClick={() => toggleImageExpansion(index)}>Expand</button>
                                 </div>
                                 <p className="address"><strong>{listing.address}</strong></p>
                                 <p><em>{listing.description}</em></p>
@@ -225,11 +225,15 @@ const OffCampusHousingDashboard = () => {
 
             {expandedImages.map((expanded, index) => expanded && (
                 <div className="expanded-image" key={`expanded-${index}`}>
-                    <button className="close-button" onClick={() => closeExpandedImage(index)}>X</button>
+                    <button className="slideshow-arrows left-arrow" onClick={() => handlePrevImage(index)}>&#8249;</button>
+
+                    <button className="close-button-x" onClick={() => closeExpandedImage(index)}>X</button>
                     <img
                         src={listingsData[index].images[currentImageIndexes[index]]}
                         alt={listingsData[index].title}
                     />
+                    <button className="slideshow-arrows right-arrow" onClick={() => handleNextImage(index)}>&#8250;</button>
+
                 </div>
             ))}
         </>

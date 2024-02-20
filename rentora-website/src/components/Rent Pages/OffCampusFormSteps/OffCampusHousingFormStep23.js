@@ -45,6 +45,27 @@ const OffCampusHousingFormStep23 = () => {
     fetchData();
   }, [user]);
 
+  const sendEmail = async (emailData) => {
+    try {
+      // Make a request to your server-side endpoint to send the email
+      const response = await fetch('http://localhost:3001/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (response.ok) {
+        console.log('Email sent successfully');
+      } else {
+        console.error('Failed to send email');
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!isChecked) {
       alert('Please check the box to confirm the provided information.');
@@ -62,14 +83,34 @@ const OffCampusHousingFormStep23 = () => {
 
       console.log('Response from server:', response);
 
+      // Fetch the user's filled PDF URL from Firestore
+      const pdfDoc = await db.collection('FilledPDFs').doc(`${user.id}`).get();
+      if (!pdfDoc.exists) {
+        throw new Error('No PDF found for the user.');
+      }
+
+      const pdfData = pdfDoc.data();
+      const pdfUrl = pdfData[`${user.id}_filled.pdf`]; // Get the URL of the filled PDF
+      const doc = await db.collection('SurveyResponses').doc(user.id).get();
+      const formDataFromDb = doc.data();
+
+      await sendEmail({
+        to: formDataFromDb.email,
+        subject: 'Rentora - Individual Off-Campus Housing Packet',
+        html: `Hello ${user.firstName || ''},<br><br>Your off-campus housing form has been submitted successfully.<br><br>You can download your packet <a href="${pdfUrl}" download>here</a>.<br><br>Check Out Your New Rentora Profile and Share It: <a href="https://rentora.net/profiles/${user.id}">View Profile</a><br><br>Best regards,<br>Rentora Team`
+      });
+
       setIsGeneratingPDF(false);
       completeStep(currentStep);
       navigate('/rent/off-campus');
+
     } catch (error) {
       console.error('Error saving form data:', error);
       setIsGeneratingPDF(false);
       alert('Error submitting form. Please try again.');
     }
+
+
   };
 
   const handleReload = () => {

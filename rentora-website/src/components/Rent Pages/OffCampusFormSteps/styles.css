@@ -306,6 +306,7 @@ label {
 
 /* Listings */
 .listing-item {
+  height: auto;
   background-color: #d4d4ff44;
   width: 98%;
   overflow: auto;
@@ -356,10 +357,20 @@ label {
 }
 
 .thumbnail-container {
-  width: 100px; /* Adjust the width as needed */
-  margin: 0 auto;
+  position: relative; /* Needed for absolute positioning of children */
+  width: 200px; /* Adjust as needed */
+  margin: auto;
   cursor: pointer;
 }
+
+
+.thumbnail-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  flex-shrink: 0; /* Prevent image from shrinking due to flex container */
+}
+
 
 .modal-overlay {
   display: none;
@@ -398,12 +409,12 @@ label {
 }
 
 .expanded-image img {
-  max-width: 90%; /* Limit image width for larger screens */
-  max-height: 90vh; /* Limit image height for larger screens */
-  object-fit: contain; /* Fit image within the container */
+  max-width: 90%;
+  max-height: 90vh;
+  object-fit: contain;
 }
 
-.close-button {
+.close-button-x {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -417,7 +428,7 @@ label {
 }
 
 /* Style for the close button */
-.close-button:hover {
+.close-button-x:hover {
   color: rgb(151, 151, 151); /* Change button color on hover */
 }
 
@@ -561,18 +572,52 @@ label {
 }
 
 .slideshow-arrows {
-  background-color: #112f3d; /* Green background */
-  color: white; /* White text */
-  padding: 4px 7px; /* Padding around the text */
-  border: none; /* No border */
-  cursor: pointer; /* Cursor changes to pointer to indicate it's clickable */
-  border-radius: 5px; /* Rounded corners */
-  font-size: 15px; /* Text size */
-  transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
-  margin: 5px;
+  background-color: #0000006e;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, transform 0.3s;
 }
-
 .slideshow-arrows:hover {
   background-color: #297193; /* Darker shade of green on hover */
   transform: scale(1.05); /* Slightly enlarge the button on hover */
 }
+
+.image-with-arrows {
+  display: flex; /* Use flexbox to lay out the arrows and the image */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center the content horizontally */
+  gap: 10px; /* Adjust the gap between the arrows and the image */
+}
+
+.left-arrow, .right-arrow {
+  margin: 0; 
+}
+
+.expanded-image-content {
+  display: flex; /* Use flexbox to lay out the arrows and the image */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center the content horizontally */
+  max-width: 90%; /* Limit the width to leave space for arrows */
+  padding: 20px; /* Provide some padding */
+
+}
+
+.expanded-image-overlay img {
+  max-width: 100%; /* Allow the image to be responsive within the container */
+  max-height: 80vh; /* Limit image height to ensure it fits in the viewport */
+  margin: 0 20px; /* Space between the image and the arrows */
+  
+
+}
+
+.slideshow-arrows {
+  color: white;
+  padding: 3px 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  
+}
+

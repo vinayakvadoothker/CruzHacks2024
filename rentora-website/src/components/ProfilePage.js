@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useClerk } from '@clerk/clerk-react';
 import { db } from "./config.js";
-
+import './ProfilePage.css'
 
 
 
@@ -85,187 +85,33 @@ const ProfilePage = () => {
   };
 
   return (
-    <div style={{ ...styles.container, maxWidth: '290px' }} className="form-container">
-      {/* Profile Image with Edit Button */}
-      <div style={{ ...styles.imageContainer, marginBottom: '20px' }}>
-        <img src={userProfile.profileImage} alt="Profile" style={styles.profileImage} />
-        <div style={styles.editImageButtonContainer}>
-          <button onClick={handleEditProfileImage} style={styles.editImageButton}>
-            Edit
-          </button>
-        </div>
-        {/* File input for profile image */}
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-          onChange={handleFileChange}
-        />
+    <div className="profile-page-container">
+      <div className="profile-image-container">
+        <img src={userProfile.profileImage} alt="Profile" className="profile-image" />
+        <button onClick={handleEditProfileImage} className="edit-image-button">Edit</button>
+        <input type="file" accept="image/*" ref={fileInputRef} className="file-input" onChange={handleFileChange} />
       </div>
-  
-      {/* User Name */}
-      <div style={{ ...styles.nameContainer, marginBottom: '20px' }}>
-        <h2 style={styles.userName}>
-          <strong>{userProfile.firstName} {userProfile.lastName}</strong>
-        </h2>
-        <p style={styles.username}>{user?.username && <em>{user.username}</em>}</p>
-      </div>
-  
-      {/* Contact Info */}
-      <div style={{ ...styles.contactContainer, marginBottom: '20px' }}>
-        {/* Add your contact info elements here */}
-      </div>
-        {/* Button for Viewing the Public Profile */}
-        <div>
-        <button
-          style={{
-            backgroundColor: '#426aa3', // Green color for differentiation
-            color: '#fff',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            fontFamily: 'Verdana',
-            fontSize: '16px',
-            marginBottom: '10px', // Add some space below the button
-          }}
-          onClick={viewPublicProfile}
-        >
-          View Public Profile
-        </button>
 
-        <button
-          style={{
-            backgroundColor: '#2f4c77', // Green color for differentiation
-            color: '#fff',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            fontFamily: 'Verdana',
-            fontSize: '16px',
-            marginBottom: '10px', // Add some space below the button
-            marginLeft: '10px',
-          }}
-          onClick={editForm}
-        >
-          Edit My Information
-        </button>
+      <div className="user-name-container">
+        <h2 className="user-name"><strong>{userProfile.firstName} {userProfile.lastName}</strong></h2>
+        <p className="username">{user?.username && <em>{user.username}</em>}</p>
       </div>
-      {/* Preferences for Housing Types */}
-      <div style={{ ...styles.preferencesContainer }}>
-        <h3 style={styles.preferencesHeading}>Rental Application Packet</h3>
+
+      <div className="contact-info-container">
       </div>
-      {/* Display the PDF URL */}
+
+      <button className="view-public-profile-button" onClick={viewPublicProfile}>View Public Profile</button>
+      <button className="edit-info-button" onClick={editForm}>Edit My Information</button>
+
+      <div className="housing-preferences-container">
+        <h3 className="housing-preferences-heading">Rental Application Packet</h3>
+      </div>
+
       {pdfUrl && (
-        <div>
-          <h3>Your Rental Application:</h3>
-          <button
-            style={{
-              backgroundColor: '#3498db',
-              color: '#fff',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontFamily: 'Verdana', 
-              fontSize: '16px',
-            }}
-            onClick={() => window.open(pdfUrl, '_blank')}
-          >
-            View PDF
-          </button>
-        </div>
+        <button className="view-pdf-button" onClick={() => window.open(pdfUrl, '_blank')}>View PDF</button>
       )}
     </div>
   );
-  
 };
 
 export default ProfilePage;
-
-// Updated Styling
-const styles = {
-  container: {
-    textAlign: 'center',
-    padding: '50px',
-    borderRadius: '8px',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    minWidth: '80%', // Increased width
-  },
-  imageContainer: {
-    position: 'relative',
-    marginBottom: '20px',
-  },
-  profileImage: {
-    width: '100px',
-    height: '100px',
-    borderRadius: '50%',
-  },
-  editImageButton: {
-    position: 'absolute',
-    bottom: '0',
-    backgroundColor: '#3498db',
-    color: '#fff',
-    border: 'none',
-    padding: '8px', // Smaller padding
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    fontFamily: 'Verdana',
-    fontSize: '12px', // Smaller font size
-  },
-  nameContainer: {
-    marginBottom: '10px',
-  },
-  userName: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    fontFamily: 'Verdana',
-  },
-  username: {
-    fontSize: '14px', // Smaller font size
-    fontStyle: 'italic',
-  },
-  contactContainer: {
-    marginBottom: '20px',
-  },
-  contactInfo: {
-    fontSize: '16px',
-    marginBottom: '10px',
-    fontFamily: 'Verdana',
-  },
-  portfolioContainer: {
-    marginBottom: '20px',
-  },
-  portfolioHeading: {
-    fontSize: '18px',
-    fontWeight: 'bold',
-    fontFamily: 'Verdana',
-  },
-  socialLink: {
-    fontSize: '16px',
-    margin: '5px 0',
-    fontFamily: 'Verdana',
-  },
-  preferencesContainer: {
-    marginTop: '20px',
-  },
-  preferencesHeading: {
-    fontSize: '18px',
-    fontWeight: 'bold',
-    fontFamily: 'Verdana',
-  },
-  preferencesText: {
-    fontSize: '16px',
-    fontFamily: 'Verdana', 
-  },
-};

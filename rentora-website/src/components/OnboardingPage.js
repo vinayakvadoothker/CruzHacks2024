@@ -116,7 +116,7 @@ const OnboardingPage = () => {
       </nav>
       {!showAboutUs && ( // Conditionally render hero content
         <div className="hero-content">
-          <h1>Rentora</h1>
+          <div className='Rentora-Title'>Rentora</div>
           <p className="tagline">Renting Made Easy</p>
           <div className="cta-buttons">
             <button className="learn-more-btn" onClick={handleLearnMoreClick}>

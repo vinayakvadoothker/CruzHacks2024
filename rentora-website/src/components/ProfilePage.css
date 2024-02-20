@@ -1,57 +1,110 @@
-/* ProfilePage.css */
-.profile-container {
-    text-align: center;
-    padding: 20px;
-  }
+/* Profile Container */
+.profile-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  max-height: 68%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #fff;
+  overflow-y: auto;
+  font-family: monospace;
+}
+
+/* Profile Image Container */
+.profile-image-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.edit-image-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.file-input {
+  display: none;
+}
+
+/* User Name Container */
+.user-name-container {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+.user-name {
+  margin: 0;
+  color: #333;
   
-  .profile-image-container {
-    position: relative;
-    margin-bottom: 20px;
-  }
-  
-  .profile-image {
-    width: 100px; /* Adjust the size as needed */
-    height: 100px; /* Adjust the size as needed */
-    border-radius: 50%; /* Make it circular */
-  }
-  
-  .edit-image-button {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 12px;
-  }
-  
-  .user-name-container {
-    margin-bottom: 10px;
-  }
-  
-  .user-name {
-    font-size: 24px; /* Adjust the size as needed */
-  }
-  
-  .contact-info-container {
-    margin-bottom: 20px;
-  }
-  
-  .contact-info {
-    font-size: 16px; /* Adjust the size as needed */
-  }
-  
-  .housing-preferences-container {
-    margin-top: 20px;
-  }
-  
-  .housing-preferences-heading {
-    font-size: 18px; /* Adjust the size as needed */
-  }
-  
-  .housing-preferences-text {
-    font-size: 16px; /* Adjust the size as needed */
-  }
-  
+}
+
+.username {
+  font-style: italic;
+  color: #666;
+}
+
+/* Buttons */
+.view-public-profile-button,
+.edit-info-button,
+.view-pdf-button {
+  padding: 10px 15px;
+  margin: 10px;
+  border-radius: 4px;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+.view-public-profile-button {
+  background-color: #2E2F5B;
+  color: #fff;
+}
+
+.edit-info-button {
+  background-color: rgb(108, 123, 219);
+  color: #ffffff;
+}
+
+.view-pdf-button {
+  background-color: rgb(39, 148, 184);
+  color: #fff;
+}
+
+.view-public-profile-button:hover,
+.edit-info-button:hover,
+.view-pdf-button:hover {
+  opacity: 0.7;
+}
+
+/* Housing Preferences Container */
+.housing-preferences-container {
+  margin-top: 20px;
+}
+
+.housing-preferences-heading {
+  color: #333;
+  margin-bottom: 10px;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
