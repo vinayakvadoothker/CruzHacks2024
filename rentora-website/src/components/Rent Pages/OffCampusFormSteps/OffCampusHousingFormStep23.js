@@ -128,7 +128,7 @@ const OffCampusHousingFormStep23 = () => {
       <div className="form-container" >
         <Stepper currentStep={currentStep} />
         <h2 className="step-title">{steps[currentStep].title}</h2>
-        <p className="step-description">If There is an x Below, Please Have Your Guarantor Fill Out The Guarantor Form</p>
+        <p className="step-description">If There is an x Below, Please Have Your Guarantor Submit The Guarantor Form</p>
 
         <div className="welcome-description with-checkbox"> {/* Use the same styling as the welcome message */}
           <p>
