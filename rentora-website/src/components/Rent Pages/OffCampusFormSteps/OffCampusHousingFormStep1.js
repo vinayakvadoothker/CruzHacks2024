@@ -212,7 +212,7 @@ const OffCampusHousingFormStep1 = () => {
 
                 {/* Welcome Description */}
                 <div className="welcome-description">
-                    <h3>Welcome to the Rental Application Builder</h3>
+                    <h3>Welcome to the Rental Profile Builder</h3>
                     <p>
                         This form is designed to build you the perfect rental resume and help you find off-campus housing
                         with ease.

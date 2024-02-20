@@ -96,8 +96,8 @@ const OffCampusHousingFormStep23 = () => {
 
       await sendEmail({
         to: formDataFromDb.email,
-        subject: 'Rentora - Individual Off-Campus Housing Packet',
-        html: `Hello ${user.firstName || ''},<br><br>Thank You for choosing Rentora to build your Custom Rental Application Packet.<br><br>You can download your packet <a href="${pdfUrl}" download>here</a>.<br><br>Check Out Your New Rentora Profile and Share It: <a href="https://rentora.net/profiles/${user.id}">View Profile</a><br><br>Best regards,<br>Rentora Team`
+        subject: 'Rentora - Your Rental Profile and Appplication Packet',
+        html: `Hello ${user.firstName || ''},<br><br>Thank You for choosing Rentora to build your Custom Rental Profile and Application Packet.<br><br>You can download your packet <a href="${pdfUrl}" download>here</a>.<br><br>Check Out Your New Rentora Profile and Share It: <a href="https://rentora.net/profiles/${user.id}">View Profile</a><br><br>Best regards,<br>Rentora Team`
       });
 
       setIsGeneratingPDF(false);

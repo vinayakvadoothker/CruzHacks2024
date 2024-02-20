@@ -130,7 +130,7 @@ const OnboardingPage = () => {
           <section className="our-mission">
             <h3>Our Mission</h3>
             <p>
-              Rentora is committed to empowering students on their journey to finding the perfect home. This process can be daunting, especially for those navigating it for the first time. That's why we've crafted a comprehensive solution that guides you.
+              Rentora is committed to helping students find off-campus housing near their universities. This process can be exhausting, especially for those navigating it for the first time. That's why we've crafted a comprehensive solution that guides you.
             </p>
           </section>
           <section className="about-us">
@@ -140,15 +140,17 @@ const OnboardingPage = () => {
               process of finding off-campus housing for students. Recognizing the
               challenges that students face in securing suitable homes near their
               universities, we set out to create a platform that tackles these challenges.
+              We not only build our users a Custom Rental Profile, but we have listings near
+              their universities so they can apply with a click of a button on Rentora.
             </p>
           </section>
           <section className="how-it-works">
             <h3>How it Works</h3>
             <ol>
               <li><strong>Sign Up or Log In:</strong>&nbsp;Create an account or log in to Rentora</li>
-              <li><strong>Build Your Profile: </strong>&nbsp;Complete your user profile by filling out an easy-to-use form</li>
-              <li><strong>AI Matching: </strong>&nbsp;Our AI matches you with suitable off-campus housing options</li>
-              <li><strong>Rental Application: </strong>&nbsp;Rentora generates your Rental Application Packet</li>
+              <li><strong>Build Your Profile: </strong>&nbsp;Complete your rental profile by filling out an easy-to-use form</li>
+              <li><strong>AI Matching: </strong>&nbsp;Our AI matches you with suitable off-campus housing and connects you with roommates (Coming Soon)</li>
+              <li><strong>Rental Application: </strong>&nbsp;Rentora generates a Rental Application Packet for you and your roommates</li>
               <li><strong>Submit with Confidence: </strong>&nbsp;Send your rental applications directly through Rentora</li>
             </ol>
           </section>
@@ -158,13 +160,13 @@ const OnboardingPage = () => {
               <li>
                 <details>
                   <summary >How does Rentora's AI matching work?</summary>
-                  <p>Rentora's AI analyzes your profile, preferences, and requirements to suggest off-campus housing options that best match your criteria.</p>
+                  <p>Our soon to come Rentora AI analyzes your profile and preferences to suggest off-campus housing options and roommates that best match you.</p>
                 </details>
               </li>
               <li>
                 <details>
                   <summary >Is Rentora only for students?</summary>
-                  <p>While Rentora is designed with students in mind, anyone searching for housing can benefit from our platform.</p>
+                  <p>Rentora is currently designed to only serve students, we aim to serve all aspiring renters in the future.</p>
                 </details>
               </li>
               <li>
@@ -176,31 +178,31 @@ const OnboardingPage = () => {
               <li>
                 <details>
                   <summary >What information should I include in my profile?</summary>
-                  <p>Include details such as your budget, preferred location, housing requirements, and any specific preferences. The more information you provide, the more accurate your rental profile will be.</p>
+                  <p>Our Rentora Rental Profile Builder will ask you a series of questions to help you build the best rental profile to share with landlords and property managers.</p>
                 </details>
               </li>
               <li>
                 <details>
-                  <summary >How do I use the Rental Application Builder?</summary>
-                  <p>Once you make an account, click on the Rent and Off-Campus buttons. Follow the prompts to create a comprehensive rental application that highlights your strengths.</p>
+                  <summary >How do I use the Rental Profile Builder?</summary>
+                  <p>Once you make an account, follow the prompts to create a comprehensive rental profile that highlights your strengths.</p>
                 </details>
               </li>
               <li>
                 <details>
                   <summary >What happens after I submit my rental application?</summary>
-                  <p>You'll be able to apply for listings! You'll also stay informed about landlord responses, property availability, and any other relevant information.</p>
+                  <p>You'll be able to apply for listings, share your rental profile, and even build custom applications for homes that aren't listed! You'll also stay informed about landlord responses and any other relevant information.</p>
                 </details>
               </li>
               <li>
                 <details>
                   <summary >Can I edit my profile or application after submission?</summary>
-                  <p>Yes, you can edit your profile and applications at any time through your Rentora account.</p>
+                  <p>Yes, you can edit your profile and applications at any time through your Rentora profile.</p>
                 </details>
               </li>
               <li>
                 <details>
                   <summary >Are there any fees for using Rentora?</summary>
-                  <p>Rentora charges a $30 per application fee. However, landlords may have their own rental application fees or other associated costs.</p>
+                  <p>Rentora charges a $35 per application fee for homes listed on our platform. However, landlords may have their own rental application fees or other associated costs.</p>
                 </details>
               </li>
               <li>
@@ -212,7 +214,7 @@ const OnboardingPage = () => {
               <li>
                 <details>
                   <summary >Do you have resources for first-time renters?</summary>
-                  <p>Yes, our Rental Application Builder is a valuable hub for rental-related information. Whether you're a first-time renter or experienced tenant, we will assist you.</p>
+                  <p>Yes, our Rental Profile Builder is a valuable hub for rental-related information. Whether you're a first-time renter or experienced tenant, we will assist you.</p>
                 </details>
               </li>
               <li>
