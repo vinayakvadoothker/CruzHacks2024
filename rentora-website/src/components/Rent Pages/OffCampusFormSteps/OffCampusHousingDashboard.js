@@ -162,12 +162,12 @@ const OffCampusHousingDashboard = () => {
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                 >
-                    Build For A Custom Property
+                    Apply For Unlisted
                 </button>
 
                 {isHovering && (
                     <div className="hover-message">
-                        <div className='hover-message-text'>Fill out this form to be emailed a custom application for the address you choose, with the roommates you select</div>
+                        <div className='hover-message-text'>Fill out this form to be emailed an application for an address that is not listed below</div>
                     </div>
                 )}
 

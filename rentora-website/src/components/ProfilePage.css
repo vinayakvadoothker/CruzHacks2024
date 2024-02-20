@@ -1,18 +1,27 @@
 /* Profile Container */
 .profile-page-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px;
-  padding: 20px;
-  border-radius: 8px;
-  max-height: 68%;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  background-color: #fff;
-  overflow-y: auto;
-  font-family: monospace;
-}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 73%; /* Adjust based on your header/footer */
+    max-height: 73%; /* Adjust based on your header/footer */
+    min-width: 92%; /* Adjust based on your header/footer */
+    max-width: 92%; /* Adjust based on your header/footer */
+    overflow-y: auto; /* Makes the container scrollable */
+    padding: 20px;
+    background-color: #ddebff; /* Light grey background */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    gap: 2px;
 
+    /* Centering styles */
+    position: absolute; /* Positioning relative to its first positioned (not static) ancestor element */
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* This ensures the center of the element aligns with the center of its container */
+  
+    /* Additional styles for better appearance and centering */
+    box-shadow: 0 2px 10px #00000071; /* Adds subtle shadow to sections */
+    border-radius: 16px; /* Optional: Rounds the corners of the container */
+  }
 /* Profile Image Container */
 .profile-image-container {
   position: relative;
@@ -32,7 +41,7 @@
   right: 0;
   padding: 5px 10px;
   border-radius: 4px;
-  background-color: #007bff;
+  background-color: #5c80ff;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -78,17 +87,17 @@
 }
 
 .view-public-profile-button {
-  background-color: #2E2F5B;
+  background-color: #6a8afd;
   color: #fff;
 }
 
 .edit-info-button {
-  background-color: rgb(108, 123, 219);
+  background-color: #475eb0;
   color: #ffffff;
 }
 
 .view-pdf-button {
-  background-color: rgb(39, 148, 184);
+  background-color: #181d2e;
   color: #fff;
 }
 

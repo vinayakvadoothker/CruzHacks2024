@@ -5,31 +5,34 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+
     /* Opaque background */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     /* Ensure it's above other content */
 }
 
 .apply-popup-content {
-    background-color: white;
+    background-color: rgb(238, 244, 255);
     padding: 20px;
     border-radius: 10px;
-    max-width: 600px; /* Adjust as necessary */
-    width: 100%;
+    width: 90%; /* Adjust as necessary */
+    height: auto; /* Changed from 80% to auto to accommodate content size */
+    max-height: 90vh; /* Ensure it doesn't overflow the viewport height */
     position: relative;
     text-align: center; /* Centers text horizontally */
+    overflow-y: auto;
+    gap: 10px;
 
-    /* Flexbox properties for vertical centering */
-    display: flex;
+    /* Flexbox properties for vertical and horizontal centering */
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
+
 
 .apply-popup-close {
     position: absolute;
@@ -43,7 +46,6 @@
 
 .selected-roommates {
     margin-top: 20px; /* Add some distance between the selected roommates section and the rest */
-    text-align: left; /* Align text to the left */
 }
 
 .selected-roommates > div {
@@ -62,9 +64,8 @@
 .dropdown-content {
     position: absolute;
     top: 100%;
-    left: 0;
     width: 100%;
-    background-color: #fff;
+    background-color: #ffffff;
     border: 1px solid #ccc;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 10px;
@@ -81,6 +82,7 @@
     margin-bottom: 10px;
     padding: 5px;
     border: 1px solid #ddd;
+    background-color: #eef2ff;
     border-radius: 5px; /* Add curved corners */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 }
@@ -105,7 +107,6 @@ input:focus + .search-dropdown .dropdown-content {
     position: absolute;
     top: 100%; /* Position below the input */
     right: 0; /* Align with the right edge of the input */
-    transform: translateX(calc(80%)); /* Move it to the right */
 }
 
 /* Add this CSS in ApplyPopup.css */
@@ -126,3 +127,19 @@ input:focus + .search-dropdown .dropdown-content {
 .close-search-result:hover {
     color: rgb(150, 150, 150); /* Change color on hover */
 }
+
+.submit-button{
+    padding: 8px 15px; /* Padding inside the buttons */
+    font-size: 17px; /* Font size inside the buttons */
+    color: #ffffff; /* Text color */
+    background-color: #586ec0; /* Background color */
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-family: 'Segoe UI' Verdana; /* Ensures typography consistency */
+}
+
+.apply-popup-input {
+    margin-left: 10px; /* Adjust the space as needed */
+  }

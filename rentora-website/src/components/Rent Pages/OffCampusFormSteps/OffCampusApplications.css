@@ -63,3 +63,14 @@
     color: #3f3f3f;
 }
 
+.view-application-button{
+    padding: 8px 15px; /* Padding inside the buttons */
+    font-size: 12px; /* Font size inside the buttons */
+    color: #ffffff; /* Text color */
+    background-color: #426aa3; /* Background color */
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-family: 'Segoe UI' Verdana; /* Ensures typography consistency */
+}

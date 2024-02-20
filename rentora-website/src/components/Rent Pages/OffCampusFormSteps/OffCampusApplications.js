@@ -74,7 +74,7 @@ const OffCampusApplications = () => {
                                 <p>{roommate.name}</p>
                             </div>
                         )) ?? []}
-                        <button onClick={() => handleViewApplication(application.combinedPdfUrl)}>View Application</button>
+                        <button className='view-application-button' onClick={() => handleViewApplication(application.combinedPdfUrl)}>View Application</button>
                     </div>
                 ))}
 

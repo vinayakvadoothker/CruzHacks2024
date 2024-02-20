@@ -290,14 +290,15 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 <button className="apply-popup-close" onClick={closePopup}>X</button>
 
                 {/* Message at the top of the form */}
-                <h2>Fill out this form to be emailed a custom application for the address you choose, with the roommates you select.</h2>
+                <h2>Apply For Unlisted</h2>
 
 
                 {/* Input for Listing Address */}
                 <label>
                     Listing Address:
                     <input
-                        ref={listingAddressRef} // Attach the ref to your input
+                        className="apply-popup-input"
+                        ref={listingAddressRef}
                         type="text"
                         value={listingAddress}
                         onChange={(e) => setListingAddress(e.target.value)}
@@ -309,6 +310,8 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 <label>
                     Monthly Rent:
                     <input
+                        className="apply-popup-input"
+
                         type="number"
                         value={monthlyRent}
                         onChange={(e) => setMonthlyRent(e.target.value)}
@@ -320,6 +323,8 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 <label>
                     Deposit Amount:
                     <input
+                        className="apply-popup-input"
+
                         type="number"
                         value={depositAmount}
                         onChange={(e) => setDepositAmount(e.target.value)}
@@ -329,6 +334,8 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 <label>
                     Preferred Move-In Date:
                     <input
+                        className="apply-popup-input"
+
                         type="date"
                         name="preferredMoveInDate"
                         value={applicationData.preferredMoveInDate}
@@ -348,6 +355,8 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                     <label>
                         Search for Roommates:
                         <input
+                            className="apply-popup-input"
+
                             type="text"
                             name="searchTerm"
                             value={searchTerm}
@@ -381,6 +390,8 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 <label>
                     Number of Pets:
                     <input
+                        className="apply-popup-input"
+
                         type="number"
                         name="numberOfPets"
                         value={applicationData.numberOfPets}
@@ -391,6 +402,8 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 <label>
                     Any Smokers?
                     <input
+                        className="apply-popup-input"
+
                         type="checkbox"
                         name="anySmokers"
                         checked={applicationData.anySmokers}
@@ -401,6 +414,8 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 <label>
                     Today's Date:
                     <input
+                        className="apply-popup-input"
+
                         type="date"
                         name="todaysDate"
                         value={applicationData.todaysDate}
@@ -412,6 +427,8 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 <label>
                     Signature:
                     <input
+                        className="apply-popup-input"
+
                         type="text"
                         name="signature"
                         value={applicationData.signature}
@@ -435,7 +452,7 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 )}
                 {isLoading && <Spinner />}
                 {/* Submit Application button */}
-                <button onClick={handleInitialSubmit}>Submit Application</button>
+                <button className='submit-button' onClick={handleInitialSubmit}>Submit Application</button>
             </div>
         </div>
     );
