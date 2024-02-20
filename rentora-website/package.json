@@ -39,6 +39,7 @@
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^3.4.120",
     "qrcode": "^1.5.3",
+    "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-chat-widget": "^3.1.4",
     "react-datepicker": "^4.25.0",

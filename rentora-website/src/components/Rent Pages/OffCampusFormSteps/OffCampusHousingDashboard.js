@@ -152,7 +152,7 @@ const OffCampusHousingDashboard = () => {
             <div className="form-container" style={{ maxHeight: '67vh' }}>
                 <h2 className="step-title">Off-Campus Housing</h2>
                 {isClerkAuthorized && (
-                    <button onClick={handleAddOffCampusClick} style={{ position: 'absolute', top: '20px', right: '20px' }}>
+                    <button className="apply-button custom-apply" onClick={handleAddOffCampusClick} style={{ position: 'absolute', top: '20px', right: '20px' }}>
                         +Add
                     </button>
                 )}
@@ -167,7 +167,7 @@ const OffCampusHousingDashboard = () => {
 
                 {isHovering && (
                     <div className="hover-message">
-                        <h2>Fill out this form to be emailed a custom application for the address you choose, with the roommates you select</h2>
+                        <div className='hover-message-text'>Fill out this form to be emailed a custom application for the address you choose, with the roommates you select</div>
                     </div>
                 )}
 
@@ -194,9 +194,9 @@ const OffCampusHousingDashboard = () => {
                                         onClick={() => toggleImageExpansion(index)} // Pass index to toggleImageExpansion
                                     />
                                     <button className="expand-button" onClick={() => toggleImageExpansion(index)}>Expand</button>
-                                    <div className="slideshow-arrows">
-                                        <button onClick={() => handlePrevImage(index)}>&#8249;</button>
-                                        <button onClick={() => handleNextImage(index)}>&#8250;</button>
+                                    <div>
+                                        <button className="slideshow-arrows" onClick={() => handlePrevImage(index)}>&#8249;</button>
+                                        <button className="slideshow-arrows" onClick={() => handleNextImage(index)}>&#8250;</button>
                                     </div>
                                 </div>
                                 <p className="address"><strong>{listing.address}</strong></p>

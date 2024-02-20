@@ -138,7 +138,7 @@ const ProfilePage = () => {
 
         <button
           style={{
-            backgroundColor: '#6066c9', // Green color for differentiation
+            backgroundColor: '#2f4c77', // Green color for differentiation
             color: '#fff',
             border: 'none',
             padding: '10px 20px',

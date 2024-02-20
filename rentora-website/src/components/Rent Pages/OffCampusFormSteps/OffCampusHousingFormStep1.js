@@ -16,6 +16,7 @@ const OffCampusHousingFormStep1 = () => {
     const [formData, setFormData] = useState({
         schoolName: '',
         addToRoommateSearch: true,
+        lookingForRoommates: true,
         lifestyle: '',
         studyHabits: '',
         socializingFrequency: '',
@@ -41,6 +42,7 @@ const OffCampusHousingFormStep1 = () => {
                         setFormData({
                             schoolName: data.schoolName || '',
                             addToRoommateSearch: data.addToRoommateSearch !== undefined ? data.addToRoommateSearch : true,
+                            lookingForRoommates: data.lookingForRoommates !== undefined ? data.lookingForRoommates : true,
                             lifestyle: data.lifestyle || '',
                             studyHabits: data.studyHabits || '',
                             socializingFrequency: data.socializingFrequency || '',
@@ -63,11 +65,11 @@ const OffCampusHousingFormStep1 = () => {
 
     const saveAnswer = (event) => {
         event.preventDefault(); // Prevent default form submission
-    
+
         const newFormData = {
             ...formData,
         };
-    
+
         if (user) {
             db.collection('SurveyResponses').doc(user.id).set(newFormData, { merge: true })
                 .then(() => {
@@ -85,6 +87,9 @@ const OffCampusHousingFormStep1 = () => {
 
     const handleCheckboxChange = (e) => {
         setFormData({ ...formData, addToRoommateSearch: e.target.checked });
+    };
+    const handleCheckboxChange2 = (e) => {
+        setFormData({ ...formData, lookingForRoommates: e.target.checked });
     };
 
     const universities = [
@@ -241,7 +246,7 @@ const OffCampusHousingFormStep1 = () => {
 
                     <div className="welcome-description">
 
-                        <h3>Let's get started by getting to know you a little better:</h3>
+                        <h3>Let's Build You A User Profile:</h3>
 
                         {/* Lifestyle Preferences */}
                         <label htmlFor="lifestyle">Do you prefer a quiet and studious lifestyle or a more social and outgoing one?</label>
@@ -357,6 +362,20 @@ const OffCampusHousingFormStep1 = () => {
                             <option value="Regular house meetings to discuss schedules and chores">Regular house meetings to discuss schedules and chores</option>
                             <option value="Informal coordination, we handle things as they come up">Informal coordination, we handle things as they come up</option>
                         </select>
+                        {/* Overnight Guests Preference */}
+                        <label htmlFor="overnight-guests">How do you feel about having overnight guests?</label>
+                        <select
+                            id="overnight-guests"
+                            className="input-field"
+                            value={formData.overnightGuests}
+                            onChange={(e) => setFormData({ ...formData, overnightGuests: e.target.value })}
+                            required
+                        >
+                            <option value="">Select an option</option>
+                            <option value="Comfortable with occasional guests">Comfortable with occasional guests</option>
+                            <option value="Prefer discussing each situation">Prefer discussing each situation</option>
+                            <option value="Prefer no overnight guests">Prefer no overnight guests</option>
+                        </select>
 
                         {/* Goals Support */}
                         <label htmlFor="goals-support">Are you looking for roommates who can provide support for your personal or academic goals?</label>
@@ -371,7 +390,16 @@ const OffCampusHousingFormStep1 = () => {
                             <option value="Yes, I value roommates who can provide support">Yes, I value roommates who can provide support</option>
                             <option value="No, I prefer to focus on my goals independently">No, I prefer to focus on my goals independently</option>
                         </select>
-
+                        <div className="checkbox-container">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={formData.lookingForRoommates}
+                                    onChange={handleCheckboxChange2}
+                                />
+                                Looking For Roommates
+                            </label>
+                        </div>
                     </div>
                     <div className="checkbox-container">
                         <label>

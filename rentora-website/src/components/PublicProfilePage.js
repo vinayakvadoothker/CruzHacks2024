@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './PublicProfilePage.css'
 
+
 const PublicProfilePage = () => {
     const { userid } = useParams(); // Destructure the dynamic path segment
     const [userData, setUserData] = useState(null);
+    const [activeTab, setActiveTab] = useState(null);
+
+
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -33,6 +37,60 @@ const PublicProfilePage = () => {
         return <div>Loading...</div>;
     }
 
+    const shareProfile = async () => {
+        if (document.hasFocus()) {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: `${userData.firstName} ${userData.lastName}'s Profile`,
+                        url: `https://rentora.net/profiles/${userData.id}`
+                    });
+                    // Provide feedback to the user
+                    alert('Profile shared successfully!');
+                } catch (error) {
+                    console.error('Error sharing the profile:', error);
+                    // Provide error feedback to the user
+                    alert('Error sharing the profile.');
+                }
+            } else if (navigator.clipboard) {
+                try {
+                    await navigator.clipboard.writeText(`https://rentora.net/profiles/${userData.id}`);
+                    // Provide feedback to the user
+                    alert('Profile Link copied to clipboard!');
+                } catch (error) {
+                    console.error('Error copying link:', error);
+                    // Provide error feedback to the user
+                    alert('Failed to copy link.');
+                }
+            } else {
+                // Fallback for browsers that do not support the Web Share API or clipboard API
+                alert('Sharing not supported. Please copy the URL from the address bar.');
+            }
+        } else {
+            // Document is not focused
+            alert('Please focus on the document to share the profile.');
+        }
+    };
+
+    // Function to toggle the active tab
+    const toggleTab = (tabId) => {
+        setActiveTab(prevTabId => prevTabId === tabId ? null : tabId);
+    };
+    const userDataTabs = [
+        { id: 'lifestyle', label: 'Lifestyle', content: userData.lifestyle || 'No lifestyle specified' },
+        { id: 'studyHabits', label: 'Study Habits', content: userData.studyHabits || 'No study habits specified' },
+        { id: 'socializingFrequency', label: 'Socializing Frequency', content: userData.socializingFrequency || 'No socializing frequency specified' },
+        { id: 'choresPreference', label: 'Chores Preference', content: userData.choresPreference || 'No chores preference specified' },
+        { id: 'privacyComfort', label: 'Privacy Comfort', content: userData.privacyComfort || 'No privacy comfort specified' },
+        { id: 'communicationComfort', label: 'Communication Comfort', content: userData.communicationComfort || 'No communication comfort specified' },
+        { id: 'expenseHandling', label: 'Expense Handling', content: userData.expenseHandling || 'No expense handling specified' },
+        { id: 'scheduleCoordination', label: 'Schedule Coordination', content: userData.scheduleCoordination || 'No schedule coordination specified' },
+        { id: 'goalsSupport', label: 'Goals Support', content: userData.goalsSupport || 'No goals support specified' },
+        { id: 'overnightGuests', label: 'Overnight Guests', content: userData.overnightGuests || 'No overnight guests specified' },
+    ];
+
+
+
     // Render user profile using userData
     return (
         <div className="profile-container">
@@ -41,66 +99,90 @@ const PublicProfilePage = () => {
                 <h1>{`${userData.firstName} ${userData.lastName}`}</h1>
             </div>
 
-            <div className="data-section">
-                <p>Email: {userData.email}</p>
+            <a href={`mailto:${userData.email}`} title={`Email ${userData.firstName} ${userData.lastName}`} className="email-icon">
+                ✉️
+            </a>
+            <a href={`tel:${userData.phone}`} title={`Call ${userData.firstName} ${userData.lastName}`} className="phone-icon">
+                📞
+            </a>
+            <a href={`sms:${userData.phone}`} title={`Message ${userData.firstName} ${userData.lastName}`} className="message-icon">
+                💬
+            </a>
+
+            <button onClick={shareProfile} title="Share Profile" className="share-icon">
+                🔗
+            </button>
+
+            <div className="school-name-container">
+                <p className="school-name">{userData.schoolName} - {userData.major}</p>
             </div>
-            <div className="data-section">
-                <p>School Name: {userData.schoolName}</p>
+            <div className="start-date-container">
+                <div className="start-date">
+                    <p>Since {new Date(userData.startDate).toLocaleDateString('en-US')}</p>
+                </div>
             </div>
-            <div className="data-section">
-                <p>Add to Roommate Search: {userData.addToRoommateSearch ? "Yes" : "No"}</p>
+
+            <div className="roommate-search-container">
+                <span className={`roommate-status-indicator ${userData.lookingForRoommates ? 'yes' : 'no'}`}></span>
+                <p>Looking For Roommates</p>
             </div>
-            <div className="data-section">
-                <p>Major: {userData.major}</p>
-            </div>
-            <div className="data-section">
-                <p>Residence: {userData.residence}</p>
-            </div>
-            <div className="data-section">
-                <p>Start Date: {userData.startDate}</p>
-            </div>
+
             {userData.activitiesHistory.length > 0 && (
-                <div className="data-section">
-                    <h3>Activities History:</h3>
-                    <ul className="activities-list">
+                <div className="data-section activities-section">
+                    <h3>Activities:</h3>
+                    <div className="activities-tabs">
                         {userData.activitiesHistory.map((activity, index) => (
-                            <li key={index}>
-                                {activity.title} at {activity.organization} from {activity.startDate} to {activity.endDate || 'Present'}
-                            </li>
+                            <div key={index} className={`tab ${activeTab === index ? 'active' : ''}`} onClick={() => toggleTab(index)}>
+                                <div className="tab-title">
+                                    {activity.title}
+                                    <span className={`arrow ${activeTab === index ? 'open' : 'closed'}`}>▼</span>
+                                </div>
+                                {activeTab === index && (
+                                    <div className="tab-content">
+                                        {activeTab === index && (
+                                            <div className="tab-content">
+                                                <p className="tab-info-title">Organization:<span className="tab-info-content"> {activity.organization}</span></p>
+                                                <p className="tab-info-title">From:
+                                                    <span className="tab-info-content">
+                                                        {new Date(activity.startDate).toLocaleDateString('en-US', {
+                                                            month: '2-digit',
+                                                            day: '2-digit',
+                                                            year: 'numeric'
+                                                        })}
+                                                    </span>
+                                                </p>
+                                                <p className="tab-info-title">To:
+                                                    <span className="tab-info-content">
+                                                        {activity.endDate ? new Date(activity.endDate).toLocaleDateString('en-US', {
+                                                            month: '2-digit',
+                                                            day: '2-digit',
+                                                            year: 'numeric'
+                                                        }) : 'Present'}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </div>
             )}
-            <div className="data-section">
-                <p>Lifestyle: {userData.lifestyle || 'No lifestyle specified'}</p>
-            </div>
-            <div className="data-section">
-                <p>Study Habits: {userData.studyHabits || 'No study habits specified'}</p>
-            </div>
-            <div className="data-section">
-                <p>Socializing Frequency: {userData.socializingFrequency || 'No socializing frequency specified'}</p>
-            </div>
-            <div className="data-section">
-                <p>Chores Preference: {userData.choresPreference || 'No chores preference specified'}</p>
-            </div>
-            <div className="data-section">
-                <p>Privacy Comfort: {userData.privacyComfort || 'No privacy comfort specified'}</p>
-            </div>
-            <div className="data-section">
-                <p>Communication Comfort: {userData.communicationComfort || 'No communication comfort specified'}</p>
-            </div>
-            <div className="data-section">
-                <p>Expense Handling: {userData.expenseHandling || 'No expense handling specified'}</p>
-            </div>
-            <div className="data-section">
-                <p>Schedule Coordination: {userData.scheduleCoordination || 'No schedule coordination specified'}</p>
-            </div>
-            <div className="data-section">
-                <p>Goals Support: {userData.goalsSupport || 'No goals support specified'}</p>
-            </div>
-            <div className="data-section">
-                <p>Overnight Guests: {userData.overnightGuests || 'No overnight guests specified'}</p>
-            </div>
+            <h2>Roommate Profile</h2>
+            {userDataTabs.map(tab => (
+                <div key={tab.id} className="data-section">
+                    <div className="tab-info-title" onClick={() => toggleTab(tab.id)}>
+                        <p>{tab.label}</p>
+                        <span className={`arrow ${activeTab === tab.id ? 'open' : 'closed'}`}>▼</span>
+                    </div>
+                    {activeTab === tab.id && (
+                        <div className="tab-content">
+                            <p>{tab.content}</p>
+                        </div>
+                    )}
+                </div>
+            ))}
         </div>
     );
 };

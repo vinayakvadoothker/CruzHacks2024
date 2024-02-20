@@ -29,8 +29,10 @@ const fetchUserDetails = async () => {
       firstName: data.firstName || 'No first name',
       lastName: data.lastName || 'No last name',
       email: data.email || 'No email',
+      phone: data.phone || 'No phone',
       schoolName: data.schoolName || 'No school name',
-      addToRoommateSearch: data.addToRoommateSearch || 'Not specified',
+      addToRoommateSearch: typeof data.addToRoommateSearch === 'boolean' ? data.addToRoommateSearch : false,
+      lookingForRoommates: typeof data.lookingForRoommates === 'boolean' ? data.lookingForRoommates : false,
       activitiesHistory: data.activitiesHistory || [], // Assuming this is an array of objects
       major: data.major || 'No major specified',
       middleInitial: data.middleInitial || '',

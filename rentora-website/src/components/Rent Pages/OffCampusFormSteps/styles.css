@@ -501,7 +501,7 @@ label {
   z-index: 1;
   bottom: 54%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%,-80%);
   margin-bottom: 8px;
   font-size: 8.5px;
   text-align: center;
@@ -509,6 +509,11 @@ label {
   font-family: 'Segoe UI', Verdana;
   font-weight: normal; /* Explicitly set the font weight to normal */
 }
+.hover-message-text {
+  font-size: 13px;
+
+}
+
 
 /* When hovering over the button, display the message */
 .apply-button.custom-apply:hover + .hover-message {
@@ -528,9 +533,46 @@ label {
   border-radius: 5px; /* Rounded corners */
   font-size: 16px; /* Text size */
   transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
+  
 }
 
 .apply-button:hover {
   background-color: #639ff2; /* Darker shade of green on hover */
+  transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+
+.expand-button {
+  background-color: #2d4970; /* Green background */
+  color: white; /* White text */
+  padding: 6px 9px; /* Padding around the text */
+  border: none; /* No border */
+  cursor: pointer; /* Cursor changes to pointer to indicate it's clickable */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 13px; /* Text size */
+  transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
+  font-family: 'Segoe UI', Verdana;
+
+}
+
+.expand-button:hover {
+  background-color: #4775b5; /* Darker shade of green on hover */
+  transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.slideshow-arrows {
+  background-color: #112f3d; /* Green background */
+  color: white; /* White text */
+  padding: 4px 7px; /* Padding around the text */
+  border: none; /* No border */
+  cursor: pointer; /* Cursor changes to pointer to indicate it's clickable */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 15px; /* Text size */
+  transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
+  margin: 5px;
+}
+
+.slideshow-arrows:hover {
+  background-color: #297193; /* Darker shade of green on hover */
   transform: scale(1.05); /* Slightly enlarge the button on hover */
 }

@@ -2,11 +2,27 @@
 .profile-container {
     display: flex;
     flex-direction: column;
-    max-height: 90vh; /* Adjust based on your header/footer */
+    min-height: 73%; /* Adjust based on your header/footer */
+    max-height: 73%; /* Adjust based on your header/footer */
+    min-width: 92%; /* Adjust based on your header/footer */
+    max-width: 92%; /* Adjust based on your header/footer */
     overflow-y: auto; /* Makes the container scrollable */
     padding: 20px;
-    background-color: #f5f5f5; /* Light grey background */
+    background-color: #abceff; /* Light grey background */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    gap: 2px;
+
+    /* Centering styles */
+    position: absolute; /* Positioning relative to its first positioned (not static) ancestor element */
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* This ensures the center of the element aligns with the center of its container */
+  
+    /* Additional styles for better appearance and centering */
+    box-shadow: 0 2px 10px #00000071; /* Adds subtle shadow to sections */
+    border-radius: 16px; /* Optional: Rounds the corners of the container */
   }
+
+
   
   /* Header section containing the profile picture and name */
   .profile-header {
@@ -14,6 +30,17 @@
     align-items: center;
     margin-bottom: 20px;
   }
+  h1 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    gap: 2px;
+    font-size: 30px;
+    color: #233752;
+  }
+  h2 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    gap: 2px;
+    font-size: 25px;
+    color: #233752;
+  }
+  
   
   /* Profile picture styling */
   .profile-picture {
@@ -21,31 +48,268 @@
     height: 100px;
     border-radius: 50%;
     margin-right: 20px; /* Space between picture and name */
+    box-shadow: 0 1px 5px #2e2f5bc4; /* Adds subtle shadow to sections */
   }
   
   /* Individual sections for user data */
   .data-section {
-    background-color: #ffffff; /* White background for sections */
+    background-color: #d5e7ff; /* White background for sections */
     padding: 15px;
+    color: #233752;
     margin-bottom: 10px; /* Space between sections */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adds subtle shadow to sections */
+    box-shadow: 0 1px 3px #2e2f5b9d; /* Adds subtle shadow to sections */
     border-radius: 8px; /* Rounded corners for sections */
   }
+
   
   /* Styling for section titles, like "First Name", "Last Name", etc. */
   .section-title {
     font-weight: bold;
     margin-bottom: 5px;
+    color: #233752;
+
   }
   
   /* Styling for the activities history list */
   .activities-list {
     list-style: none;
     padding-left: 0;
+    color: #233752;
+
   }
   
   /* List items in the activities history */
   .activities-list li {
     margin-bottom: 5px;
+    color: #233752;
+
   }
   
+
+  .email-icon {
+    transform: translate(530%,-150%); /* Adjust as needed for spacing between the name and the icon */
+    display: flex; /* Use flex to center the icon vertically */
+    align-items: center; /* Center the icon vertically */
+    justify-content: center; /* Center the icon horizontally */
+    width: 24px; /* Width of the button */
+    height: 24px; /* Height of the button */
+    border-radius: 50%; /* Makes the button circular */
+    text-decoration: none; /* Removes underline from the link */
+    color: inherit; /* Inherits the text color from the parent */
+    font-size: 35px; /* Adjust the size of the icon if necessary */
+}
+
+.phone-icon {
+    transform: translate(730%,-260%); /* Adjust as needed for spacing between the name and the icon */
+    display: flex; /* Use flex to center the icon vertically */
+    align-items: center; /* Center the icon vertically */
+    justify-content: center; /* Center the icon horizontally */
+    width: 24px; /* Width of the button */
+    height: 24px; /* Height of the button */
+    border-radius: 50%; /* Makes the button circular */
+    text-decoration: none; /* Removes underline from the link */
+    color: inherit; /* Inherits the text color from the parent */
+    font-size: 25px; /* Adjust the size of the icon if necessary */
+}
+
+.message-icon {
+    transform: translate(920%,-367%); /* Adjust as needed for spacing between the name and the icon */
+    display: flex; /* Use flex to center the icon vertically */
+    align-items: center; /* Center the icon vertically */
+    justify-content: center; /* Center the icon horizontally */
+    width: 24px; /* Width of the button */
+    height: 24px; /* Height of the button */
+    border-radius: 50%; /* Makes the button circular */
+    text-decoration: none; /* Removes underline from the link */
+    color: inherit; /* Inherits the text color from the parent */
+    font-size: 25px; /* Adjust the size of the icon if necessary */
+}
+
+.share-icon {
+    transform: translate(1100%,-470%); /* Adjust as needed for spacing between the name and the icon */
+    display: flex; /* Use flex to center the icon vertically */
+    align-items: center; /* Center the icon vertically */
+    justify-content: center; /* Center the icon horizontally */
+    width: 24px; /* Width of the button */
+    height: 24px; /* Height of the button */
+    text-decoration: none; /* Removes underline from the link */
+    color: inherit; /* Inherits the text color from the parent */
+    font-size: 25px; /* Adjust the size of the icon if necessary */
+    cursor: pointer;
+    background-color: #00000000;
+    border-color: #00000000;
+}
+
+.school-name-container {
+    transform: translate(30%,-477%); /* Adjust as needed for spacing between the name and the icon */
+    display: flex; /* Use flex to center the icon vertically */
+    width: 400px; /* Width of the button */
+    height: 24px; /* Height of the button */
+}
+
+.school-name {
+    color: #233752; /* Set the text color */
+    font-size: 20px; /* Set the font size */
+}
+
+
+.school-roommate-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.roommate-search-container {
+    transform: translate(40%,-340%); /* Adjust as needed for spacing between the name and the icon */
+    display: flex;
+    width: 300px; /* Width of the button */
+    height: 24px; /* Height of the button */
+    align-items: center; /* Center the text and circle vertically */
+    gap: 10px; /* Adjust the space between the circle and the text */
+    color: #345279; /* Set the text color */
+}
+
+.roommate-status-indicator {
+    width: 15px; /* Circle size */
+    height: 15px; /* Circle size */
+    border-radius: 50%; /* Make it round */
+    display: inline-block;
+
+}
+
+.roommate-status-indicator.yes {
+    background-color: green; /* Green for 'Yes' */
+}
+
+.roommate-status-indicator.no {
+    background-color: red; /* Red for 'No' */
+}
+
+.start-date-container {
+    transform: translate(30%,-427%); /* Adjust as needed for spacing between the name and the icon */
+    display: flex; /* Use flex to center the icon vertically */
+    width: 400px; /* Width of the button */
+    height: 24px; /* Height of the button */
+}
+
+.start-date {
+    color: #233752; /* Set the text color */
+    font-size: 16px; /* Set the font size */
+    font-style: italic;
+}
+
+
+
+
+.activities-section .activities-tabs .tab {
+    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #c3ddf400;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.activities-section .activities-tabs .tab:hover {
+    background-color: #e0e0e0;
+}
+
+.activities-section .activities-tabs .tab.active {
+    background-color: #d0d0d0;
+}
+
+.activities-section .activities-tabs .tab-title {
+    font-weight: bold;
+    display: flex; /* Align title and arrow */
+    justify-content: space-between; /* Put space between title and arrow */
+
+}
+
+.activities-section .activities-tabs .tab-title .arrow {
+    transition: transform 0.3s ease; /* Smooth transition for rotation */
+}
+
+.activities-section .activities-tabs .tab-title .arrow.closed {
+    transform: rotate(0); /* Default state, arrow pointing down */
+}
+
+.activities-section .activities-tabs .tab-title .arrow.open {
+    transform: rotate(180deg); /* Rotated state, arrow pointing up */
+}
+
+.activities-section .activities-tabs .tab-content {
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    align-items: flex-start; /* Align content to the left */
+    padding: 10px;
+    border-top: 1px solid #ccc; /* Separates content visually from the title */
+    margin-top: 5px;
+    gap: 10px; /* Space between content items, if multiple */
+}
+
+
+.tab-info-title {
+    font-weight: bold; /* Bolden the text */
+    color: #345279; /* Change the color */
+}
+
+
+/* Hover effect for each data section to indicate interactiveness */
+
+
+/* Active tab style to highlight the current selection */
+.data-section.active {
+    background-color: #d0d0d0;
+}
+
+/* Style for the title section of each tab, containing the label and arrow */
+.tab-info-title {
+    font-weight: bold;
+    display: flex; /* Align title and arrow */
+    align-items: center; /* Center them vertically */
+    justify-content: space-between; /* Put space between title and arrow */
+    cursor: pointer;
+
+}
+
+/* Style for the arrow, with a smooth transition for rotation */
+.tab-info-title .arrow {
+    transition: transform 0.3s ease; /* Smooth transition for rotation */
+}
+
+/* Default state of the arrow, indicating the tab is closed */
+.tab-info-title .arrow.closed {
+    transform: rotate(0); /* Arrow pointing down */
+}
+
+/* Rotated state of the arrow, indicating the tab is open */
+.tab-info-title .arrow.open {
+    transform: rotate(180deg); /* Arrow pointing up */
+}
+
+/* Style for the content of each tab, displayed when the tab is active */
+.tab-content {
+    padding: 10px;
+    border-top: 1px solid #ccc; /* Separates content visually from the title */
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    gap: 10px; /* Space between content items, if multiple */
+}
+
+
+
+/* Media Query for Phones */
+@media (max-width: 600px) {
+    .activities-section .activities-tabs .tab, .activities-section .activities-tabs .tab-content {
+        width: 100%; /* Ensure tabs and content use full width */
+        box-sizing: border-box; /* Include padding in width calculation */
+    }
+
+    .activities-section .activities-tabs .tab-title .arrow {
+        /* Adjust arrow size if necessary */
+        font-size: 1.2em;
+    }
+
+}

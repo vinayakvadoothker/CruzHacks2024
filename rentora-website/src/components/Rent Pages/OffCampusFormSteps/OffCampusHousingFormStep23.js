@@ -24,6 +24,8 @@ const OffCampusHousingFormStep23 = () => {
   const [guarantorFormFilled, setGuarantorFormFilled] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isChecked, setIsChecked] = useState(false); // State to track checkbox status
+  const [submissionComplete, setSubmissionComplete] = useState(false);
+
 
   useEffect(() => {
     const fetchData = async () => {
