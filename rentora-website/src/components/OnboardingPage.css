@@ -243,7 +243,7 @@ html, body {
 /* Styles for the About Us section */
 .about-us {
   padding: 20px; /* Adjust padding as needed */
-  background-color: #8d91ffec; /* Light grey background */
+  background-color: #679be4f9; /* Light grey background */
   color: #ffffff; /* Darker text for readability */
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
@@ -271,7 +271,7 @@ html, body {
 /* Styles for the Our Mission section */
 .our-mission {
   padding: 20px; /* Adjust padding as needed */
-  background-color: #8d91ffec; /* Light grey background */
+  background-color: #679be4f9; /* Light grey background */
   color: #ffffff; /* Darker text for readability */
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
@@ -297,7 +297,7 @@ html, body {
 /* Styles for the How it Works section */
 .how-it-works {
   padding: 20px; /* Adjust padding as needed */
-  background-color: #8d91ffec; /* Light grey background */
+  background-color: #679be4f9; /* Light grey background */
   color: #ffffff; /* Darker text for readability */
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
@@ -320,7 +320,7 @@ html, body {
 /* Styles for the FAQs section */
 .faqs {
   padding: 20px 30px 20px 5px; /* Reduce right padding */
-  background-color: #8d91ffec; /* Light grey background */
+  background-color: #679be4f9; /* Light grey background */
   color: #ffffff; /* Darker text for readability */
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
@@ -379,7 +379,7 @@ html, body {
 /* Styles for the Team section */
 .team {
   padding: 20px; /* Adjust padding as needed */
-  background-color: #8d91ffec; /* Light grey background */
+  background-color: #679be4f9; /* Light grey background */
   color: #ffffff; /* Darker text for readability */
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
@@ -455,7 +455,7 @@ html, body {
 /* Styles for the Contact Us section */
 .contact-us {
   padding: 20px; /* Adjust padding as needed */
-  background-color: #8d91ffec; /* Light grey background */
+  background-color: #679be4f9; /* Light grey background */
   color: #ffffff; /* Darker text for readability */
   text-align: center; /* Center align the text */
   border-radius: 15px; /* Rounded corners */
@@ -497,7 +497,7 @@ html, body {
 
 .contact-us button {
   padding: 10px 20px;
-  background-color: #02158f;
+  background-color: #176addf9;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -508,7 +508,7 @@ html, body {
 }
 
 .contact-us button:hover {
-  background-color: #3550ff;
+  background-color: #0f499af9;
 }
 
 /* Adjustments for smaller screens */
