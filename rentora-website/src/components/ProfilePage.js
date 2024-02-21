@@ -89,7 +89,7 @@ const ProfilePage = () => {
       <div className="profile-image-container">
         <img src={userProfile.profileImage} alt="Profile" className="profile-image" />
         <button onClick={handleEditProfileImage} className="edit-image-button">Edit</button>
-        <input type="file" accept="image/*" ref={fileInputRef} className="file-input" onChange={handleFileChange} />
+        <input type="file" accept="image/*" ref={fileInputRef} className="file-input-profile-page" onChange={handleFileChange} />
       </div>
 
       <div className="user-name-container">

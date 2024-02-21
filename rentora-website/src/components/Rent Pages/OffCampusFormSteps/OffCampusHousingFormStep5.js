@@ -24,6 +24,12 @@ const OffCampusHousingFormStep5 = () => {
   const [imagePreview, setImagePreview] = useState(user?.imageUrl || "url_to_default_image.jpg"); // Default to Clerk image or a default image
 
   const uploadFileToStorage = useCallback(async (userId, file) => {
+    // Ensure user object is defined and has the necessary properties before proceeding
+    if (!user) {
+      // Render a loading spinner, a message, or redirect the user to a login page
+      return <div>Please log in to continue</div>;
+    }
+  
     // Construct the new file name with a fixed '.jpg' extension
     const newFileName = `${user.firstName}_${user.lastName}_Profile_Picture.jpg`;
     // Create a reference in your storage with the desired path and file name
@@ -57,7 +63,7 @@ const OffCampusHousingFormStep5 = () => {
       console.error("Error uploading file: ", error);
       return ''; // Return an empty string in case of error
     }
-  }, [user.firstName, user.lastName]);
+  }, [user]);
 
   useEffect(() => {
     const fetchProfilePicture = async () => {
@@ -119,7 +125,7 @@ const OffCampusHousingFormStep5 = () => {
           className="image-preview"
         />
       )}
-      <div className="file-input-container">
+      <div className="profile-picture-input">
         <input
           type="file"
           accept="image/*"
