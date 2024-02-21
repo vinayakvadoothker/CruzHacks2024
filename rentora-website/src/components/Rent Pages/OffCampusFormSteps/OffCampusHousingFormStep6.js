@@ -20,222 +20,280 @@ const OffCampusHousingFormStep6 = () => {
     navigate(`/rent/off-campus/step${stepIndex + 1}`);
   };
 
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isReferenceFormCompleted, setIsReferenceFormCompleted] = useState(false);
-
-  // Initialize state with default values
   const [formData, setFormData] = useState({
-    college: '',
-    schoolName: '', // Add schoolName to formData
-  });
+    addToRoommateSearch: true,
+    lookingForRoommates: true,
+    lifestyle: '',
+    studyHabits: '',
+    socializingFrequency: '',
+    choresPreference: '',
+    privacyComfort: '',
+    communicationComfort: '',
+    expenseHandling: '',
+    scheduleCoordination: '',
+    goalsSupport: '',
+    overnightGuests: '' // New field for overnight guests preference
+});
 
-  useEffect(() => {
-    // Fetch and set the saved data when the component mounts
+useEffect(() => {
     if (user) {
-      db.collection('SurveyResponses')
-        .doc(user.id)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const savedData = doc.data();
-            if (savedData.college && savedData.college.name) {
-              // If the saved data includes college information, set it in the state
-              setFormData({
-                college: savedData.college.name,
-                schoolName: savedData.schoolName || '',
-              });
-            } else {
-              // If the saved data doesn't include college information, set default values
-              setFormData({
-                college: '',
-                schoolName: '',
-              });
-            }
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching data:', error);
-        });
+        db.collection('SurveyResponses').doc(user.id).get()
+            .then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    setFormData({
+                        addToRoommateSearch: data.addToRoommateSearch !== undefined ? data.addToRoommateSearch : true,
+                        lookingForRoommates: data.lookingForRoommates !== undefined ? data.lookingForRoommates : true,
+                        lifestyle: data.lifestyle || '',
+                        studyHabits: data.studyHabits || '',
+                        socializingFrequency: data.socializingFrequency || '',
+                        choresPreference: data.choresPreference || '',
+                        privacyComfort: data.privacyComfort || '',
+                        sharedHobbies: data.sharedHobbies || '',
+                        communicationComfort: data.communicationComfort || '',
+                        expenseHandling: data.expenseHandling || '',
+                        scheduleCoordination: data.scheduleCoordination || '',
+                        goalsSupport: data.goalsSupport || '',
+                        overnightGuests: data.overnightGuests || '' // Include overnightGuests
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
     }
-  }, [user]);
+}, [user]);
 
-  useEffect(() => {
-    // Check if the schoolName is not UC Santa Cruz, then navigate to the next step
-    if (formData.schoolName && formData.schoolName !== 'UC Santa Cruz') {
-      completeStep(currentStep); // Mark the current step as completed
-      navigate('/rent/off-campus/step7'); // Navigate to the next step or the desired page
-    }
-  }, [formData.schoolName, completeStep, currentStep, navigate]);
+const saveAnswer = (event) => {
+    event.preventDefault(); // Prevent default form submission
 
-
-  useEffect(() => {
-    // Check if the reference form has been completed in localStorage
-    const isCompleted = localStorage.getItem('referenceFormCompleted');
-    if (isCompleted) {
-      setIsReferenceFormCompleted(true);
-    }
-  }, []);
-
-  const handleReferenceFormClick = () => {
-    // Open the reference form link in a new tab or window
-    window.open("http://studenthousing.ucsc.edu/");
-
-    // Mark the reference form as completed
-    setIsReferenceFormCompleted(true);
-    localStorage.setItem('referenceFormCompleted', 'true');
-
-    // Show an alert to notify the user
-    alert("UCSC Reference Release Form Completed!");
-  };
-
-  const saveAnswer = () => {
-    if (user && formData.college !== '' && formData.college !== 'Select A College' && isReferenceFormCompleted) {
-      const collegeInfo = getCollegeInfo(formData.college);
-      
-      db.collection('SurveyResponses')
-        .doc(user.id)
-        .update({
-          college: {
-            name: formData.college,
-            address: collegeInfo.address,
-            phoneNumber: collegeInfo.phoneNumber,
-          },
-        })
-        .then(() => {
-          console.log("Document successfully updated!");
-          completeStep(currentStep);
-          navigate('/rent/off-campus/step7');
-        })
-        .catch((error) => {
-          console.error("Error updating document: ", error);
-        });
-    } else {
-      setErrorMessage("Please select a valid college and complete the UCSC Reference Release Form");
-    }
-  };  
-
-  const getCollegeInfo = (college) => {
-    // Define the campus address and phone number for each college
-    const collegeInfo = {
-      'Cowell College': {
-        address: "520 Cowell-Stevenson Road, Santa Cruz, CA 95064",
-        phoneNumber: "(831) 459-2173",
-      },
-      'Stevenson College': {
-        address: "520 Cowell-Stevenson Road, Santa Cruz, CA 95064",
-        phoneNumber: "(831) 459-2173",
-      },
-      'Merrill College': {
-        address: "655 Merrill Service Road, Santa Cruz, CA 95064",
-        phoneNumber: "(831) 459-5689",
-      },
-      'Crown College': {
-        address: "655 Merrill Service Road, Santa Cruz, CA 95064",
-        phoneNumber: "(831) 459-5689",
-      },
-      'College 9': {
-        address: "702 College Nine Rd, Santa Cruz, CA 95064",
-        phoneNumber: "(831) 459-2100",
-      },
-      'John R. Lewis College': {
-        address: "702 College Nine Rd, Santa Cruz, CA 95064",
-        phoneNumber: "(831) 459-2100",
-      },
-      'Kresge College': {
-        address: "Programs Annex, 510 Porter-Kresge Rd, Santa Cruz, CA 95064",
-        phoneNumber: "(831) 459-4433",
-      },
-      'Porter College': {
-        address: "Programs Annex, 510 Porter-Kresge Rd, Santa Cruz, CA 95064",
-        phoneNumber: "(831) 459-4433",
-      },
-      'Rachel Carson College': {
-        address: "B-L, 6 College Eight Service Rd, Santa Cruz, CA 95064",
-        phoneNumber: "(831) 459-4505",
-      },
-      'Oakes College': {
-        address: "Oakes Cafe, 1156 High St, Santa Cruz, CA 95064",
-        phoneNumber: "(831) 459-4505",
-      },
-      // Add entries for other colleges as needed
-      // ...
+    const newFormData = {
+        ...formData,
     };
 
-    return collegeInfo[college] || {};
-  };
+    if (user) {
+        db.collection('SurveyResponses').doc(user.id).set(newFormData, { merge: true })
+            .then(() => {
+                console.log("Document successfully updated or set!");
+                completeStep(currentStep); // Mark the current step as completed
+                navigate('/rent/off-campus/step7'); // Navigate to the next step
+            })
+            .catch((error) => {
+                console.error("Error updating or setting document: ", error);
+            });
+    } else {
+        console.log("User not authenticated");
+    }
+};
+
+const handleCheckboxChange = (e) => {
+    setFormData({ ...formData, addToRoommateSearch: e.target.checked });
+};
+const handleCheckboxChange2 = (e) => {
+    setFormData({ ...formData, lookingForRoommates: e.target.checked });
+};
 
 
-  return (
+
+
+return (
     <>
-      <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
-      <div className="form-container" >
-        <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
-        <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
-      <p className="step-description">Select your college:</p>
+        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+        <div className="form-container">
+            <Stepper currentStep={currentStep} />
+            <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
 
-      {/* Dropdown for selecting the college */}
-      <select
-        id="college"
-        className="input-field"
-        value={formData.college}
-        onChange={(e) => {
-          setFormData((prevData) => ({
-            ...prevData,
-            college: e.target.value,
-          }));
-          setErrorMessage(''); // Clear error message when the user makes a selection
-        }}
-      >
-        <option value="Select A College">Select A College</option>
-        <option value="Cowell College">Cowell College</option>
-        <option value="Stevenson College">Stevenson College</option>
-        <option value="Merrill College">Merrill College</option>
-        <option value="Crown College">Crown College</option>
-        <option value="College 9">College 9</option>
-        <option value="John R. Lewis College">John R. Lewis College</option>
-        <option value="Kresge College">Kresge College</option>
-        <option value="Porter College">Porter College</option>
-        <option value="Rachel Carson College">Rachel Carson College</option>
-        <option value="Oakes College">Oakes College</option>
-      </select>
+            {/* Welcome Description */}
+            <div className="welcome-description">
+                <h3>Let's Build You A Profile!</h3>
+                <p>
+                    These questions are designed to build you a comprehensive profile page that you can
+                    can share with potential roommates or landlords.
+                </p>
+                
+                <p>
+                    <strong>All Questions are Required</strong>. Please answer to the best of your ability!
+                </p>
+                <p>
+                    <strong>Your Answers Are Auto-Saved</strong>
+                </p>
 
-      {/* Button to complete the UCSC Reference Release Form */}
-      <button
-        className="reference-form-button"
-        onClick={handleReferenceFormClick}
-      >
-        UCSC Reference Release Form (Must Complete)
-      </button>
+            <div className="checkbox-container">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={formData.addToRoommateSearch}
+                            onChange={handleCheckboxChange}
+                        />
+                        Add me to the Roommate Search Database
+                    </label>
+                </div>
+                </div>
 
-      {/* Learn More button linking to the provided URL */}
-      <a
-        href="https://communityrentals.ucsc.edu/renters/before-you-rent/rental-application-packet.html#:~:text=Visit%20the%20Housing%20Portal"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="learn-more-button"
-      >
-        Learn More
-      </a>
+            <form onSubmit={saveAnswer}>
 
-      {/* Back button to navigate to the previous step */}
-      <Link to="/rent/off-campus/step5">
-        <span className="back-button">{'<-'}</span>
-      </Link>
+                <div className="welcome-description">
 
-      {/* Display error message if any */}
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
-      {/* Button to submit the form and navigate to the next step */}
-      <button
-        className="next-button"
-        onClick={saveAnswer}
-        // disabled={isNextButtonDisabled}
-      >
-        Next
-      </button>
-    </div>
+                    {/* Lifestyle Preferences */}
+                    <label htmlFor="lifestyle">Do you prefer a quiet and studious lifestyle or a more social and outgoing one?</label>
+                    <select
+                        id="lifestyle"
+                        className="input-field"
+                        value={formData.lifestyle}
+                        onChange={(e) => setFormData({ ...formData, lifestyle: e.target.value })}
+                        required
+                    >
+                        <option value="">Select an option</option>
+                        <option value="Quiet and studious">Quiet and studious</option>
+                        <option value="Social and outgoing">Social and outgoing</option>
+                    </select>
+
+                    {/* Study Habits */}
+                    <label htmlFor="study-habits">How do you typically manage your study time?</label>
+                    <select
+                        id="study-habits"
+                        className="input-field"
+                        value={formData.studyHabits}
+                        onChange={(e) => setFormData({ ...formData, studyHabits: e.target.value })}
+                        required
+                    >
+                        <option value="">Select an option</option>
+                        <option value="I have organized study schedules">I have organized study schedules</option>
+                        <option value="I study as needed, no strict schedule">I study as needed, no strict schedule</option>
+                    </select>
+
+                    {/* Socializing Frequency */}
+                    <label htmlFor="socializing-frequency">How often do you enjoy socializing with roommates?</label>
+                    <select
+                        id="socializing-frequency"
+                        className="input-field"
+                        value={formData.socializingFrequency}
+                        onChange={(e) => setFormData({ ...formData, socializingFrequency: e.target.value })}
+                        required
+                    >
+                        <option value="">Select an option</option>
+                        <option value="Frequently, I enjoy spending time with roommates">Frequently, I enjoy spending time with roommates</option>
+                        <option value="Occasionally, I like some social interaction">Occasionally, I like some social interaction</option>
+                        <option value="Rarely, I prefer privacy most of the time">Rarely, I prefer privacy most of the time</option>
+                    </select>
+
+                    {/* Chores Preference */}
+                    <label htmlFor="chores-preference">How do you prefer to handle household chores?</label>
+                    <select
+                        id="chores-preference"
+                        className="input-field"
+                        value={formData.choresPreference}
+                        onChange={(e) => setFormData({ ...formData, choresPreference: e.target.value })}
+                        required
+                    >
+                        <option value="">Select an option</option>
+                        <option value="Shared responsibility with roommates">Shared responsibility with roommates</option>
+                        <option value="I prefer to handle my own chores">I prefer to handle my own chores</option>
+                    </select>
+
+                    {/* Privacy Comfort */}
+                    <label htmlFor="privacy-comfort">How comfortable are you with sharing personal space and privacy?</label>
+                    <select
+                        id="privacy-comfort"
+                        className="input-field"
+                        value={formData.privacyComfort}
+                        onChange={(e) => setFormData({ ...formData, privacyComfort: e.target.value })}
+                        required
+                    >
+                        <option value="">Select an option</option>
+                        <option value="Very comfortable, I'm open to sharing almost everything">Very comfortable, I'm open to sharing almost everything</option>
+                        <option value="Comfortable, but I value some personal space">Comfortable, but I value some personal space</option>
+                        <option value="Not comfortable, I prefer my privacy most of the time">Not comfortable, I prefer my privacy most of the time</option>
+                    </select>
+
+                    {/* Communication Comfort */}
+                    <label htmlFor="communication-comfort">How comfortable are you with communication and conflict resolution?</label>
+                    <select
+                        id="communication-comfort"
+                        className="input-field"
+                        value={formData.communicationComfort}
+                        onChange={(e) => setFormData({ ...formData, communicationComfort: e.target.value })}
+                        required
+                    >
+                        <option value="">Select an option</option>
+                        <option value="Very comfortable, I'm open to discussing anything">Very comfortable, I'm open to discussing anything</option>
+                        <option value="Comfortable, but prefer open and respectful communication">Comfortable, but prefer open and respectful communication</option>
+                        <option value="Not comfortable, I avoid conflicts and communication">Not comfortable, I avoid conflicts and communication</option>
+                    </select>
+
+                    {/* Expense Handling */}
+                    <label htmlFor="expense-handling">How do you typically handle shared expenses like bills and groceries?</label>
+                    <select
+                        id="expense-handling"
+                        className="input-field"
+                        value={formData.expenseHandling}
+                        onChange={(e) => setFormData({ ...formData, expenseHandling: e.target.value })}
+                        required
+                    >
+                        <option value="">Select an option</option>
+                        <option value="I prefer to organize and split expenses equally">I prefer to organize and split expenses equally</option>
+                        <option value="Informal, we handle expenses as they come up">Informal, we handle expenses as they come up</option>
+                    </select>
+
+                    {/* Schedule Coordination */}
+                    <label htmlFor="schedule-coordination">How do you coordinate schedules and shared living spaces?</label>
+                    <select
+                        id="schedule-coordination"
+                        className="input-field"
+                        value={formData.scheduleCoordination}
+                        onChange={(e) => setFormData({ ...formData, scheduleCoordination: e.target.value })}
+                        required
+                    >
+                        <option value="">Select an option</option>
+                        <option value="Regular house meetings to discuss schedules and chores">Regular house meetings to discuss schedules and chores</option>
+                        <option value="Informal coordination, we handle things as they come up">Informal coordination, we handle things as they come up</option>
+                    </select>
+                    {/* Overnight Guests Preference */}
+                    <label htmlFor="overnight-guests">How do you feel about having overnight guests?</label>
+                    <select
+                        id="overnight-guests"
+                        className="input-field"
+                        value={formData.overnightGuests}
+                        onChange={(e) => setFormData({ ...formData, overnightGuests: e.target.value })}
+                        required
+                    >
+                        <option value="">Select an option</option>
+                        <option value="Comfortable with occasional guests">Comfortable with occasional guests</option>
+                        <option value="Prefer discussing each situation">Prefer discussing each situation</option>
+                        <option value="Prefer no overnight guests">Prefer no overnight guests</option>
+                    </select>
+
+                    {/* Goals Support */}
+                    <label htmlFor="goals-support">Are you looking for roommates who can provide support for your personal or academic goals?</label>
+                    <select
+                        id="goals-support"
+                        className="input-field"
+                        value={formData.goalsSupport}
+                        onChange={(e) => setFormData({ ...formData, goalsSupport: e.target.value })}
+                        required
+                    >
+                        <option value="">Select an option</option>
+                        <option value="Yes, I value roommates who can provide support">Yes, I value roommates who can provide support</option>
+                        <option value="No, I prefer to focus on my goals independently">No, I prefer to focus on my goals independently</option>
+                    </select>
+                    <div className="checkbox-container">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={formData.lookingForRoommates}
+                                onChange={handleCheckboxChange2}
+                            />
+                            Looking For Roommates
+                        </label>
+                    </div>
+                </div>
+
+                <button className="next-button" type="submit">Next</button>
+            </form>
+        </div>
     </>
-  );
+);
 };
 
 export default OffCampusHousingFormStep6;

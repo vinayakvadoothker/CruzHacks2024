@@ -198,10 +198,17 @@ label {
 
 .form-row label {
   margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .end-label {
   margin-left: 10px;
+  margin-bottom: 10px;
+
+}
+
+.select-input-box {
+  margin-bottom: 10px;
 }
 
 .add-another-container {
@@ -625,4 +632,13 @@ label {
   cursor: pointer;
   font-size: 24px;
   
+}
+
+.monthly-income-entry,
+.rental-history-entry,
+.activities-entry,
+.employment-entry,
+.car-entry{
+  min-width: 60%;
+  margin-bottom: 10px;
 }

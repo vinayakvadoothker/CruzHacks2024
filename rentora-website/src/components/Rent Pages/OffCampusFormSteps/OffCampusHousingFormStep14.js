@@ -10,15 +10,15 @@ import ProgressBar from './ProgressBar';
 
 
 const OffCampusHousingFormStep14 = () => {
-  const { user } = useUser();
-  const navigate = useNavigate();
+    const { user } = useUser();
+    const navigate = useNavigate();
 
 
-  const { steps, completeStep } = useSteps(); // Use the useSteps hook
-  const currentStep = 13; // Step index starts from 0, so step 3 is index 2
-  const onStepChange = (stepIndex) => {
-    navigate(`/rent/off-campus/step${stepIndex + 1}`);
-  };
+    const { steps, completeStep } = useSteps(); // Use the useSteps hook
+    const currentStep = 13; // Step index starts from 0, so step 3 is index 2
+    const onStepChange = (stepIndex) => {
+        navigate(`/rent/off-campus/step${stepIndex + 1}`);
+    };
 
 
     const [errorMessage] = useState('');
@@ -35,12 +35,12 @@ const OffCampusHousingFormStep14 = () => {
                 .then((doc) => {
                     if (doc.exists) {
                         const savedData = doc.data().monthlyIncome2 || [];
-    
+
                         // Map the saved data to set initial form data
                         const initialFormData = savedData.map(entry => {
                             const source = entry.source || 'Select Source';
                             const otherSource = source === 'Other' ? entry.otherSource : '';
-    
+
                             // If the source is not one of the predefined options, set it to "Other"
                             const isCustomSource = !['Employment', 'Parents', 'Student Loans', 'Scholarship', 'Other'].includes(source);
                             if (isCustomSource) {
@@ -50,15 +50,15 @@ const OffCampusHousingFormStep14 = () => {
                                     amount: entry.amount || '',
                                 };
                             }
-    
+
                             return {
                                 source: source,
                                 otherSource: otherSource,
                                 amount: entry.amount || '',
                             };
                         });
-    
-    
+
+
                         setFormData(prevData => ({
                             ...prevData,
                             monthlyIncome2: initialFormData,
@@ -70,7 +70,7 @@ const OffCampusHousingFormStep14 = () => {
                 });
         }
     }, [user]);
-    
+
 
     const formatCurrency = (value) => {
         // Convert the value to a number
@@ -183,64 +183,68 @@ const OffCampusHousingFormStep14 = () => {
 
     return (
         <>
-        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
-        <div className="form-container" >
-          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
-          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
-            <p className="step-description">Please Add Any Monthly Income ($ Per Month):</p>
+            <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+            <div className="form-container" >
+                <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+                <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+                <p className="step-description">Please Add Any Monthly Income ($ Per Month):</p>
 
-            {Array.isArray(formData.monthlyIncome2) && formData.monthlyIncome2.map((entry, index) => (
-                <div key={index} className="monthly-income-entry">
-                    <div className="form-row income-entry">
-                        <label>Source:</label>
-                        <select
-                            value={entry.source}
-                            onChange={(e) => handleInputChange(index, 'source', e.target.value)}
-                        >
-                            <option value="Select Source" disabled hidden>Select Source</option>
-                            <option value="Employment">Employment</option>
-                            <option value="Parents">Parents</option>
-                            <option value="Student Loans">Student Loans</option>
-                            <option value="Scholarship">Scholarship</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        {entry.source === 'Other' && (
+                {Array.isArray(formData.monthlyIncome2) && formData.monthlyIncome2.map((entry, index) => (
+                    <div key={index} className="monthly-income-entry">
+                        <div className="form-row income-entry">
+                            <label>Source:</label>
+                            <select
+                                className='select-input-box'
+                                value={entry.source}
+                                onChange={(e) => handleInputChange(index, 'source', e.target.value)}
+                            >
+                                <option value="Select Source" disabled hidden>Select Source</option>
+                                <option value="Employment">Employment</option>
+                                <option value="Parents">Parents</option>
+                                <option value="Student Loans">Student Loans</option>
+                                <option value="Scholarship">Scholarship</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            {entry.source === 'Other' && (
+                                <input
+
+                                    type="text"
+                                    value={entry.otherSource || ''}
+                                    onChange={(e) => handleInputChange(index, 'otherSource', e.target.value)}
+                                    placeholder="Specify Other Source"
+                                />
+                            )}
+                            <label className="end-label">Amount:</label>
                             <input
+                                className='select-input-box'
+
                                 type="text"
-                                value={entry.otherSource || ''}
-                                onChange={(e) => handleInputChange(index, 'otherSource', e.target.value)}
-                                placeholder="Specify Other Source"
+                                value={entry.amount}
+                                onChange={(e) => handleInputChange(index, 'amount', e.target.value)}
                             />
-                        )}
-                        <label className="end-label">Amount:</label>
-                        <input
-                            type="text"
-                            value={entry.amount}
-                            onChange={(e) => handleInputChange(index, 'amount', e.target.value)}
-                        />
-                        <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
+                            <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
+                        </div>
                     </div>
+                ))}
+
+                <div className="add-another-container">
+                    <button onClick={handleAddEntry}>+ Add Another</button>
                 </div>
-            ))}
 
-            <div className="add-another-container">
-                <button onClick={handleAddEntry}>+ Add Another</button>
+                <Link to="/rent/off-campus/step13">
+                    <span className="back-button">{'<-'}</span>
+                </Link>
+
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+                <button
+                    className="next-button"
+                    onClick={saveAnswer}
+                    disabled={formData.monthlyIncome2.some(entry => entry.source === '' || entry.source === 'Select Source')}
+                >
+                    Next
+                </button>
             </div>
-
-            <Link to="/rent/off-campus/step13">
-                <span className="back-button">{'<-'}</span>
-            </Link>
-
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-            <button
-                className="next-button"
-                onClick={saveAnswer}
-                disabled={formData.monthlyIncome2.some(entry => entry.source === '' || entry.source === 'Select Source')}
-            >
-                Next
-            </button>
-        </div>
         </>
     );
 };

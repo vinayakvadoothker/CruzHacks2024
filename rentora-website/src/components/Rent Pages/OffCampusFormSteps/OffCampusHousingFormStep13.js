@@ -11,15 +11,15 @@ import ProgressBar from './ProgressBar';
 
 
 const OffCampusHousingFormStep13 = () => {
-  const { user } = useUser();
-  const navigate = useNavigate();
+    const { user } = useUser();
+    const navigate = useNavigate();
 
 
-  const { steps, completeStep } = useSteps(); // Use the useSteps hook
-  const currentStep = 12; // Step index starts from 0, so step 3 is index 2
-  const onStepChange = (stepIndex) => {
-    navigate(`/rent/off-campus/step${stepIndex + 1}`);
-  };
+    const { steps, completeStep } = useSteps(); // Use the useSteps hook
+    const currentStep = 12; // Step index starts from 0, so step 3 is index 2
+    const onStepChange = (stepIndex) => {
+        navigate(`/rent/off-campus/step${stepIndex + 1}`);
+    };
 
     const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
@@ -68,31 +68,31 @@ const OffCampusHousingFormStep13 = () => {
             entry.address === '' || entry.monthlyRent === '' || entry.startDate === '' ||
             (!entry.present && entry.endDate === '') || entry.ownerName === '' || entry.ownerPhoneNumber === '' || entry.reasonForLeaving === ''
         );
-    
+
         if (isInvalid) {
             alert("Please fill out all fields in the form before proceeding.");
             return;
         }
-    
+
         // Validate dates before updating the document
         const datesAreValid = formData.rentalHistory.every(entry =>
             validateDates(entry.startDate, entry.endDate, entry.present)
         );
-    
+
         if (!datesAreValid) {
             alert("Please ensure that Start Date and End Date are provided and that End Date is after Start Date for all entries, or set it to 'Present' if you are still living there.");
             return;
         }
-        
+
         // Ensure there is at least one present and one previous address
         const hasPresentAddress = formData.rentalHistory.some(entry => entry.present);
         const hasPreviousAddress = formData.rentalHistory.some(entry => !entry.present);
-    
+
         if (!hasPresentAddress || !hasPreviousAddress) {
             alert("Please ensure you have added at least one present and one previous address.");
             return;
         }
-    
+
         // Proceed with updating the document in the database
         const formattedData = {
             rentalHistory: formData.rentalHistory.map(entry => ({
@@ -106,7 +106,7 @@ const OffCampusHousingFormStep13 = () => {
                 reasonForLeaving: entry.reasonForLeaving,
             })),
         };
-    
+
         db.collection('SurveyResponses')
             .doc(user.id)
             .update(formattedData)
@@ -120,7 +120,7 @@ const OffCampusHousingFormStep13 = () => {
                 setErrorMessage("Error updating the document. Please try again.");
             });
     };
-    
+
     const handleAddEntry = () => {
         setFormData((prevData) => ({
             ...prevData,
@@ -204,141 +204,157 @@ const OffCampusHousingFormStep13 = () => {
 
     return (
         <>
-        <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
-        <div className="form-container" >
-          <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
-          <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
-            <p className="step-description">Please Add Any Previous and Present Rental History:</p>
+            <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+            <div className="form-container" >
+                <Stepper currentStep={currentStep} /> {/* Update Stepper with currentStep */}
+                <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title */}
+                <p className="step-description">Please Add Any Previous and Present Rental History:</p>
 
-            {Array.isArray(formData.rentalHistory) && formData.rentalHistory.map((entry, index) => (
-                <div key={index} className="rental-history-entry">
-                    <div className="form-row">
-                        <label>Address:</label>
-                        <PlacesAutocomplete
-                            value={entry.address}
-                            onChange={(value) => handleAddressChange(value, index)}
-                            onSelect={(value) => handleAddressChange(value, index)}
-                            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-                        >
-                            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-                                <div>
-                                    <input
-                                        {...getInputProps({
-                                            placeholder: 'Type your address...',
-                                            className: 'location-search-input',
-                                        })}
-                                    />
-                                    <div className="autocomplete-dropdown-container">
-                                        {loading && <div></div>}
-                                        {suggestions.map((suggestion) => (
-                                            <div
-                                                {...getSuggestionItemProps(suggestion, {
-                                                    style: {
-                                                        backgroundColor: suggestion.active ? '#a7a9ff' : '#fff',
-                                                    },
-                                                })}
-                                            >
-                                                {suggestion.description}
-                                            </div>
-                                        ))}
+                {Array.isArray(formData.rentalHistory) && formData.rentalHistory.map((entry, index) => (
+                    <div key={index} className="rental-history-entry">
+                        <div className="form-row">
+                            <label >Address:</label>
+                            <PlacesAutocomplete
+
+                                value={entry.address}
+                                onChange={(value) => handleAddressChange(value, index)}
+                                onSelect={(value) => handleAddressChange(value, index)}
+                                googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                            >
+                                {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                                    <div>
+                                        <input
+
+                                            {...getInputProps({
+                                                placeholder: 'Type your address...',
+                                                className: 'location-search-input',
+                                            })}
+                                        />
+                                        <div className="autocomplete-dropdown-container">
+                                            {loading && <div></div>}
+                                            {suggestions.map((suggestion) => (
+                                                <div
+                                                    {...getSuggestionItemProps(suggestion, {
+                                                        style: {
+                                                            backgroundColor: suggestion.active ? '#a7a9ff' : '#fff',
+                                                        },
+                                                    })}
+                                                >
+                                                    {suggestion.description}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                        </PlacesAutocomplete>
-                        <label className="end-label">Monthly Rent:</label>
-                        <input
-                            type="text"
-                            value={formatCurrency(entry.monthlyRent)}
-                            onChange={(e) => handleInputChange(index, 'monthlyRent', e.target.value)}
-                        />
+                                )}
+                            </PlacesAutocomplete>
+                            <label className="end-label">Monthly Rent:</label>
+                            <input
+                                className='select-input-box'
 
-                        {/*  */}
-                    </div>
-                    <div className="form-row">
-                        <label>Start Date:</label>
-                        <input
-                            type="date"
-                            value={entry.startDate}
-                            onChange={(e) => handleInputChange(index, 'startDate', e.target.value)}
-                        />
+                                type="text"
+                                value={formatCurrency(entry.monthlyRent)}
+                                onChange={(e) => handleInputChange(index, 'monthlyRent', e.target.value)}
+                            />
 
-                        <label className="end-label">End Date:</label>
-                        {entry.present ? (
-                            <React.Fragment>
-                                <span className="present-checkbox">Present</span>
-                                <input
-                                    type="checkbox"
-                                    checked={entry.present}
-                                    onChange={(e) => handleInputChange(index, 'present', e.target.checked)}
-                                />
-                            </React.Fragment>
-                        ) : (
-                            <React.Fragment>
-                                <input
-                                    type="date"
-                                    value={entry.endDate}
-                                    onChange={(e) => handleInputChange(index, 'endDate', e.target.value)}
-                                />
-                                <label className="end-label">
+                            {/*  */}
+                        </div>
+                        <div className="form-row">
+                            <label>Start Date:</label>
+                            <input
+                                className='select-input-box'
+
+                                type="date"
+                                value={entry.startDate}
+                                onChange={(e) => handleInputChange(index, 'startDate', e.target.value)}
+                            />
+
+                            <label className="end-label">End Date:</label>
+                            {entry.present ? (
+                                <React.Fragment>
+                                    <span className="present-checkbox">Present</span>
                                     <input
                                         type="checkbox"
                                         checked={entry.present}
                                         onChange={(e) => handleInputChange(index, 'present', e.target.checked)}
                                     />
-                                    Present
-                                </label>
-                            </React.Fragment>
-                        )}
-                    </div>
-                    <div className="form-row">
-                        <label>Owner Name:</label>
-                        <input
-                            type="text"
-                            value={entry.ownerName}
-                            onChange={(e) => handleInputChange(index, 'ownerName', e.target.value)}
-                        />
-                        <div className="form-row">
-                            <label>Owner's Phone Number:</label>
-                            <input
-                                type="tel"
-                                value={formatPhoneNumber(entry.ownerPhoneNumber)}
-                                onChange={(e) => handleInputChange(index, 'ownerPhoneNumber', e.target.value)}
-                                placeholder="XXX-XXX-XXXX"
-                                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                            />
+                                </React.Fragment>
+                            ) : (
+                                <React.Fragment>
+                                    <input
+                                        className='select-input-box'
+
+                                        type="date"
+                                        value={entry.endDate}
+                                        onChange={(e) => handleInputChange(index, 'endDate', e.target.value)}
+                                    />
+                                    <label className="end-label">
+                                        <input
+                                            className='select-input-box'
+
+                                            type="checkbox"
+                                            checked={entry.present}
+                                            onChange={(e) => handleInputChange(index, 'present', e.target.checked)}
+                                        />
+                                        Present
+                                    </label>
+                                </React.Fragment>
+                            )}
                         </div>
-                        <label className="end-label">Reason For Leaving:</label>
-                        <input
-                            type="text"
-                            value={entry.reasonForLeaving}
-                            onChange={(e) => handleInputChange(index, 'reasonForLeaving', e.target.value)}
-                        />
-                        <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
+                        <div className="form-row">
+                            <label>Owner Name:</label>
+                            <input
+                                className='select-input-box'
+
+                                type="text"
+                                value={entry.ownerName}
+                                onChange={(e) => handleInputChange(index, 'ownerName', e.target.value)}
+                            />
+                            <div className="form-row">
+                                <label>Owner's Phone Number:</label>
+                                <input
+                                    className='select-input-box'
+
+                                    type="tel"
+                                    value={formatPhoneNumber(entry.ownerPhoneNumber)}
+                                    onChange={(e) => handleInputChange(index, 'ownerPhoneNumber', e.target.value)}
+                                    placeholder="XXX-XXX-XXXX"
+                                    pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                                />
+                            </div>
+                            <label className="end-label">Reason For Leaving:</label>
+                            <input
+                                className='select-input-box'
+
+                                type="text"
+                                value={entry.reasonForLeaving}
+                                onChange={(e) => handleInputChange(index, 'reasonForLeaving', e.target.value)}
+                            />
+                            <button onClick={() => handleDeleteEntry(index)} className='end-label'> - </button>
+                        </div>
                     </div>
+                ))}
+
+                <div className="add-another-container">
+                    <button onClick={handleAddEntry}>+ Add Another</button>
+                    {formData.rentalHistory.length > 0 && (
+                        <button onClick={() => handleDeleteEntry(formData.rentalHistory.length - 1)}>- Delete Entry</button>
+                    )}
                 </div>
-            ))}
 
-            <div className="add-another-container">
-                <button onClick={handleAddEntry}>+ Add Another</button>
-                {formData.rentalHistory.length > 0 && (
-            <button onClick={() => handleDeleteEntry(formData.rentalHistory.length - 1)}>- Delete Entry</button>
-        )}
+
+                <Link to="/rent/off-campus/step12">
+                    <span className="back-button">{'<-'}</span>
+                </Link>
+
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+                <button
+                    className="next-button"
+                    onClick={saveAnswer}
+                >
+                    Next
+                </button>
             </div>
-
-
-            <Link to="/rent/off-campus/step12">
-                <span className="back-button">{'<-'}</span>
-            </Link>
-
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-            <button
-                className="next-button"
-                onClick={saveAnswer}
-            >
-                Next
-            </button>
-        </div>
         </>
     );
 };

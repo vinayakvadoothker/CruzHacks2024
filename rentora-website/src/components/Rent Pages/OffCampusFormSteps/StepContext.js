@@ -13,7 +13,7 @@ export const StepProvider = ({ children }) => {
       "Email",
       "Phone Number",
       "Cover Picture",
-      "College Affiliation",
+      "Roommate Profile",
       "ID #",
       "State/Country of Residence",
       "Major/Area of Study",

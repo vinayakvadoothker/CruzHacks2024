@@ -125,12 +125,20 @@ const GuarantorForm = () => {
             return;
         }
 
+        // Create a new date object for today's date
+        const today = new Date();
+
+        // Convert the date object to a string in the format YYYY-MM-DD
+        const todayFormatted = today.toISOString().split('T')[0];
+
         // Save the form data in the user's database
         db.collection('SurveyResponses')
             .doc(userid)
             .update({
                 ...formData,
                 guarantorFormFilled: true, // Set the boolean field to true when the form is submitted
+                GuarantorSubmissionDate: todayFormatted, // Save today's date
+
             })
             .then(() => {
                 // Handle successful submission (e.g., show a confirmation message)
@@ -205,7 +213,7 @@ const GuarantorForm = () => {
             <div className="input-group">
                 <div className="form-row">
                     <div className="input-group">
-                        <label>Driver's License:</label>
+                        <label>Driver's License #:</label>
                         <input
                             type="text"
                             value={formData.guarantor?.driversLicense || ''}

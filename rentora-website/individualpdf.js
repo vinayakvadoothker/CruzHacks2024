@@ -125,7 +125,7 @@ app.get('/generate-pdf/:userId', async (req, res) => {
             form.getTextField('dateOfBirth').setText(getFieldValue(formData.dateOfBirth));
             form.getTextField('phone').setText(getFieldValue(formData.phone));
             form.getTextField('firstNamelastName').setText(getFieldValue(formData.firstName + " " + formData.lastName));
-            form.getTextField('TodaysDate1').setText(getFieldValue(formData.dateSaved));
+            form.getTextField('TodaysDate1').setText(getFieldValue(formData.GuarantorSubmissionDate));
 
             // ID and School Information
             form.getTextField('photoIdType').setText(getFieldValue(formData.photoIdType));

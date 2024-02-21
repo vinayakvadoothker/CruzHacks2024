@@ -100,6 +100,14 @@ const OffCampusHousingFormStep23 = () => {
         html: `Hello ${user.firstName || ''},<br><br>Thank You for choosing Rentora to build your Custom Rental Profile and Application Packet.<br><br>You can download your packet <a href="${pdfUrl}" download>here</a>.<br><br>Check Out Your New Rentora Profile and Share It: <a href="https://rentora.net/profiles/${user.id}">View Profile</a><br><br>Best regards,<br>Rentora Team`
       });
 
+      if (formDataFromDb.schoolName === "UC Santa Cruz") {
+        await sendEmail({
+          to: formDataFromDb.email,
+          subject: 'Action Required: UCSC Reference Release Form',
+          html: `Hello ${user.firstName || ''},<br><br>As part of your rental application process for UC Santa Cruz, please complete the UCSC Reference Release Form available at <a href="http://studenthousing.ucsc.edu/">http://studenthousing.ucsc.edu/</a>.<br><br>For more information, visit <a href="https://communityrentals.ucsc.edu/renters/before-you-rent/rental-application-packet.html">UCSC Community Rentals</a>.<br><br>Best regards,<br>The Rentora Team`
+        });
+      }
+
       setIsGeneratingPDF(false);
       completeStep(currentStep);
       navigate('/rent/off-campus');
