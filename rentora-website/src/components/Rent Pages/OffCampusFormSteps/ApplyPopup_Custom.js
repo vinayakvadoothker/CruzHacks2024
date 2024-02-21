@@ -290,7 +290,7 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 <button className="apply-popup-close" onClick={closePopup}>X</button>
 
                 {/* Message at the top of the form */}
-                <h2>Apply For Unlisted</h2>
+                <h2>Apply For Unlisted Properties</h2>
 
 
                 {/* Input for Listing Address */}

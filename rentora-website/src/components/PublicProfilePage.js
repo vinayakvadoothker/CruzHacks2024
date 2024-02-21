@@ -13,14 +13,15 @@ const PublicProfilePage = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                // Fetch user data based on userid
                 const response = await fetch(`http://localhost:3002/fetch_user_details`);
                 const data = await response.json();
-
-                // Find the user with matching userid
                 const user = data.find(user => user.id === userid);
 
                 if (user) {
+                    // Sort activities by start date
+                    const sortedActivities = user.activitiesHistory.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+                    user.activitiesHistory = sortedActivities;
+
                     setUserData(user);
                 } else {
                     console.error('User not found');
@@ -36,6 +37,16 @@ const PublicProfilePage = () => {
     if (!userData) {
         return <div>Loading...</div>;
     }
+
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return isNaN(date.getTime()) ? 'Present' : date.toLocaleDateString('en-US', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric',
+        });
+    };
 
     const shareProfile = async () => {
         if (document.hasFocus()) {
@@ -134,34 +145,14 @@ const PublicProfilePage = () => {
                         {userData.activitiesHistory.map((activity, index) => (
                             <div key={index} className={`tab ${activeTab === index ? 'active' : ''}`} onClick={() => toggleTab(index)}>
                                 <div className="tab-title">
-                                    {activity.title}
+                                    {activity.organization}
                                     <span className={`arrow ${activeTab === index ? 'open' : 'closed'}`}>▼</span>
                                 </div>
                                 {activeTab === index && (
                                     <div className="tab-content">
-                                        {activeTab === index && (
-                                            <div className="tab-content">
-                                                <p className="tab-info-title">Organization:<span className="tab-info-content"> {activity.organization}</span></p>
-                                                <p className="tab-info-title">From:
-                                                    <span className="tab-info-content">
-                                                        {new Date(activity.startDate).toLocaleDateString('en-US', {
-                                                            month: '2-digit',
-                                                            day: '2-digit',
-                                                            year: 'numeric'
-                                                        })}
-                                                    </span>
-                                                </p>
-                                                <p className="tab-info-title">To:
-                                                    <span className="tab-info-content">
-                                                        {activity.endDate ? new Date(activity.endDate).toLocaleDateString('en-US', {
-                                                            month: '2-digit',
-                                                            day: '2-digit',
-                                                            year: 'numeric'
-                                                        }) : 'Present'}
-                                                    </span>
-                                                </p>
-                                            </div>
-                                        )}
+                                        <p className="tab-info-title">Title:<span className="tab-info-content"> &nbsp;{activity.title}</span></p>
+                                        <p className="tab-info-title">From:<span className="tab-info-content"> &nbsp;{formatDate(activity.startDate)}</span></p>
+                                        <p className="tab-info-title">To:<span className="tab-info-content"> &nbsp;{formatDate(activity.endDate)}</span></p>
                                     </div>
                                 )}
                             </div>

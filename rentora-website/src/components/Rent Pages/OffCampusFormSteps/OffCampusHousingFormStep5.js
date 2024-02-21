@@ -130,8 +130,9 @@ const OffCampusHousingFormStep5 = () => {
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          className="input-field file-input"
+          className="input-field file-input "
           disabled={uploading}
+          style={{ marginLeft: '120px' }}
         />
       </div>
 

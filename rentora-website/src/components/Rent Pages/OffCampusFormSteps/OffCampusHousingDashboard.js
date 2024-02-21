@@ -162,7 +162,7 @@ const OffCampusHousingDashboard = () => {
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                 >
-                    Apply For Unlisted
+                    Apply For Unlisted Properties
                 </button>
 
                 {isHovering && (

@@ -27,28 +27,28 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
             handleSubmit(e); // Pass the event object to handleSubmit
         }
     };
-    
-    
+
+
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
                 const response = await fetch('http://localhost:3002/fetch_user_details');
                 const data = await response.json();
-    
+
                 const filteredData = data.filter(user => {
                     const addToRoommateSearch = user.addToRoommateSearch;
                     const isSameSchool = user.schoolName === listing.schoolName; // Check if the user is from the same school as the listing
-    
+
                     // Include user if addToRoommateSearch is true, not undefined, not 'Not specified', and from the same school
                     return (addToRoommateSearch || addToRoommateSearch === undefined || addToRoommateSearch === 'Not specified') && isSameSchool;
                 });
-    
+
                 if (Array.isArray(filteredData)) {
                     setUserDetails(filteredData);
                 } else {
                     console.error('Fetched data is not an array:', filteredData);
                 }
-    
+
                 // Check for an existing application
                 const existingApplication = filteredData.find(userData => userData.id === user.id && userData.listingTitle === listing.title);
                 if (existingApplication) {
@@ -56,7 +56,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                         ...existingApplication,
                         selectedRoommatesData: existingApplication?.selectedRoommatesData ?? []
                     });
-    
+
                     if (existingApplication && Array.isArray(existingApplication.selectedRoommatesData)) {
                         setSelectedRoommates(existingApplication.selectedRoommatesData.map(roommate => roommate.id));
                     } else {
@@ -67,10 +67,10 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 console.error('Error fetching user details:', error);
             }
         };
-    
+
         fetchUserDetails();
-    }, [user.id, listing.title, user.schoolName ,listing.schoolName]);
-    
+    }, [user.id, listing.title, user.schoolName, listing.schoolName]);
+
 
     useEffect(() => {
         const filteredResults = userDetails.filter(user =>
@@ -156,33 +156,33 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
         e.preventDefault(); // Prevent default form submission behavior
         setShowConfirmationModal(false);
         setIsLoading(true);
-    
+
         // Validation for required fields
         if (!applicationData.preferredMoveInDate || applicationData.numberOfPets < 0 || applicationData.signature.trim() === '') {
             alert('Please fill out all required fields before submitting the application.');
             setIsLoading(false); // Update loading state on validation failure
             return;
         }
-    
+
         if (!listing || !listing.address) {
             console.error('Listing data is not available or address is undefined');
             setIsLoading(false); // Update loading state on listing validation failure
             return;
         }
-    
+
         const depositAmount = listing.depositAmount || 'Not specified';
 
         // Prepare the userIds array with the current user and selected roommates
         const totalOccupants = 1 + selectedRoommatesData.length; // Including the user and selected roommates
         const monthlyPrice = listing.monthlyPrice || '1500'; // Defaulting to '1500' if not specified
         const rentPerPerson = parseInt(monthlyPrice) / totalOccupants;
-    
+
         // Construct the proposedOccupants string with the user and selected roommates' names
         const proposedOccupantsNames = [
             `${user.firstName} ${user.lastName}`,
             ...selectedRoommatesData.map(roommate => `${roommate.firstName} ${roommate.lastName}`)
         ].join(', ');
-    
+
         // Prepare the address object according to the updated requirements
         const address = {
             "Street": listing.address.split(',')[0].trim(),
@@ -197,7 +197,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
             "proposedOccupants": proposedOccupantsNames, // Names of all proposed occupants including the user
             "moveInDate": applicationData.preferredMoveInDate
         };
-    
+
         // Prepare the names array with the user and selected roommates
         const names = [
             { "firstName": user.firstName, "lastName": user.lastName },
@@ -206,14 +206,14 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 "lastName": roommate.lastName
             }))
         ];
-    
+
         // Construct the payload
         const payload = {
             userIds: [user.id, ...selectedRoommates.map(id => id)], // Assuming selectedRoommates contains IDs of selected roommates
             address,
             names
         };
-    
+
 
         try {
             // Sending POST request with application data to the combine-roommate-applications endpoint
@@ -304,6 +304,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 <label>
                     Preferred Move-In Date:
                     <input
+                        className="apply-popup-input"
                         type="date"
                         name="preferredMoveInDate"
                         value={applicationData.preferredMoveInDate}
@@ -323,6 +324,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                     <label>
                         Search for Roommates:
                         <input
+                            className="apply-popup-input"
                             type="text"
                             name="searchTerm"
                             value={searchTerm}
@@ -337,6 +339,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                                 <div key={result.id} className="search-result">
                                     <button className="close-search-result" onClick={() => closeSearchResult(result.id)}>X</button>
                                     <input
+                                        className="apply-popup-input"
                                         type="checkbox"
                                         id={result.id}
                                         checked={selectedRoommates.includes(result.id)}
@@ -356,6 +359,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 <label>
                     Number of Pets:
                     <input
+                        className="apply-popup-input"
                         type="number"
                         name="numberOfPets"
                         value={applicationData.numberOfPets}
@@ -366,6 +370,8 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 <label>
                     Any Smokers?
                     <input
+                        className="apply-popup-input"
+
                         type="checkbox"
                         name="anySmokers"
                         checked={applicationData.anySmokers}
@@ -376,8 +382,10 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 <label>
                     Today's Date:
                     <input
+                        className="apply-popup-input"
                         type="date"
                         name="todaysDate"
+
                         value={applicationData.todaysDate}
                         onChange={() => { }} // This field is read-only
                         disabled
@@ -387,6 +395,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
                 <label>
                     Signature:
                     <input
+                        className="apply-popup-input"
                         type="text"
                         name="signature"
                         value={applicationData.signature}
