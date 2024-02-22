@@ -1,26 +1,37 @@
-// /api/send-email/index.js
 const express = require('express');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
+const port = 3001;
 
 app.use(bodyParser.json());
+app.use(cors());
+
+// Add Content Security Policy headers
+app.use((req, res, next) => {
+    res.setHeader('Content-Security-Policy', "default-src 'self'; font-src 'self' data:; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'");
+    next();
+});
+
+// Handle preflight requests
+app.options('/send-email', cors());
 
 // Define your /send-email endpoint
-app.post('/api/send-email', async (req, res) => {
+app.post('/send-email', async (req, res) => {
     const { to, subject, html } = req.body;
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: process.env.EMAIL_USER, // Use environment variable for email user
-            pass: process.env.EMAIL_PASS, // Use environment variable for email password
+            user: 'rentora.ai@gmail.com',
+            pass: 'tftd fcxd okfj wbfp',
         },
     });
 
     const mailOptions = {
-        from: process.env.EMAIL_FROM, // Use environment variable for the "from" email
+        from: 'rentora.ai@gmail.com',
         to,
         subject,
         html,
@@ -36,4 +47,6 @@ app.post('/api/send-email', async (req, res) => {
     }
 });
 
-module.exports = app;
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on port ${port}`);
+});
