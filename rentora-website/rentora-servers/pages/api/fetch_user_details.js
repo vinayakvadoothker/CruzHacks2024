@@ -3,6 +3,16 @@
 import { db } from './firebase_admin'; // Adjust the path according to your project structure
 
 export default async function handler(req, res) {
+
+    res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Return early for OPTIONS request (CORS preflight)
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method === 'GET') {
     try {
       const responsesRef = db.collection('SurveyResponses');
