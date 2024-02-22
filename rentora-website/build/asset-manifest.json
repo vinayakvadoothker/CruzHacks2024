@@ -1,14 +1,31 @@
 {
   "files": {
-    "main.css": "/static/css/main.09acf9cf.css",
-    "main.js": "/static/js/main.e555a6d7.js",
+    "main.css": "/static/css/main.d9e2912e.css",
+    "main.js": "/static/js/main.16057564.js",
     "static/media/background.jpg": "/static/media/background.58981d8c9969f0127455.jpg",
+    "static/media/ashwin-work.png": "/static/media/ashwin-work.3379215eec7936125e5a.png",
+    "static/media/raghav-work.png": "/static/media/raghav-work.3379215eec7936125e5a.png",
+    "static/media/saumit.jpeg": "/static/media/saumit.396c5cf2597522aa3104.jpeg",
+    "static/media/ashwin-school.png": "/static/media/ashwin-school.0187b3b98c80a9ae21f4.png",
+    "static/media/raghav-school.png": "/static/media/raghav-school.0187b3b98c80a9ae21f4.png",
+    "static/media/sasank-school.png": "/static/media/sasank-school.0187b3b98c80a9ae21f4.png",
+    "static/media/saumit-school.png": "/static/media/saumit-school.0187b3b98c80a9ae21f4.png",
+    "static/media/vin-school.png": "/static/media/vin-school.0187b3b98c80a9ae21f4.png",
+    "static/media/sasank.jpeg": "/static/media/sasank.d05a83410460da8c9fc8.jpeg",
+    "static/media/ashwin.jpeg": "/static/media/ashwin.d96e5ab1b4daa5105e5d.jpeg",
+    "static/media/vin-work.png": "/static/media/vin-work.3626987dddfdd6e0d179.png",
+    "static/media/Rentora_Logo-With_Background.png": "/static/media/Rentora_Logo-With_Background.349c2a3fa083a5ba20d9.png",
+    "static/media/vin.jpeg": "/static/media/vin.758e26d3b34f8f1612d5.jpeg",
+    "static/media/Rentora_Logo.png": "/static/media/Rentora_Logo.ccf7822440b86380ffb0.png",
+    "static/media/sasank-work.png": "/static/media/sasank-work.fbd86bd5c1ab7dbc7c78.png",
+    "static/media/saumit-work.png": "/static/media/saumit-work.fbd86bd5c1ab7dbc7c78.png",
+    "static/media/raghav.jpeg": "/static/media/raghav.f8dd4390267e1fdb6cb0.jpeg",
     "index.html": "/index.html",
-    "main.09acf9cf.css.map": "/static/css/main.09acf9cf.css.map",
-    "main.e555a6d7.js.map": "/static/js/main.e555a6d7.js.map"
+    "main.d9e2912e.css.map": "/static/css/main.d9e2912e.css.map",
+    "main.16057564.js.map": "/static/js/main.16057564.js.map"
   },
   "entrypoints": [
-    "static/css/main.09acf9cf.css",
-    "static/js/main.e555a6d7.js"
+    "static/css/main.d9e2912e.css",
+    "static/js/main.16057564.js"
   ]
 }
