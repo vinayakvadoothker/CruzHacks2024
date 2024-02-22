@@ -32,7 +32,7 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await fetch('http://localhost:3002/fetch_user_details');
+                const response = await fetch('https://cruz-hacks2024.vercel.app/api/fetch_user_details');
                 const data = await response.json();
 
                 const filteredData = data.filter(user => {

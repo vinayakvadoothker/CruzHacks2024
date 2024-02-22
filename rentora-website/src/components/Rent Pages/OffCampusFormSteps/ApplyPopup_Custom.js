@@ -53,7 +53,7 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await fetch('http://localhost:3002/fetch_user_details');
+                const response = await fetch('https://cruz-hacks2024.vercel.app/api/fetch_user_details');
                 const data = await response.json();
 
                 // Assuming you have a way to determine the school name, e.g., from user's profile or an input field

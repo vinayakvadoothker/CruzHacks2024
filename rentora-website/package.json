@@ -67,7 +67,9 @@
     "dev:fetch-user-details": "node user-details.js",
     "dev:client": "npm start",
     "dev:server": "/usr/local/bin/python3 /Users/vinv/Documents/Rentora.ai/rentora-website/app.py",
-    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\" \"npm run dev:api\" \"npm run dev:openai\" \"npm run dev:pdf-individual\" \"npm run dev:apply-to-listing\" \"npm run dev:fetch-user-details\""
+    "build:rentora-servers": "cd rentora-servers && npm run build",
+    "start:rentora-servers": "cd rentora-servers && npm start",
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\" \"npm run dev:api\" \"npm run dev:openai\" \"npm run dev:pdf-individual\" \"npm run dev:apply-to-listing\" \"npm run dev:fetch-user-details\" \"npm run build:rentora-servers\" \"npm run start:rentora-servers\""
   },
   "eslintConfig": {
     "extends": [
