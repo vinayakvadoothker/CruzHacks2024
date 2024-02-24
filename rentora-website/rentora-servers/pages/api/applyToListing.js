@@ -1,4 +1,4 @@
-// pages/api/combine-roommate-applications.js
+// pages/api/applyToListing.js
 import admin from 'firebase-admin';
 import { PDFDocument } from 'pdf-lib';
 import QRCode from 'qrcode';
@@ -16,9 +16,7 @@ if (!admin.apps.length) {
 }
 
 export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
 
     if (req.method !== 'POST') {
         return res.status(405).end(`Method ${req.method} Not Allowed`);
@@ -31,6 +29,11 @@ export default async function handler(req, res) {
     }
 
     try {
+        
+        res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
+        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
         const combinedPdfDoc = await PDFDocument.create();
 
 
