@@ -22,6 +22,26 @@ const storage = admin.storage();
 const bucket = storage.bucket();
 const db = admin.firestore();
 
+
+// Function to download the PDF template from Firebase Storage
+async function downloadPdfTemplate() {
+    try {
+        // Define the path to save the PDF template
+        const localFilePath = '/tmp/rentora-application.pdf'; // Use a temporary directory
+
+        // Specify the path to the PDF template in Firebase Storage
+        const remoteFilePath = 'rentora-application.pdf'; // Update with the actual path
+
+        // Download the PDF template from Firebase Storage
+        await bucket.file(remoteFilePath).download({ destination: localFilePath });
+
+        return localFilePath;
+    } catch (error) {
+        console.error('Error downloading PDF template:', error);
+        throw error;
+    }
+}
+
 export default async function handler(req, res) {
     const { userId } = req.query;
 
@@ -549,10 +569,10 @@ export default async function handler(req, res) {
             });
         }
 
-        const path = require('path');
-        const pdfTemplatePath = path.resolve(__dirname, '../../../../../rentora-application.pdf');        
+        // Download the PDF template from Firebase Storage
+        const pdfTemplatePath = await downloadPdfTemplate();
 
-        // Then, use this function as before to generate and upload both versions of the PDF
+        // Use the downloaded PDF template path to generate and upload the PDF
         await createAndUploadPDF(pdfTemplatePath, `${userId}_filled.pdf`, userId, formData);
         await createAndUploadPDF(pdfTemplatePath, `${userId}_official_filled.pdf`, userId, formData);
 
