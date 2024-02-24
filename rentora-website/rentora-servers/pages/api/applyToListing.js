@@ -17,6 +17,7 @@ if (!admin.apps.length) {
     });
 }
 const bucket = admin.storage().bucket(); // Initialize the storage bucket
+const db = admin.firestore(); // Initialize Firestore
 
 
 export default async function handler(req, res) {
