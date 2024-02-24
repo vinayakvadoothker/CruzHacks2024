@@ -16,6 +16,8 @@ if (!admin.apps.length) {
         storageBucket: 'gs://rentora-dbfa3.appspot.com',
     });
 }
+const bucket = admin.storage().bucket(); // Initialize the storage bucket
+
 
 export default async function handler(req, res) {
 
