@@ -1,5 +1,5 @@
 // pages/api/applyToListing.js
-import admin from 'firebase-admin';
+import { db } from './firebase_admin'; // Adjust the path according to your project structure
 import { PDFDocument, PDFTextField } from 'pdf-lib';
 import QRCode from 'qrcode';
 import fs from 'fs';
