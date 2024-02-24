@@ -3,7 +3,6 @@
 import admin from 'firebase-admin';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import QRCode from 'qrcode';
-import { useRouter } from 'next/router';
 import fs from 'fs';
 
 
@@ -24,7 +23,6 @@ const bucket = storage.bucket();
 const db = admin.firestore();
 
 export default async function handler(req, res) {
-    const router = useRouter();
     const { userId } = router.query;
 
     try {
