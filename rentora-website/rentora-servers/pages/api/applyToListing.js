@@ -5,7 +5,7 @@ import QRCode from 'qrcode';
 import fs from 'fs';
 
 // Initialize Firebase Admin SDK with your credentials and settings
-const serviceAccount = require('../../rentora1.json'); // Update the path as necessary
+const serviceAccount = require('./rentora1.json'); // Update the path as necessary
 const databaseURL = "https://rentora-dbfa3.firebaseio.com";
 
 admin.initializeApp({
