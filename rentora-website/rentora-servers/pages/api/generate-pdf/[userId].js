@@ -548,8 +548,9 @@ export default async function handler(req, res) {
                 stream.end(pdfBytes);
             });
         }
-        const path = require('path');
-        const pdfTemplatePath = path.resolve(__dirname, './pages/api/generate-pdf/rentora-application.pdf');
+
+        const pdfTemplatePath = `${__dirname}/rentora-application.pdf`;
+
         // Then, use this function as before to generate and upload both versions of the PDF
         await createAndUploadPDF(pdfTemplatePath, `${userId}_filled.pdf`, userId, formData);
         await createAndUploadPDF(pdfTemplatePath, `${userId}_official_filled.pdf`, userId, formData);
