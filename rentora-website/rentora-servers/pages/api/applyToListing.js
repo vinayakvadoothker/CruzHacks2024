@@ -2,6 +2,8 @@
 import admin from 'firebase-admin';
 import { PDFDocument } from 'pdf-lib';
 import QRCode from 'qrcode';
+import { storage } from 'firebase-admin';
+
 
 // Firebase Admin initialization
 if (!admin.apps.length) {
@@ -29,7 +31,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        
+
         res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
         res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
