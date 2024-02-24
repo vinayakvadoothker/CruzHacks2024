@@ -1,44 +1,34 @@
 // pages/api/applyToListing.js
 import admin from 'firebase-admin';
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, PDFTextField } from 'pdf-lib';
 import QRCode from 'qrcode';
-import { storage } from 'firebase-admin';
+import fs from 'fs';
 
+// Initialize Firebase Admin SDK with your credentials and settings
+const serviceAccount = require('../../rentora1.json'); // Update the path as necessary
+const databaseURL = "https://rentora-dbfa3.firebaseio.com";
 
-// Firebase Admin initialization
-if (!admin.apps.length) {
-    // Replace this with your actual Firebase config file path and details
-    const serviceAccount = require('./rentora-dbfa3-firebase-adminsdk-4rpix-4bb6bae0fe.json');
-    const databaseURL = "https://rentora-dbfa3.firebaseio.com";
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        databaseURL: databaseURL,
-        storageBucket: 'gs://rentora-dbfa3.appspot.com',
-    });
-}
-const bucket = admin.storage().bucket(); // Initialize the storage bucket
-const db = admin.firestore(); // Initialize Firestore
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: databaseURL,
+    storageBucket: 'gs://rentora-dbfa3.appspot.com',
+});
 
+const db = admin.firestore();
+const bucket = admin.storage().bucket();
 
 export default async function handler(req, res) {
-
-
     if (req.method !== 'POST') {
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    const { userIds, address, names } = req.body; // Extract 'names' from the request body
+    const { userIds, address, names } = req.body;
 
     if (!userIds || userIds.length === 0 || !address) {
         return res.status(400).json({ error: 'User IDs and address are required.' });
     }
 
     try {
-
-        res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
-        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
         const combinedPdfDoc = await PDFDocument.create();
 
 
@@ -111,16 +101,19 @@ export default async function handler(req, res) {
         };
 
 
+        // Fetch cover page PDF from Firebase Storage
+        const coverPageFilePath = 'rentora-cover.pdf'; // Update with the actual path in your Firebase Storage
+        const coverPageFile = bucket.file(coverPageFilePath);
+        const [coverPageExists] = await coverPageFile.exists();
+
+        if (!coverPageExists) {
+            return res.status(404).json({ error: 'Cover page PDF not found.' });
+        }
+
+        const [coverPageBuffer] = await coverPageFile.download();
 
         // Load the cover page PDF and fill in the form fields
-        // Get reference to the cover page PDF in Firebase Storage
-        const coverPageRef = storage().bucket().file('rentora-cover.pdf');
-
-        // Download the cover page PDF as a buffer
-        const [coverPageBuffer] = await coverPageRef.download();
-
-        // Load the cover page PDF from the buffer
-        let coverPdfDoc = await PDFDocument.load(coverPageBuffer);
+        const coverPdfDoc = await PDFDocument.load(coverPageBuffer);
         const coverForm = coverPdfDoc.getForm();
 
         const images = await loadImages(userIds, names);
@@ -144,10 +137,6 @@ export default async function handler(req, res) {
         console.log('NamesOfRoommates:', namesOfRoommates); // Log the value being sent for NamesOfRoommates
 
         coverForm.getTextField('NamesOfRoommates').setText(namesOfRoommates);
-
-        // Save the modified cover PDF and reload it to preserve the filled form fields
-        coverPageBytes = await coverPdfDoc.save();
-        coverPdfDoc = await PDFDocument.load(coverPageBytes);
 
         // Copy the cover pages to the combined PDF
         const coverPages = await combinedPdfDoc.copyPages(coverPdfDoc, coverPdfDoc.getPageIndices());
@@ -306,7 +295,7 @@ export default async function handler(req, res) {
 
         res.status(200).json({ success: 'Combined PDF generated and saved', url });
     } catch (error) {
-        console.error('Failed to combine PDFs:', error);
-        res.status(500).json({ error: 'Failed to combine PDFs' });
+        console.error('Error combining PDFs:', error);
+        res.status(500).json({ error: 'Error combining PDFs' });
     }
 }
