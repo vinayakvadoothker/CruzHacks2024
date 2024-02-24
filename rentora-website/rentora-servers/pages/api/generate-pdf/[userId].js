@@ -23,7 +23,7 @@ const bucket = storage.bucket();
 const db = admin.firestore();
 
 export default async function handler(req, res) {
-    const { userId } = router.query;
+    const { userId } = req.query;
 
     try {
         // Set CORS headers
