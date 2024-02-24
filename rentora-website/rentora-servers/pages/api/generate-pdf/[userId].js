@@ -1,40 +1,39 @@
-import admin from 'firebase-admin';
-import fs from 'fs';
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
-import QRCode from 'qrcode';
+// pages/api/generate-pdf/[userId].js
 
-// Replace with your Firebase service account key path and Firebase project URL
-const serviceAccount = require('./rentora1.json'); // Update with the actual path
-const databaseURL = "https://rentora-dbfa3.firebaseio.com"; // Update with your Firebase project URL
+import admin from 'firebase-admin';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import QRCode from 'qrcode';
+import { useRouter } from 'next/router';
 
 // Initialize Firebase Admin SDK
+const serviceAccount = require('../rentora1.json');
+const databaseURL = "https://rentora-dbfa3.firebaseio.com";
+
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
         databaseURL: databaseURL,
-        storageBucket: 'gs://rentora-dbfa3.appspot.com', // Replace with your Firebase Storage bucket URL
+        storageBucket: 'gs://rentora-dbfa3.appspot.com',
     });
 }
 
 const storage = admin.storage();
 const bucket = storage.bucket();
-// Firestore database instance
 const db = admin.firestore();
 
 export default async function handler(req, res) {
-
-    res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
-    if (req.method !== 'GET') {
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
-    }
+    const router = useRouter();
+    const { userId } = router.query;
 
     try {
-        const userId = req.query.userId;
+        // Set CORS headers
+        res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
+        res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
         // Retrieve user data from Firestore based on the user ID
         const docSnapshot = await db.collection('SurveyResponses').doc(userId).get();
+
 
         if (!docSnapshot.exists) {
             return res.status(404).json({ error: 'User data not found' });
@@ -42,7 +41,6 @@ export default async function handler(req, res) {
 
         const formData = docSnapshot.data();
 
-        // Function to generate a QR code image; returns a Promise that resolves to the image bytes
         async function generateQRCodeImage(url) {
             try {
                 // Generate the QR code with a transparent background
@@ -51,7 +49,7 @@ export default async function handler(req, res) {
                     type: 'image/png',
                     margin: 1,
                     color: {
-                        dark: '#426aa3ff',
+                        dark: '#426aa3ff', 
                         light: '#0000' // RGBA value for transparent background
                     }
                 });
@@ -61,6 +59,7 @@ export default async function handler(req, res) {
                 throw error;
             }
         }
+
 
         // Function to handle the creation and uploading of a PDF
         async function createAndUploadPDF(templatePath, outputFilename, qrCodeText) {
@@ -549,13 +548,14 @@ export default async function handler(req, res) {
                 stream.end(pdfBytes);
             });
         }
-        // Then, use this function as before to generate and upload both versions of the PDF
-        await createAndUploadPDF(`${userId}_filled.pdf`, userId, formData);
-        await createAndUploadPDF(`${userId}_official_filled.pdf`, userId, formData);
 
-        res.status(200).json({ success: 'PDFs generated and saved' });
+        // Then, use this function as before to generate and upload both versions of the PDF
+        await createAndUploadPDF('./rentora-application.pdf', `${userId}_filled.pdf`, userId, formData);
+        await createAndUploadPDF('./rentora-application.pdf', `${userId}_official_filled.pdf`, userId, formData);
+
+        res.status(200).json({ success: 'PDF generated and saved' });
     } catch (error) {
-        console.error('Error generating and saving PDFs:', error);
-        res.status(500).json({ error: 'Error generating and saving PDFs' });
+        console.error('Error generating and saving PDF:', error);
+        res.status(500).json({ error: 'Error generating and saving PDF' });
     }
 }
