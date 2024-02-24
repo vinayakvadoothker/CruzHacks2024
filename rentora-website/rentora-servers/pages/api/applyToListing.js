@@ -6,15 +6,20 @@ import QRCode from 'qrcode';
 // Firebase Admin initialization
 if (!admin.apps.length) {
     // Replace this with your actual Firebase config file path and details
-    const serviceAccount = require('../../../path/to/your/firebase-config.json');
+    const serviceAccount = require('./rentora-dbfa3-firebase-adminsdk-4rpix-4bb6bae0fe.json');
+    const databaseURL = "https://rentora-dbfa3.firebaseio.com";
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
-        databaseURL: 'https://your-database-url.firebaseio.com',
-        storageBucket: 'your-storage-bucket-url',
+        databaseURL: databaseURL,
+        storageBucket: 'gs://rentora-dbfa3.appspot.com',
     });
 }
 
 export default async function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
     if (req.method !== 'POST') {
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
