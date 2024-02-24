@@ -145,7 +145,7 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
     const sendEmailToRoommate = async (emailData) => {
         try {
             // Make a request to your server-side endpoint to send the email
-            const response = await fetch('http://localhost:3001/send-email', {
+            const response = await fetch('https://cruz-hacks2024.vercel.app/api/send_email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
