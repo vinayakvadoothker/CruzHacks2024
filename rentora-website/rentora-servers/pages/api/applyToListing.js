@@ -105,8 +105,14 @@ export default async function handler(req, res) {
 
 
         // Load the cover page PDF and fill in the form fields
-        let coverPageBytes = fs.readFileSync('./rentora-cover.pdf');
-        let coverPdfDoc = await PDFDocument.load(coverPageBytes);
+        // Get reference to the cover page PDF in Firebase Storage
+        const coverPageRef = storage().bucket().file('rentora-cover.pdf');
+
+        // Download the cover page PDF as a buffer
+        const [coverPageBuffer] = await coverPageRef.download();
+
+        // Load the cover page PDF from the buffer
+        let coverPdfDoc = await PDFDocument.load(coverPageBuffer);
         const coverForm = coverPdfDoc.getForm();
 
         const images = await loadImages(userIds, names);
@@ -145,20 +151,20 @@ export default async function handler(req, res) {
 
         coverPages.forEach(async (page) => {
             combinedPdfDoc.addPage(page);
-        
+
             // Check if it's the first page where we want to add the profile pictures
             if (isFirstPage) {
                 // Get the width and height of the page to calculate positioning
                 const { width, height } = page.getSize();
-        
+
                 let x = 250; // Initialize x with a value
                 const y = 350; // Adjust this value as needed
-        
+
                 // Iterate over each image and place it next to the previous one
                 for (const image of images) {
                     if (image) {
                         const profilePicDims = image.scale(0.1); // Scale the image, adjust as needed
-        
+
                         // Draw the image on the page
                         page.drawImage(image, {
                             x: x,
@@ -166,12 +172,12 @@ export default async function handler(req, res) {
                             width: profilePicDims.width,
                             height: profilePicDims.height,
                         });
-        
+
                         // Move the X position for the next image. Adjust spacing as needed
                         x += profilePicDims.width + 10; // Adjust the spacing between images
                     }
                 }
-        
+
                 isFirstPage = false; // Ensure profile pictures are added only on the first page
             }
         });

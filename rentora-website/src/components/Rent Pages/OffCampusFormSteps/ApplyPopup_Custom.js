@@ -225,7 +225,7 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
 
         try {
             // Sending POST request with application data to the combine-roommate-applications endpoint
-            const response = await fetch('http://localhost:3200/combine-roommate-applications', {
+            const response = await fetch('https://cruz-hacks2024.vercel.app/api/combine-roommate-applications', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
