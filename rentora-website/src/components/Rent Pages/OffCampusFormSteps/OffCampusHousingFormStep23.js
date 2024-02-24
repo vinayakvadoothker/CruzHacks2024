@@ -48,7 +48,7 @@ const OffCampusHousingFormStep23 = () => {
   const sendEmail = async (emailData) => {
     try {
       // Make a request to your server-side endpoint to send the email
-      const response = await fetch('https://cruz-hacks2024.vercel.app/pages/api/send_email', {
+      const response = await fetch('https://cruz-hacks2024.vercel.app/api/send_email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

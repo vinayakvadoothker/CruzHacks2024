@@ -1,4 +1,4 @@
-// pages/api/send-email.js
+// pages/api/send_email.js
 import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
