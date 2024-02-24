@@ -8,7 +8,7 @@ const fs = require('fs');
 // Function to set CORS headers
 const setCORSHeaders = (res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS'); // Adjust to match the methods your API is supporting
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS'); // Adjust to match the methods your API is supporting
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 };
 
@@ -40,9 +40,9 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Ensure the request method is POST
-  if (req.method !== 'POST') {
-    return res.status(405).send({ message: 'Only POST requests allowed' });
+  // Ensure the request method is GET
+  if (req.method !== 'GET') {
+    return res.status(405).send({ message: 'Only GET requests allowed' });
   }
 
   try {
