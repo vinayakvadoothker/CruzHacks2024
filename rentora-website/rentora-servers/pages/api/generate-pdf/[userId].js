@@ -4,6 +4,8 @@ import admin from 'firebase-admin';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import QRCode from 'qrcode';
 import { useRouter } from 'next/router';
+import fs from 'fs';
+
 
 // Initialize Firebase Admin SDK
 const serviceAccount = require('../rentora1.json');
