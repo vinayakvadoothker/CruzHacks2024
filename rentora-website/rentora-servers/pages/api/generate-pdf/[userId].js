@@ -550,7 +550,7 @@ export default async function handler(req, res) {
         }
 
         const path = require('path');
-        const pdfTemplatePath = path.resolve(__dirname, '../../../../../../../../pages/api/generate-pdf/rentora-application.pdf');        
+        const pdfTemplatePath = path.resolve(__dirname, '../../../../../pages/api/generate-pdf/rentora-application.pdf');        
 
         // Then, use this function as before to generate and upload both versions of the PDF
         await createAndUploadPDF(pdfTemplatePath, `${userId}_filled.pdf`, userId, formData);
