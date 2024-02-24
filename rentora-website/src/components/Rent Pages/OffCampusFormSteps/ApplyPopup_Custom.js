@@ -20,8 +20,6 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
         }
     }, []);
 
-
-
     const [userDetails, setUserDetails] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -45,10 +43,9 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
         e.preventDefault(); // Prevent the default form submission behavior
         const userConfirmed = window.confirm('Are you sure you want to submit your application?');
         if (userConfirmed) {
-            handleSubmit(e); // Pass the event object to handleSubmit
+            handleSubmit(); // Call handleSubmit directly
         }
     };
-
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -81,18 +78,15 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
         fetchUserDetails();
     }, [user.id, user.schoolName]);
 
-
-
     useEffect(() => {
         const filteredResults = userDetails.filter(user =>
-        (user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase()))
+            (user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.email.toLowerCase().includes(searchTerm.toLowerCase()))
         );
 
         setSearchResults(filteredResults);
     }, [userDetails, searchTerm]);
-
 
     useEffect(() => {
         if (editApplicationData) {
@@ -103,8 +97,6 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
             setSelectedRoommates(editApplicationData.selectedRoommatesData?.map(roommate => roommate.id) ?? []);
         }
     }, [editApplicationData]);
-
-
 
     const handleChange = (e) => {
         const newSearchTerm = e.target.value.toLowerCase();
@@ -224,14 +216,11 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
 
 
         try {
-            // Sending POST request with application data to the combine-roommate-applications endpoint
-            const response = await fetch('https://cruz-hacks2024.vercel.app/api/applyToListing', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
+            // Construct the URL for GET request
+            const url = `https://cruz-hacks2024.vercel.app/api/applyToListing?userIds=${[user.id, ...selectedRoommates].join(',')}&address=${listingAddress}&names=${JSON.stringify([{firstName: user.firstName, lastName: user.lastName}, ...selectedRoommatesData.map(roommate => ({firstName: roommate.firstName, lastName: roommate.lastName}))])}&preferredMoveInDate=${applicationData.preferredMoveInDate}&numberOfPets=${applicationData.numberOfPets}&anySmokers=${applicationData.anySmokers}&todaysDate=${applicationData.todaysDate}&signature=${applicationData.signature}&monthlyRent=${monthlyRent}&depositAmount=${depositAmount}`;
+
+            // Make the GET request
+            const response = await fetch(url);
 
             if (!response.ok) {
                 throw new Error('Failed to submit application');
@@ -256,7 +245,6 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
                 });
             }
 
-
             console.log('Application submitted successfully');
             closePopup(); // Close the application popup
 
@@ -265,7 +253,6 @@ const CustomApplyPopup = ({ user, userEmail, closePopup, editApplicationData }) 
         }
         setIsLoading(false);
     };
-
 
 
 

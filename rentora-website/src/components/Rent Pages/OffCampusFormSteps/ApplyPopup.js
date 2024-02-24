@@ -215,20 +215,17 @@ const ApplyPopup = ({ user, listing, closePopup, editApplicationData }) => {
         };
 
 
+        // Construct the URL for GET request
+        const url = `https://cruz-hacks2024.vercel.app/api/applyToListing?userIds=${[user.id, ...selectedRoommates].join(',')}&address=${listing.address}&names=${JSON.stringify([{firstName: user.firstName, lastName: user.lastName}, ...selectedRoommatesData.map(roommate => ({firstName: roommate.firstName, lastName: roommate.lastName}))])}&preferredMoveInDate=${applicationData.preferredMoveInDate}&numberOfPets=${applicationData.numberOfPets}&anySmokers=${applicationData.anySmokers}&todaysDate=${applicationData.todaysDate}&signature=${applicationData.signature}`;
+
         try {
-            // Sending POST request with application data to the combine-roommate-applications endpoint
-            const response = await fetch('https://cruz-hacks2024.vercel.app/api/applyToListing', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
+            // Make the GET request
+            const response = await fetch(url);
 
             if (!response.ok) {
                 throw new Error('Failed to submit application');
             }
-
+            
             // Notify roommates via email
             for (const roommate of selectedRoommatesData) {
                 await sendEmailToRoommate({
