@@ -20,17 +20,21 @@ const bucket = admin.storage().bucket();
 export default async function handler(req, res) {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    if (req.method !== 'POST') {
+    if (req.method !== 'GET') {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    const { userIds, address, names } = req.body;
+    const { userIds, address, names } = req.query;
 
     if (!userIds || userIds.length === 0 || !address) {
         return res.status(400).json({ error: 'User IDs and address are required.' });
     }
+
+    // Convert userIds, names to arrays if they are strings
+    const userIdsArray = Array.isArray(userIds) ? userIds : [userIds];
+    const namesArray = Array.isArray(names) ? names : [names];
 
     try {
 
