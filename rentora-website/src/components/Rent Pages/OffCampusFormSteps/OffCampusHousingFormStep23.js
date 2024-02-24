@@ -77,7 +77,7 @@ const OffCampusHousingFormStep23 = () => {
         offcampusformdone: true,
       });
 
-      const response = await axios.get(`http://localhost:3010/generate-pdf/${user.id}`, {
+      const response = await axios.get(`https://cruz-hacks2024.vercel.app/api/generate-pdf/${user.id}`, {
         responseType: 'blob',
       });
 
