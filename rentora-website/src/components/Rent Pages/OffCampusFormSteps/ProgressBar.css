@@ -110,7 +110,11 @@
   }
   
 
-
+  /* @media (max-width: 767px) {
+    .progress-bar-container {
+      display: flex;
+    }
+  } */
 
 /* Additional styles for smaller screens */
 @media (max-width: 1024px) {
@@ -127,6 +131,7 @@
     .progress-bar {
       overflow-x: auto;
       scroll-behavior: smooth;
+      justify-content: left;
       margin: 0 10px; /* Space between arrows and progress bar */
     }
   

@@ -1,5 +1,5 @@
 import React from 'react';
-import './Stepper.css'; // Create a separate CSS file for styling
+import './Stepper.css';
 
 const ProgressBarStepper = ({ currentStep }) => {
     const progressPercentage = ((currentStep + 1) / 23) * 100;
