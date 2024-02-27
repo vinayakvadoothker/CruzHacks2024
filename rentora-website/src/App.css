@@ -4,19 +4,24 @@
   
   /* App.css */
 
+  .logo-circle {
+    width: 50px; /* Adjust based on your logo size */
+    height: 10px; /* Adjust to maintain aspect ratio */
+    border-radius: 50%; /* This creates the circular shape */
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+  }
 
   body {
     margin: 0;
     padding: 0;
   }
-  
 
 
   nav {
     background-color: rgba(0, 0, 0, 0);
-    padding: 1px; /* Decrease padding for smaller screens */
+    padding: 10px; /* Decrease padding for smaller screens */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    gap: 2px;
-
+    max-width: 83%;
   }
   .no-background {
     background-color: none; /* Remove background */
@@ -26,10 +31,12 @@
     list-style-type: none;
     display: flex;
     justify-content: center;
+    align-items: 'center';
+    margin: 0; /* Remove default margin */
   }
 
   li {
-    margin: 0 20px; /* Adjust spacing between menu items */
+    margin: 0 13px; /* Adjust spacing between menu items */
   }
 
   a {
@@ -161,6 +168,10 @@
     font-weight: 500;
   }
 }
+
+
+
+
 
 @media only screen and (min-width: 768px) {
   body {
@@ -327,6 +338,17 @@
     margin: 0 auto; /* Center the container horizontally */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */    font-size: 24px;
     font-weight: 500;
+  }
+  .profileContainer {
+    position: 'relative';
+    display: 'inline-block';
+    z-index: '10';
+  }
+
+  .profileImage {
+    width: '50px';
+    height: '50px';
+    border-radius: '50%';
   }
 }
 
