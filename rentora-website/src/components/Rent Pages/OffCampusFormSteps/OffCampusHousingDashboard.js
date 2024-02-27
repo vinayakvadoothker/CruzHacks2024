@@ -179,7 +179,7 @@ const OffCampusHousingDashboard = () => {
                     />
                 )}
                 <p className="step-description">Listings near {userSchoolName}</p>
-
+                <p className="step-description">Coming Soon!</p>
                 <div className="listings-container">
                     {listingsData.map((listing, index) => {
                         const currentImageIndex = currentImageIndexes[index];
