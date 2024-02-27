@@ -157,13 +157,13 @@ const OffCampusHousingDashboard = () => {
                     </button>
                 )}
 
-                <button className="apply-button custom-apply" onClick={() => openCustomApplyPopup()}
+                {/* <button className="apply-button custom-apply" onClick={() => openCustomApplyPopup()}
 
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                 >
                     Apply For Unlisted Properties
-                </button>
+                </button> */}
 
                 {isHovering && (
                     <div className="hover-message">
