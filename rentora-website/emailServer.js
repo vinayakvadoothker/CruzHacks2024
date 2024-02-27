@@ -25,13 +25,13 @@ app.post('/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'rentora.ai@gmail.com',
-            pass: 'tftd fcxd okfj wbfp',
+            user: 'admin@rentora.net',
+            pass: 'lfkb ewnl itaz snqv',
         },
     });
 
     const mailOptions = {
-        from: 'rentora.ai@gmail.com',
+        from: 'admin@rentora.net',
         to,
         subject,
         html,

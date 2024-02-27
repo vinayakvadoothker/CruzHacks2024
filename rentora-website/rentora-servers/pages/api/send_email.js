@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     });
 
     const mailOptions = {
-      from: 'rentora.ai@gmail.com',
+      from: 'admin@rentora.net',
       to,
       subject,
       html,

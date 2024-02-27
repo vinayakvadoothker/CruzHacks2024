@@ -80,7 +80,7 @@ const OnboardingPage = () => {
 
     try {
       const response = await axios.post('https://cruz-hacks2024.vercel.app/api/send_email', {
-        to: 'rentora.ai@gmail.com', // Your receiving email address
+        to: 'admin@rentora.net', // Your receiving email address
         subject: `Contact Form Message from ${name}`,
         html: `<p>Name: ${name}</p><p>Email: ${email}</p><p>Message: ${message}</p>`,
       });
