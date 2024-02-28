@@ -125,7 +125,8 @@
       justify-content: center; /* Center the progress bar */
       position: relative;
       padding: 0 20px; /* Space for arrow buttons */
-      z-index: 1000;
+      z-index: 1;
+    
     }
   
     .progress-bar {

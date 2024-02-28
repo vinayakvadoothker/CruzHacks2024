@@ -195,11 +195,11 @@ const styles = {
     backgroundColor: 'rgba(249, 249, 249, 0.9)',
     minWidth: '130px',
     boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-    zIndex: 1,
     right: 0,
     top: '100%',
     borderRadius: '8px',
     opacity: 0.9,
+    zIndex: 1000, // Adjust the z-index value to bring it to the front
   },
   dropdownItem: {
     padding: '12px 16px',
