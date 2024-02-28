@@ -13,7 +13,7 @@
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     position: relative; /* Changed to relative positioning for better control */
-    z-index: 10; /* Keep z-index for layering */
+    z-index: 1; /* Keep z-index for layering */
   }
 }
 

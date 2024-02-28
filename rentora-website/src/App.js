@@ -199,7 +199,7 @@ const styles = {
     top: '100%',
     borderRadius: '8px',
     opacity: 0.9,
-    zIndex: 1000, // Adjust the z-index value to bring it to the front
+    zIndex: 5000, // Adjust the z-index value to bring it to the front
   },
   dropdownItem: {
     padding: '12px 16px',
