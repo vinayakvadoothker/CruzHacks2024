@@ -60,8 +60,8 @@ const Header = () => {
   };
 
   return (
-    <nav style={{ width: '100%' }}>
-      <ul style={{ alignItems: 'center' }}>
+    <nav>
+      <ul style={{ display: 'flex', alignItems: 'center' }}>
         {/* Logo at the far left */}
         <li>
           <a href="http://www.rentora.net" rel="noopener noreferrer">

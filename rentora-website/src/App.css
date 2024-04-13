@@ -1,5 +1,32 @@
 /* App.css */
 
+/* Media query for screens less than 900px */
+@media (max-width: 900px) {
+  nav {
+    /* Assign smaller nav styles */
+    padding: 5px 0; /* Example of reducing padding */
+  }
+
+  ul {
+    /* Assign smaller list styles */
+    padding: 5px 0; /* Example of reducing padding */
+  }
+
+  .logo-circle {
+    width: 40px; /* Reduce logo size */
+    height: 40px; /* Reduce logo size */
+  }
+
+  .nav-link {
+    font-size: 14px; /* Reduce font size */
+  }
+
+  .profile-image {
+    width: 30px; /* Reduce profile image size */
+    height: 30px; /* Reduce profile image size */
+  }
+}
+
 @media only screen and (max-width: 767px) {
   
   /* App.css */
@@ -358,3 +385,4 @@
   border-radius: 50%; /* This creates the circular shape */
   object-fit: cover; /* Ensures the image covers the area without distortion */
 }
+
