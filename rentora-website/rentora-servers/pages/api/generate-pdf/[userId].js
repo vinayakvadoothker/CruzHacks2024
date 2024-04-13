@@ -385,7 +385,7 @@ export default async function handler(req, res) {
             yPos -= lineHeight * 2;
 
             // Previous Rental Experience
-            const rentalInfo = `${formData.rentalHistory[0].address}, ${formData.college.name}, ${formData.startDate} - ${formData.endDate}`;
+            const rentalInfo = `${formData.rentalHistory[0].address}, ${formData.startDate} - ${formData.endDate}`;
             page.drawText('Previous Rental Experience:', {
                 x: 50,
                 y: yPos,
