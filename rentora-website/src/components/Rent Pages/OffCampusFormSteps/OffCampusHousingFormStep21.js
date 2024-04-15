@@ -49,13 +49,22 @@ const OffCampusHousingFormStep21 = () => {
                     guarantorEmail,
                 };
     
-                await db.collection('SurveyResponses').doc(user.id).set({
+                // Check if guarantorFormFilled is already true before updating it
+                const docRef = db.collection('SurveyResponses').doc(user.id);
+                const doc = await docRef.get();
+                if (doc.exists && doc.data().guarantorFormFilled) {
+                    console.log('Guarantor form is already filled');
+                    return; // Exit early without updating
+                }
+    
+                await docRef.set({
                     guarantor: guarantorData,
                     guarantorFormFilled: false, // Reset the flag to false
                 }, { merge: true }); // Use merge to update only the provided fields
             }
         }
     }, [user, guarantorName, guarantorRelation, guarantorPhone, guarantorEmail]);
+    
     
 
     useEffect(() => {
