@@ -13,6 +13,7 @@ const OffCampusHousingFormStep20 = () => {
   const { user } = useUser();
   const navigate = useNavigate();
 
+  const [fileExists, setFileExists] = useState(false);
 
   const { steps, completeStep } = useSteps(); // Use the useSteps hook
   const currentStep = 19; // Step index starts from 0, so step 3 is index 2
@@ -42,13 +43,14 @@ const OffCampusHousingFormStep20 = () => {
                 const userData = doc.data();
                 setFormData({
                   schoolName: userData.schoolName,
-                  // Set other form data fields from userData if necessary
+                  firstName: userData.firstName, // Assuming the first name is stored like this
+                  lastName: userData.lastName,   // Assuming the last name is stored like this
+                  rentalWorkshopCertificate: userData.rentalWorkshopCertificate
                 });
     
-                // Check if the school name is not UC Santa Cruz
                 if (userData.schoolName !== 'UC Santa Cruz') {
-                  completeStep(currentStep); // Mark this step as complete
-                  navigate('/rent/off-campus/step21'); // Navigate to the next step
+                  completeStep(currentStep);
+                  navigate('/rent/off-campus/step21');
                 }
               }
             })
@@ -56,7 +58,8 @@ const OffCampusHousingFormStep20 = () => {
               console.error('Error fetching data:', error);
             });
         }
-      }, [user, completeStep, currentStep, navigate]);
+    }, [user, completeStep, currentStep, navigate]);
+    
     
     
     const handleFileChange = async (e) => {
