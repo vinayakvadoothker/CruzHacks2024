@@ -93,7 +93,7 @@ export default async function handler(req, res) {
     const namesOfRoommates = names.map(name => `${name.firstName} ${name.lastName}`).join('\n');
     coverForm.getTextField('NamesOfRoommates').setText(namesOfRoommates);
 
-    const qrCodeDataURL = await generateQRCodeImage('https://www.your-website.com');
+    const qrCodeDataURL = await generateQRCodeImage('https://www.rentora.net');
     const qrImageBytes = Buffer.from(qrCodeDataURL.split(',')[1], 'base64');
     const qrImage = await combinedPdfDoc.embedPng(qrImageBytes);
 
