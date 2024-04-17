@@ -105,12 +105,11 @@ const OffCampusHousingFormStep20 = () => {
         navigate('/rent/off-campus/step21');
     };
 
-    const handleLinkClick = (newSrc) => {
-        setModalUrl(newSrc); // Set the URL for the modal
-        setShowModal(true); // Open the modal
+
+
+    const handleLinkClick = () => {
+        window.open("http://canvas.ucsc.edu/enroll/7DWCHX", "_blank", "noopener,noreferrer");
     };
-
-
     return (
         <>
         <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
@@ -121,24 +120,11 @@ const OffCampusHousingFormStep20 = () => {
                 (Optional) Please Complete the Following Workshop and Upload Your Certificate
             </p>
 
-            <button onClick={() => handleLinkClick("http://canvas.ucsc.edu/enroll/7DWCHX")}>
-                Open Workshop
-            </button>
+            <button onClick={handleLinkClick} className="link-button">
+            Open Workshop
+        </button>
 
-            {showModal && (
-                <div className="modal-background">
-                    <div className="modal-content">
-                        <iframe
-                            title="Workshop Content"
-                            src={modalUrl}
-                            width="100%"
-                            height="100%"
-                            allowFullScreen
-                        />
-                        <button onClick={closeModal} className="close-button">Close</button>
-                    </div>
-                </div>
-            )}
+            
 
             {certificateUrlFromDb && (
                 <div className="image-preview-container">
