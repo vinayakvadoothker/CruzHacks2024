@@ -17,7 +17,7 @@ Before you start, make sure you have Node.js and npm installed on your machine.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/vinayakvadoothker/CruzHacks2024
+git clone https://github.com/vinayakvadoothker/rentora_repo
 ```
 
 2. Navigate to the project directory:
