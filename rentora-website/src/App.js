@@ -126,11 +126,41 @@ const Home = () => {
   return <OnboardingPage />;
 };
 
-// Define App component
+
+
+// Define Portals component
+const Portals = () => (
+  <div>
+    <SignedOut>
+      <Header /> {/* Show a header that might have sign in/sign up options */}
+    </SignedOut>
+    <h1>Welcome to the Portals</h1>
+    <SignedIn>
+      <Routes>
+        <Route path="/residency" element={<ResidencyPage />} />
+        <Route path="/subleasing" element={<SubleasingPage />} />
+        <Route path="/lease-transfers" element={<LeaseTransfersPage />} />
+        <Route path="*" element={<Navigate to="/portals" replace />} />
+      </Routes>
+    </SignedIn>
+    <SignedOut>
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <Link to="/sign-in">Sign In</Link> | <Link to="/sign-up">Sign Up</Link>
+      </div>
+    </SignedOut>
+  </div>
+);
+
+// Define the individual pages for the new routes
+const ResidencyPage = () => <h2>Residency Management Portal</h2>;
+const SubleasingPage = () => <h2>Subleasing Portal</h2>;
+const LeaseTransfersPage = () => <h2>Lease Transfers Portal</h2>;
+
+// Update Routes in the App component
 const App = () => {
   return (
     <div className="app-container">
-      <div className="content-container"> {/* Content container */}
+      <div className="content-container">
         <ClerkProvider publishableKey={clerkPubKey} googleMapsApiKey={googleMapsApiKey}>
           <StepProvider>
             <SignedIn>
@@ -144,26 +174,11 @@ const App = () => {
               <Route path="/guarantor/:userid" element={<GuarantorForm />} />
               <Route path="/profiles/:userid" element={<PublicProfilePage />} />
               <Route path="/addoffcampuslisting" element={<AddOffCampusListing />} />
-              <Route
-                path="/rent/*"
-                element={
-                  <div>
-                    <RentHeader />
-                    <Routes>
-                      <Route index element={<RentPage />} />
-                      <Route path="/off-campus/*" element={<OffCampusPage />} />
-                      <Route path="/off-campus/myapplications" element={<OffCampusApplications />} />
-                      <Route path="/for-all" element={<ForAllPage />} />
-                    </Routes>
-                  </div>
-                }
-              />
+              <Route path="/rent/*" element={<RentRoutes />} />
               <Route path="/venture" element={<VenturePage />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route
-                path="*"
-                element={<Navigate to="/onboarding" replace />} // Redirect to '/onboarding' for any unmatched routes
-              />
+              <Route path="/portals/*" element={<Portals />} />
+              <Route path="*" element={<Navigate to="/onboarding" replace />} />
             </Routes>
           </StepProvider>
         </ClerkProvider>
@@ -171,6 +186,19 @@ const App = () => {
     </div>
   );
 };
+
+// Nested routes for the /rent path
+const RentRoutes = () => (
+  <div>
+    <RentHeader />
+    <Routes>
+      <Route index element={<RentPage />} />
+      <Route path="/off-campus/*" element={<OffCampusPage />} />
+      <Route path="/off-campus/myapplications" element={<OffCampusApplications />} />
+      <Route path="/for-all" element={<ForAllPage />} />
+    </Routes>
+  </div>
+);
 
 export default App;
 
