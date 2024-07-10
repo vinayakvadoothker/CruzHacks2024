@@ -16,6 +16,8 @@ import ProfilePage from './components/ProfilePage'; // Import ProfilePage compon
 import GuarantorForm from './components/Rent Pages/OffCampusFormSteps/GuarantorForm'; // Import GuarantorForm component
 import PublicProfilePage from './components/PublicProfilePage'; // Import GuarantorForm component
 
+import ResidencyPaymentTransfer from './components/ResidencyPaymentTransfer';
+
 import AddOffCampusListing from './components/Rent Pages/OffCampusFormSteps/AddOffCampusListing'; // Import AddOffCampusListing component
 import OffCampusApplications from './components/Rent Pages/OffCampusFormSteps/OffCampusApplications';
 import logo from './components/images/Rentora_Logo.png'
@@ -141,6 +143,7 @@ const Portals = () => (
         <Route path="/subleasing" element={<SubleasingPage />} />
         <Route path="/lease-transfers" element={<LeaseTransfersPage />} />
         <Route path="*" element={<Navigate to="/portals" replace />} />
+        <Route path="/residency/payment-transfer" element={<ResidencyPaymentTransfer/>}/>
       </Routes>
     </SignedIn>
     <SignedOut>
