@@ -19,3 +19,4 @@ yarn-error.log*
 rentora-website/node_modules/.cache/
 
 ../.DS_Store
+/build
