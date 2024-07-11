@@ -18,6 +18,7 @@ export default async function handler(req, res) {
       const responsesRef = db.collection('SurveyResponses');
       const snapshot = await responsesRef.get();
 
+      
       const userDetails = [];
       snapshot.forEach(doc => {
         const data = doc.data();
