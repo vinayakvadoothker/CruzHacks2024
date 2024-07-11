@@ -15,6 +15,8 @@ import VenturePage from './components/VenturePage'; // Import VenturePage compon
 import ProfilePage from './components/ProfilePage'; // Import ProfilePage component
 import GuarantorForm from './components/Rent Pages/OffCampusFormSteps/GuarantorForm'; // Import GuarantorForm component
 import PublicProfilePage from './components/PublicProfilePage'; // Import GuarantorForm component
+import SubLeasingFormStep1 from './components/Rent Pages/SubLeasingSteps/SubLeasingFormStep1'; //Import SubLeasing Form
+import SubLeasingFormStep2 from './components/Rent Pages/SubLeasingSteps/SubLeasingFormStep2'; //Import SubLeasing Form
 
 import ResidencyPaymentTransfer from './components/ResidencyPaymentTransfer';
 
@@ -181,6 +183,8 @@ const App = () => {
               <Route path="/venture" element={<VenturePage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/portals/*" element={<Portals />} />
+              <Route path="/portals/subleasing/step1" element={<SubLeasingFormStep1/>} />
+              <Route path="/portals/subleasing/step2" element={<SubLeasingFormStep2/>} />
               <Route path="*" element={<Navigate to="/onboarding" replace />} />
             </Routes>
           </StepProvider>
