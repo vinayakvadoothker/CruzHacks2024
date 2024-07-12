@@ -4,7 +4,10 @@ import { ClerkProvider, SignedIn, SignedOut, useClerk } from '@clerk/clerk-react
 import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 import ChatBot from './ChatBot'; // Import your ChatBot component
+
 import { StepProvider } from './components/Rent Pages/OffCampusFormSteps/StepContext';
+import { SubLeasingStepProvider } from './components/Rent Pages/SubLeasingSteps/SubLeasingStepContext';
+
 import Dashboard from './components/Dashboard'; // Import Dashboard component
 import OnboardingPage from './components/OnboardingPage'; // Import OnboardingPage component
 import BuyPage from './components/BuyPage'; // Import BuyPage component
@@ -15,6 +18,7 @@ import VenturePage from './components/VenturePage'; // Import VenturePage compon
 import ProfilePage from './components/ProfilePage'; // Import ProfilePage component
 import GuarantorForm from './components/Rent Pages/OffCampusFormSteps/GuarantorForm'; // Import GuarantorForm component
 import PublicProfilePage from './components/PublicProfilePage'; // Import GuarantorForm component
+
 import SubLeasingFormStep1 from './components/Rent Pages/SubLeasingSteps/SubLeasingFormStep1'; //Import SubLeasing Form
 import SubLeasingFormStep2 from './components/Rent Pages/SubLeasingSteps/SubLeasingFormStep2'; //Import SubLeasing Form
 
@@ -183,8 +187,15 @@ const App = () => {
               <Route path="/venture" element={<VenturePage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/portals/*" element={<Portals />} />
-              <Route path="/portals/subleasing/step1" element={<SubLeasingFormStep1/>} />
-              <Route path="/portals/subleasing/step2" element={<SubLeasingFormStep2/>} />
+
+
+              <Route path="/portals/subleasing/*" element={
+                <SubLeasingStepProvider>
+                    <SubLeasingFormRoutes />
+                </SubLeasingStepProvider>
+              } />
+
+
               <Route path="*" element={<Navigate to="/onboarding" replace />} />
             </Routes>
           </StepProvider>
@@ -206,6 +217,15 @@ const RentRoutes = () => (
     </Routes>
   </div>
 );
+
+const SubLeasingFormRoutes = () => (
+  <Routes>
+      <Route path="step1" element={<SubLeasingFormStep1 />} />
+      <Route path="step2" element={<SubLeasingFormStep2 />} />
+      {/* Add more routes as necessary */}
+  </Routes>
+);
+
 
 export default App;
 

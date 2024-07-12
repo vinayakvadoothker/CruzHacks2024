@@ -2,21 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from "@clerk/clerk-react";
 import { db } from "../../config";
-//import Stepper from './Stepper';
-//import { useSteps } from './StepContext'; // Import useSteps from StepContext
-//import ProgressBar from './ProgressBar'; // Import ProgressBar component
+import Stepper from './Stepper';
+import { useSubLeasingSteps } from './SubLeasingStepContext'; // Import useSubLeasingSteps from StepContext
+import ProgressBar from './ProgressBar'; // Import ProgressBar component
 import './styles.css';
 
 const SubleasingFormStep1 = () => {
-    //const { steps, completeStep } = useSteps();
-    //const currentStep = 0; // Set current step index to 1 for Step 2
+    const { steps, completeStep } = useSubLeasingSteps();
+    const currentStep = 0; // Set current step index to 1 for Step 2
     const { user } = useUser();
     const navigate = useNavigate();
-    /*
+    
     const onStepChange = (stepIndex) => {
         navigate(`/portals/subleasing/step${stepIndex + 1}`);
     };
-    */
+    
     const [formData, setFormData] = useState({
         subLandlordFirstName: '',
         subLandlordMiddleInitial: '',
@@ -73,10 +73,10 @@ const SubleasingFormStep1 = () => {
                 });
         }
     }, [user]);
-
-    const saveAnswer = (event) => {
-        event.preventDefault();
-
+    
+    const handleNext = (event) => {
+        //event.preventDefault();
+        
         const { subLandlordFirstName, subLandlordMiddleInitial, subLandlordLastName, subtenantFirstName, subtenantMiddleInitial, subtenantLastName,
             address, city, aptNumber, state, startDate, endDate, monthlyRentAmount, securityDepositAmount } = formData;
 
@@ -87,19 +87,25 @@ const SubleasingFormStep1 = () => {
             return;
         }
 
+        console.log("Handling next:", formData);
+        
         const newFormData = { ...formData };
         if (user) {
+
             db.collection('SurveyResponses').doc(user.id).set(newFormData, { merge: true })
                 .then(() => {
                     console.log("Document successfully updated or set!");
-                    navigate('/portals/subleasing/step2'); // Navigate to the next step
+                    completeStep(currentStep);
+                    navigate('/portals/subleasing/step2');
                 })
                 .catch((error) => {
                     console.error("Error updating or setting document: ", error);
                 });
+
         } else {
             console.log("User not authenticated");
         }
+        
     };
 
     // List of states
@@ -120,10 +126,14 @@ const SubleasingFormStep1 = () => {
     ];
 
     return (
-        <div className="form-container">
-            <h2 className="step-title">Step 1: General Information</h2>
-            <p className="step-description">Please Enter Your Information Correctly</p>
-            <form onSubmit={saveAnswer}>
+        <>
+            <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
+            <div className="form-container">
+                <Stepper currentStep={currentStep} /> {/* Update Stepper's currentStep as well */}
+                <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title from steps state */}
+                <h2 className="step-title">Step 1: General Information</h2>
+                <p className="step-description">Please Enter Your Information Correctly</p>
+
                 <h2>Sublandlord Information</h2>
                 <input
                     type="text"
@@ -231,9 +241,8 @@ const SubleasingFormStep1 = () => {
                     </optgroup>
                 </select>
                 
-
                 <input
-                    type="text"
+                    type="date"
                     placeholder="Start Date"
                     className="input-field"
                     value={formData.startDate}
@@ -242,7 +251,7 @@ const SubleasingFormStep1 = () => {
                 />
                 
                 <input
-                    type="text"
+                    type="date"
                     placeholder="End Date"
                     className="input-field"
                     value={formData.endDate}
@@ -266,9 +275,12 @@ const SubleasingFormStep1 = () => {
                     onChange={(e) => setFormData({ ...formData, securityDepositAmount: e.target.value })}
                     style={{ width: '46.25%'}}
                 />
-                <button className="next-button" type="submit">Next</button>
-            </form>
-        </div>
+                
+                <button className="next-button" onClick={handleNext}>
+                Next
+                </button>
+            </div>
+        </>
     );
 };
 

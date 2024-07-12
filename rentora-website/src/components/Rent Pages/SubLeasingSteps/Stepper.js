@@ -2,7 +2,7 @@ import React from 'react';
 import './Stepper.css';
 
 const ProgressBarStepper = ({ currentStep }) => {
-    const progressPercentage = ((currentStep + 1) / 23) * 100;
+    const progressPercentage = ((currentStep + 1) / 3) * 100;
   
     return (
       <div className="progress-bar-container">

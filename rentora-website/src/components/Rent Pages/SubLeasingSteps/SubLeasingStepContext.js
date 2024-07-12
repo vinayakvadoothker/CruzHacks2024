@@ -2,20 +2,21 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { db } from "../../config"; 
 import { useUser } from "@clerk/clerk-react"; 
 
-const StepContext = createContext();
+const SubLeasingStepContext = createContext();
 
-export const useSteps = () => useContext(StepContext);
+export const useSubLeasingSteps = () => useContext(SubLeasingStepContext);
 
-export const StepProvider = ({ children }) => {
+export const SubLeasingStepProvider = ({ children }) => {
     const stepTitles = [
-      "General Information",
-      "Blah"
+      "Step 1: Basic Information",
+      "Step 2: Detailed Information",
+      "Step 3: Submit"
     ];
 
-    const [steps, setSteps] = useState(Array.from({ length: 2 }, (_, i) => ({
+    const [steps, setSteps] = useState(Array.from({ length: stepTitles.length }, (_, i) => ({
       title: stepTitles[i],
       completed: false,
-    })));
+  })));
 
     const { user } = useUser(); // Get the currently logged-in user
 
@@ -27,7 +28,7 @@ export const StepProvider = ({ children }) => {
 
         // Update Firebase if the user is logged in
         if (user) {
-            db.collection('StepsCompleted').doc(user.id).set({
+            db.collection('StepsCompletedSubleasing').doc(user.id).set({
                 [index]: true
             }, { merge: true });
         }
@@ -35,7 +36,7 @@ export const StepProvider = ({ children }) => {
 
     useEffect(() => {
         if (user) {
-          const unsubscribe = db.collection('StepsCompleted').doc(user.id).onSnapshot(doc => {
+          const unsubscribe = db.collection('StepsCompletedSubleasing').doc(user.id).onSnapshot(doc => {
             if (doc.exists) {
               const data = doc.data();
               setSteps(prevSteps => // Use a function to get the previous state
@@ -52,9 +53,9 @@ export const StepProvider = ({ children }) => {
         }
       }, [user]); 
 
-return (
-    <StepContext.Provider value={{ steps, completeStep }}>
-        {children}
-    </StepContext.Provider>
-);
+  return (
+    <SubLeasingStepContext.Provider value={{ steps, completeStep }}>
+      {children}
+    </SubLeasingStepContext.Provider>
+  );
 };
