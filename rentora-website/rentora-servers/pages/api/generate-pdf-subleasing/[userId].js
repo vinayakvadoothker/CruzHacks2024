@@ -47,7 +47,7 @@ export default async function handler(req, res) {
 
     try {
         // Set CORS headers
-        res.setHeader('Access-Control-Allow-Origin', 'https://www.rentora.net'); // Adjust as needed for your domain
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Adjust as needed for your domain
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -73,7 +73,8 @@ export default async function handler(req, res) {
             // Get the first page of the document
             const page1 = pdfDoc.getPages()[0];
 
-
+            const pageWidth1 = page1.getSize().width;
+            const pageHeight = page1.getSize().height;
 
 
             function getFieldValue(fieldValue) {
@@ -138,7 +139,7 @@ export default async function handler(req, res) {
                     });
 
                     // Save the URL with a reference in Firestore, you might want to adjust the structure
-                    await db.collection('FilledPDFs').doc(userId).set({ [outputFilename]: url }, { merge: true });
+                    await db.collection('FilledPDFsSubleasing').doc(userId).set({ [outputFilename]: url }, { merge: true });
 
                     resolve(url);
                 });
