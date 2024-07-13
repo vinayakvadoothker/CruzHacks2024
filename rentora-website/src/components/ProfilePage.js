@@ -22,6 +22,11 @@ const ProfilePage = () => {
     window.location.href = editFormUrl; // Navigate to the URL in the same tab
   };
 
+  const mainDashboard = () => {
+    const mainDashboardUrl = `http://localhost:3000/dashboard`;
+    window.location.href = mainDashboardUrl;
+  }
+
   useEffect(() => {
     const fetchPdfUrl = async () => {
       if (user) {
@@ -101,6 +106,8 @@ const ProfilePage = () => {
       </div>
 
       <button className="view-public-profile-button" onClick={viewPublicProfile}>View Public Profile</button>
+
+      <button className="main-dashboard-button" onClick={mainDashboard}>View My Dashboard</button>
       <button className="edit-info-button" onClick={editForm}>Edit My Information</button>
 
       <div className="housing-preferences-container">

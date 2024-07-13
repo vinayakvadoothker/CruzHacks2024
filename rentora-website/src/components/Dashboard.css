@@ -1,33 +1,77 @@
-/* Dashboard.css */
+/* General styling */
+.main-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 73%; /* Adjust based on your header/footer */
+  max-height: 73%; /* Adjust based on your header/footer */
+  min-width: 92%; /* Adjust based on your header/footer */
+  max-width: 92%; /* Adjust based on your header/footer */
+  overflow-y: auto; /* Makes the container scrollable */
+  padding: 20px;
+  background-color: #ddebff; /* Light grey background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
 
-.dashboard-container {
-    background-color: #f2f2f200;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    margin: 20px;
+  /* Centering styles */
+  position: absolute; /* Positioning relative to its first positioned (not static) ancestor element */
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* This ensures the center of the element aligns with the center of its container */
+  
+  /* Additional styles for better appearance and centering */
+  box-shadow: 0 2px 10px #00000071; /* Adds subtle shadow to sections */
+  border-radius: 16px; /* Optional: Rounds the corners of the container */
+}
+
+/* Typography */
+.main-dashboard-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.main-dashboard-container h4 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* RenterCard styling */
+.renter-card, .add-user-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.renter-avatar, .add-user-avatar {
+  display: block;
+  margin: 0 auto 10px;
+  width: 60px;
+  height: 60px;
+  background-color: #ccc;
+  border-radius: 50%;
+  line-height: 60px;
+  font-size: 24px;
+  color: #fff;
+}
+
+.sublease-paper {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+/* Map styling */
+.leaflet-container {
+  height: 500px;
+  width: 100%;
+}
+
+@media (max-width: 960px) {
+  /* Adjustments for smaller screens */
+  .leaflet-container {
+    height: 300px;
   }
-  
-  .dashboard-container h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .analytics-section {
-    background-color: #ffffffb9;
-    border-radius: 5px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Style your AnalyticsComponent within this section */
-  .analytics-section h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  
-  /* Add more styles as needed */
-  
+}
