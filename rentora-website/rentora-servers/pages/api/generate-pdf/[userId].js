@@ -14,7 +14,7 @@ if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
         databaseURL: databaseURL,
-        storageBucket: 'gs://rentora-dbfa3.apspot.com',
+        storageBucket: 'gs://rentora-dbfa3.appspot.com',
     });
 }
 

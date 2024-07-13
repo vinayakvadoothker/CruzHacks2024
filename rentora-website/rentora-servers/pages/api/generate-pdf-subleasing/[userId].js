@@ -152,8 +152,8 @@ export default async function handler(req, res) {
         const pdfTemplatePath = await downloadPdfTemplate();
 
         // Use the downloaded PDF template path to generate and upload the PDF
-        await createAndUploadPDF(pdfTemplatePath, `${userId}_filled.pdf`, userId, formData);
-        await createAndUploadPDF(pdfTemplatePath, `${userId}_official_filled.pdf`, userId, formData);
+        await createAndUploadPDF(pdfTemplatePath, `${userId}_testing.pdf`, userId, formData);
+        await createAndUploadPDF(pdfTemplatePath, `${userId}_testing.pdf`, userId, formData);
 
         res.status(200).json({ success: 'PDF generated and saved' });
     } catch (error) {
