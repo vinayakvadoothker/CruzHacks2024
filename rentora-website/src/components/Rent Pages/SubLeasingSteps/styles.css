@@ -33,7 +33,29 @@
   /* Centering content */
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center children horizontally */
+  align-items: center;  /*Center children horizontally */
+  justify-content: flex-start; /* Start children from the top */
+
+  position: relative; /* Keep positioning relative for layout adjustments */
+}
+
+.form-container-subleasing {
+  width: 90%;
+  margin: 5vh; /* Maintain top and bottom margin for spacing */
+  min-height: auto;
+  max-height: 58vh;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  /* Set a maximum height with more flexibility for content */
+  overflow-y: auto; /* Keep vertical scrolling within the container */
+
+  /* Centering content */
+
+  flex-direction: column;
+
   justify-content: flex-start; /* Start children from the top */
 
   position: relative; /* Keep positioning relative for layout adjustments */

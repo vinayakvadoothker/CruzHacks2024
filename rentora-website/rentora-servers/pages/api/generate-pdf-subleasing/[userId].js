@@ -47,7 +47,7 @@ export default async function handler(req, res) {
 
     try {
         // Set CORS headers
-        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Adjust as needed for your domain
+        res.setHeader('Access-Control-Allow-Origin', '*'); // Adjust as needed for your domain
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 

@@ -128,10 +128,10 @@ const SubleasingFormStep1 = () => {
     return (
         <>
             <ProgressBar steps={steps} currentStep={currentStep} onStepChange={onStepChange} />
-            <div className="form-container">
+            
+            <div className="form-container-subleasing">
                 <Stepper currentStep={currentStep} /> {/* Update Stepper's currentStep as well */}
                 <h2 className="step-title">{steps[currentStep].title}</h2> {/* Display the step title from steps state */}
-                <h2 className="step-title">Step 1: General Information</h2>
                 <p className="step-description">Please Enter Your Information Correctly</p>
 
                 <h2>Sublandlord Information</h2>
