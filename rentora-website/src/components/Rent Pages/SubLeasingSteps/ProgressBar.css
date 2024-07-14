@@ -1,0 +1,168 @@
+/* ProgressBar.css */
+
+.progress-bar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 0;
+    margin-top: -25px; /* Optionally, add a negative margin to move it up further */
+    z-index: 1;
+  }
+  
+  .hexagon {
+    position: relative;
+    width: 36px; /* Width of the hexagon */
+    height: 20.78px; /* Height of the central rectangle, calculated as width * (sqrt(3)/2) */
+    background-color: #868686; /* Default background color */
+    margin: 10.39px 0; /* Adjusted to half the height of the rectangle to vertically align adjacent hexagons */
+    cursor: pointer;
+  }
+  
+  .hexagon:before,
+  .hexagon:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    border-left: 18px solid transparent; /* Half the width of the hexagon */
+    border-right: 18px solid transparent; /* Half the width of the hexagon */
+  }
+  
+  
+  .hexagon:before {
+    bottom: 100%;
+    border-bottom: 10.39px solid #868686; /* Same as default background color */
+  }
+  
+  .hexagon:after {
+    top: 100%;
+    border-top: 10.39px solid #868686; /* Same as default background color */
+  }
+  
+  .hexagon-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    overflow: visible; /* Ensures that the content is not clipped */
+  }
+  
+  .hexagon-content {
+    transform: rotate(0deg); /* No need to rotate as the hexagon is already correctly oriented */
+    font-size: 16px; /* Adjust font size as needed */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
+    color: #ffffff; /* Default text color */
+    user-select: none; /* Prevents the user from selecting the text */
+  }
+  
+  .hexagon:hover,
+  .hexagon.active,
+  .hexagon.active.completed { /* Make active styles more specific to override completed */
+    background-color: #001277; /* Active and hover state color - Blue */
+  }
+  
+  .hexagon:hover:before,
+  .hexagon.active:before,
+  .hexagon.active.completed:before { /* Make active styles more specific to override completed */
+    border-bottom-color: #001277; /* Change to match the central rectangle - Blue */
+  }
+  
+  .hexagon:hover:after,
+  .hexagon.active:after,
+  .hexagon.active.completed:after { /* Make active styles more specific to override completed */
+    border-top-color: #001277; /* Change to match the central rectangle - Blue */
+  }
+  
+  
+  .hexagon.completed {
+    background-color: #4caf50; /* Completed step color */
+  }
+  
+  .hexagon.completed:before {
+    border-bottom-color: #4caf50; /* Change to match the central rectangle */
+  }
+  
+  .hexagon.completed:after {
+    border-top-color: #4caf50; /* Change to match the central rectangle */
+  }
+  
+
+  .hexagon-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    z-index: 100;
+    transition: opacity 0.3s, visibility 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Ensures typography consistency */
+  }
+  
+  .hexagon:hover .hexagon-tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+
+  /* @media (max-width: 767px) {
+    .progress-bar-container {
+      display: flex;
+    }
+  } */
+
+/* Additional styles for smaller screens */
+@media (max-width: 1024px) {
+    .progress-bar-container {
+      overflow-x: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Center the progress bar */
+      position: relative;
+      padding: 0 20px; /* Space for arrow buttons */
+      z-index: 2;
+    
+    }
+  
+    .progress-bar {
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      justify-content: left;
+      margin: 0 10px; /* Space between arrows and progress bar */
+    }
+  
+    .hexagon {
+      flex: 0 0 auto; /* Do not grow, do not shrink, automatically size */
+    }
+  
+    .arrow-button {
+      cursor: pointer;
+      background: none;
+      border: none;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      color: #2E2F5B;
+    }
+  
+    .left-arrow {
+      left: 0;
+    }
+  
+    .right-arrow {
+      right: 0;
+    }
+  }
+  
+  @media (min-width: 1025px) {
+    .arrow-button {
+      display: none;
+    }
+  }
