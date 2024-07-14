@@ -37,30 +37,31 @@ const SubleasingFormStep2 = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsGeneratingPDF(true);
-
+    
         try {
             // Generate PDF
             console.log("Somethign is happening")
             await db.collection('SurveyResponses').doc(user.id).update({
                 subleasingFormDone: true,
             });
-
+    
             const response = await axios.get(`http://localhost:3000/api/generate-pdf-subleasing/${user.id}`, {
                 responseType: 'blob',
             });
-
+    
             console.log('Response from server:', response);
-
-            const pdfData = pdfDoc.data();
-            const pdfUrl = pdfData[`${user.id}_filled.pdf`]; // Get the URL of the filled PDF
-            const doc = await db.collection('SurveyResponses').doc(user.id).get();
-            const formDataFromDb = doc.data();
-
+    
             // Fetch the user's filled PDF URL from Firestore
             const pdfDoc = await db.collection('FilledPDFsSubleasing').doc(`${user.id}`).get();
             if (!pdfDoc.exists) {
                 throw new Error('No PDF found for the user.');
             }
+            
+            const pdfData = pdfDoc.data();
+            const pdfUrl = pdfData[`${user.id}_filled.pdf`]; 
+            const doc = await db.collection('SurveyResponses').doc(user.id).get();
+            const formDataFromDb = doc.data();
+            
             console.log("Success??")
             setIsGeneratingPDF(false);
         } catch (error) {
@@ -68,7 +69,7 @@ const SubleasingFormStep2 = () => {
             setIsGeneratingPDF(false);
             alert('Error submitting form. Please try again.');
         }
-    };
+    };    
 
     return (
         <div className="form-container">
